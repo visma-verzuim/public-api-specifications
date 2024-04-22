@@ -1,0 +1,5203 @@
+openapi: 3.0.0
+info:
+  title: Public API Documentation
+  version: 1.0.0
+paths:
+  /api/public/absence-course:
+    get:
+      tags:
+        - Absence
+      summary: Get a list of absence courses
+      operationId: 9d16773f7ee5ad2ba198bb1fb26a451d
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific absence course
+          schema:
+            type: string
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the UUID of a specific dossier
+          schema:
+            type: string
+        - name: filter[dossierKey]
+          in: query
+          description: Filter by the external key of a specific dossier
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[employeeId]
+          in: query
+          description: Filter by the UUID of a specific employee
+          schema:
+            type: string
+        - name: filter[employmentId]
+          in: query
+          description: Filter by the UUID of a specific employment
+          schema:
+            type: string
+        - name: filter[absenceReasonId]
+          in: query
+          description: Filter by the UUID of a specific absence reason
+          schema:
+            type: string
+        - name: filter[employeeNumber]
+          in: query
+          description: Filter by an employee's employee number
+          schema:
+            type: string
+        - name: sort[dateStart]
+          in: query
+          description: Sort results by start date, use '-dateStart' to sort descending
+          schema:
+            type: string
+        - name: sort[externalKey]
+          in: query
+          description: Sort results by external key, use '-externalKey' to sort descending
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of AbsenceCourses
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AbsenceCourse'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+    post:
+      tags:
+        - Absence
+      summary: Create an absence course
+      description: 'An AbsenceCourse is an event within an absence dossier: an employee is reported sick, is reported partially or fully recovered, etc. This endpoint starts a new dossier or automagically adds the absence to an existing dossier'
+      operationId: a54dc1546f93dbbb8d45bccb2b43b22c
+      requestBody:
+        description: Absence course data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostAbsenceCourseRequestBody'
+      responses:
+        '200':
+          description: Absence course successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AbsenceCourse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Absence
+      summary: Update an existing absence course
+      description: Update an AbsenceCourse by applying changes to an existing course.
+      operationId: 0dda362e02c2fa8ad63b956b16ac49db
+      requestBody:
+        description: Absence course data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchAbsenceCourseRequestBody'
+      responses:
+        '200':
+          description: Absence course successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AbsenceCourse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/absence-reason:
+    get:
+      tags:
+        - Absence Reasons
+      summary: Get a list of absence reasons
+      operationId: 576aba442c23103ba78ed32a075c88ad
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by absence reason UUID
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by absence reason external key
+          schema:
+            type: string
+        - name: filter[code]
+          in: query
+          description: Filter by absence reason code (code is user-defined)
+          schema:
+            type: string
+        - name: filter[isPrimary]
+          in: query
+          description: Returns only primary absence reasons when true
+          schema:
+            type: boolean
+        - name: sort[code]
+          in: query
+          description: Sorts results by absence reason code
+          schema:
+            type: string
+        - name: sort[externalKey]
+          in: query
+          description: Sorts results by absence reason external key
+          schema:
+            type: string
+        - name: sort[name]
+          in: query
+          description: Sorts results by absence reason name (this is the default sorting method)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of absence reasons that match the given filters
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AbsenceReason'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/absence-reason?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/absence-reason?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/absence-reason?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/absence-reason?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/absence-reason?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+  /auth/partner/token:
+    post:
+      tags:
+        - Authentication
+      summary: Obtain an access token token using the client id and secret
+      operationId: 71e458c7c807599c8e8f5cd40d06813f
+      requestBody:
+        description: Token authentication request body
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                grant_type:
+                  type: string
+                  example: client_credentials
+                client_id:
+                  type: integer
+                  example: '123'
+                client_secret:
+                  type: string
+                  example: your_client_secret
+                scope:
+                  properties:
+                    absence:
+                      type: array
+                      items:
+                        type: string
+                      example:
+                        - read
+                        - create
+                    employee:
+                      type: array
+                      items:
+                        type: string
+                      example:
+                        - read
+                  type: object
+              type: object
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessToken'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthBadRequestResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntity'
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      operationId: a7bed433e688cc04ae6b776639978130
+      responses:
+        '200':
+          description: Successful response
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/arbo-role:
+    get:
+      tags:
+        - User Roles
+      summary: Get a list of arbo roles that can be assigned to users
+      operationId: 8a4f67afcabe86d1e2551b17e244a1a4
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter arbo roles by uuid
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: filter[externalKey]
+          in: query
+          description: Filter arbo roles by external key
+          required: false
+          schema:
+            type: string
+        - name: filter[active]
+          in: query
+          description: Filter arbo roles by active status
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: A list of available arbo roles
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ArboRole'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/arbo?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/arbo?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/arbo?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/arbo?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/arbo?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+  /api/public/company-doctor:
+    get:
+      tags:
+        - Company Doctors
+      summary: Get a list of company doctors
+      operationId: 51aa859671c45bf1b1a9ea4054c0e303
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by uuid
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[username]
+          in: query
+          description: Filter by username
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of company doctors
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CompanyDoctor'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+  /api/public/configuration/contract/contract-type:
+    get:
+      tags:
+        - Contracts
+      summary: Get a list of contract types that can be applied to employer contracts
+      operationId: 9d6231ab25b87de5d323c3c5e7328c43
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by uuid
+          schema:
+            type: string
+        - name: filter[active]
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+        - name: filter[search]
+          in: query
+          description: Performs a 'LIKE %value%' query on the 'name' and 'code' fields
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by externalKey
+          schema:
+            type: string
+        - name: filter[type]
+          in: query
+          description: Filter by contract type type
+          schema:
+            type: string
+            enum:
+              - custom
+              - base
+        - name: sort
+          in: query
+          description: sort results by a field
+          schema:
+            type: string
+            enum:
+              - code
+              - name
+              - dateStart
+      responses:
+        '200':
+          description: A list of contract types
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ContractType'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+  /api/public/configuration/contract/partnership:
+    get:
+      tags:
+        - Contracts
+      summary: Get a list of partnerships that can be applied to employer contracts
+      operationId: 5b3391c9260f317b21be24a9aef713ee
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by uuid
+          schema:
+            type: string
+        - name: filter[active]
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+        - name: filter[default]
+          in: query
+          description: Filter by 'default' status
+          schema:
+            type: boolean
+        - name: filter[externalKey]
+          in: query
+          description: Filter by externalKey
+          schema:
+            type: string
+        - name: filter[search]
+          in: query
+          description: Performs a 'LIKE %value%' search on the 'name' field
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: sort results by a field
+          schema:
+            type: string
+            enum:
+              - name
+              - dateCreated
+      responses:
+        '200':
+          description: A list of partnerships
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Partnership'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+  /api/public/configuration/contract/service-type:
+    get:
+      tags:
+        - Contracts
+      summary: Get a list of service types that can be applied to employer contracts
+      operationId: 6e79071185d7184079fecfd59284097b
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by uuid
+          schema:
+            type: string
+        - name: filter[active]
+          in: query
+          description: Filter by status
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: A list of service types
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ServiceType'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+  /api/public/dossier/spoor-2:
+    post:
+      tags:
+        - Dossier
+      summary: Create a Spoor 2 dossier
+      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new spoor 2 dossier.
+      operationId: a31090898efb1281abb5afb3c9938578
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDossierSpoor2RequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/medical-preventive:
+    post:
+      tags:
+        - Dossier
+      summary: Create a medical preventive dossier
+      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new medical preventive dossier.
+      operationId: 7e8923bb4d34d5933b6dd5d5f837b60d
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostMedicalPreventiveDossierRequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/preventive:
+    post:
+      tags:
+        - Dossier
+      summary: Create a preventive dossier
+      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new preventive dossier.
+      operationId: 31c0e0428464694b78725c0b843176d2
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPreventiveDossierRequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/zwerd:
+    post:
+      tags:
+        - Dossier
+      summary: Create a ZW ERD dossier
+      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new ZW ERD dossier.
+      operationId: 15898cf794cb148714cd5dc374c1eab4
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostZwerdDossierRequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/configuration/dossier/dossier-tasks:
+    get:
+      tags:
+        - Dossier
+      summary: Get a list of contract types that can be applied to employer contracts
+      operationId: f1bbc15e9fd7597e79907f9644b4cf47
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by uuid
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by externalKey
+          schema:
+            type: string
+        - name: filter[name]
+          in: query
+          description: Filter by name
+          schema:
+            type: string
+        - name: filter[baseTaskId]
+          in: query
+          description: Filter by  base task uid
+          schema:
+            type: string
+        - name: filter[baseTaskCode]
+          in: query
+          description: Filter by  base task code
+          schema:
+            type: string
+        - name: filter[taskStatus]
+          in: query
+          description: 'Filter by  task status. Available options: open,finished,canceled,overdue'
+          schema:
+            type: string
+        - name: filter[baseTaskType]
+          in: query
+          description: 'Filter by  base task type. Available options: order, evaluation, legal, uwv, informative'
+          schema:
+            type: string
+        - name: filter[dateCompletedFrom]
+          in: query
+          description: Filter by  task date completed from
+          schema:
+            type: string
+        - name: filter[dateCompletedUntil]
+          in: query
+          description: 'Filter by  task until date completed '
+          schema:
+            type: string
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by  task date updated from
+          schema:
+            type: string
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: 'Filter by  task until date updated '
+          schema:
+            type: string
+        - name: filter[active]
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+        - name: sort
+          in: query
+          description: sort results by a field
+          schema:
+            type: string
+            enum:
+              - code
+              - name
+              - dateStart
+      responses:
+        '200':
+          description: A list of dossier tasks
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DossierTask'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+  /api/public/dossier-officer:
+    get:
+      tags:
+        - Dossier Officers
+      summary: Get a list of Dossier Officers
+      operationId: 50616ff999f777b6e9aa1384186cb6dc
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[username]
+          in: query
+          description: Filter by Username
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of Dossier Officers
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DossierOfficer'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test.com/public/dossier-officers?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test.com/public/dossier-officers?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test.com/public/dossier-officers?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test.com/public/dossier-officers?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test.com/public/dossier-officers?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, username`.
+                      type: object
+                type: object
+  /api/public/employee:
+    get:
+      tags:
+        - Employee
+      summary: Get a list of employees
+      operationId: 7da03983f3c9f43529ef75e8bbaebc15
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific employee
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[employmentId]
+          in: query
+          description: Filter by the UUID of a specific employment
+          schema:
+            type: string
+        - name: filter[employeeNumber]
+          in: query
+          description: Filter by an employee's employee number
+          schema:
+            type: string
+        - name: include[person]
+          in: query
+          description: Include the employee's personal details in the output
+          schema:
+            type: string
+        - name: include[employments]
+          in: query
+          description: Include the employee's employments in the output
+          schema:
+            type: string
+        - name: include[addresses]
+          in: query
+          description: Include the employee's addresses in the output
+          schema:
+            type: string
+        - name: include[employmentContract]
+          in: query
+          description: Include the employee's employment contract in the output
+          schema:
+            type: string
+        - name: include[communicationMethods]
+          in: query
+          description: Include the employee's communication methods in the output
+          schema:
+            type: string
+        - name: sort[externalKey]
+          in: query
+          description: Sort results by external key, use '-externalKey' to sort descending
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of Employees
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmployeeResource'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+    post:
+      tags:
+        - Employee
+      summary: Create an employee
+      description: This endpoint creates an Employee and its associated entities (Employment, Employment Contract, Primary Address, Person Information, Person Communications).
+      operationId: a626f8de80e6cf5fa113c68baeea658f
+      requestBody:
+        description: Employee data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostEmployeeRequestBody'
+      responses:
+        '200':
+          description: Absence course successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Employee
+      summary: Update an employee
+      description: This endpoint updates an existing Employee and its associated entities (Primary Address, Person Information, Person Communications).
+      operationId: 3740a88ba4d820ef4956bfa88371ce6b
+      requestBody:
+        description: Employee data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchEmployeeRequestBody'
+      responses:
+        '200':
+          description: Absence course successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/employer:
+    get:
+      tags:
+        - Employer
+      summary: Get a list of employers
+      operationId: 9990c791d9c3ec5f6adf1c928fcac374
+      parameters:
+        - name: filter[search]
+          in: query
+          description: Filter employers based on search criteria
+          schema:
+            type: string
+        - name: filter[id]
+          in: query
+          description: Filter by id
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: include
+          in: query
+          description: |-
+            Include related resources (
+             *              organizationalUnitsCount,
+             *              insurancePolicies,
+             *              employerDivision,
+             *              companyDoctor.user,
+             *              dossierOfficer.user,
+             *              arboService,
+             *              visitorAddress.country,
+             *              postalAddress,
+             *              contracts.type,
+             *              contracts.service,
+             *              contactPersons,
+             *              ownRiskContracts.type,
+             *              communications,
+             *              contactPersons.details
+             *          ) - use comma separated values to include multiple resources - use dot notation to include nested resources
+          schema:
+            type: string
+        - name: sort[externalKey]
+          in: query
+          description: Sort results by external key, use '-externalKey' to sort descending
+          schema:
+            type: string
+        - name: sort[name]
+          in: query
+          description: Sort results by name, use '-name' to sort descending
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of employers that match the given filters
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Employer'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    post:
+      tags:
+        - Employer
+      summary: Create an employer
+      operationId: b6ca7dcd06798bf7916dda14e7c5be8b
+      requestBody:
+        description: Employer data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostEmployerRequestBody'
+      responses:
+        '200':
+          description: Employer successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employer'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Employer
+      summary: Update an employer
+      operationId: b7d9e58d92dbd84b901565689754194c
+      requestBody:
+        description: Employer data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchEmployerRequestBody'
+      responses:
+        '200':
+          description: Employer successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employer'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/employer-division:
+    get:
+      tags:
+        - Employer Divisions
+      summary: Get a list of employer divisions
+      operationId: 6f99143a21afaa0c866b6c62a8c628b2
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[parentEmployerDivisionId]
+          in: query
+          description: Filter by parent employer division UUID
+          schema:
+            type: string
+        - name: filter[parentEmployerDivisionExternalKey]
+          in: query
+          description: Filter by parent employer division's external key
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Sort by field (externalKey)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of employer divisions that match the given filters
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmployerDivision'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                      first:
+                        type: string
+                        format: uri
+                      last:
+                        type: string
+                        format: uri
+                      prev:
+                        type: string
+                        format: uri
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                      perPage:
+                        type: integer
+                      currentPage:
+                        type: integer
+                      lastPage:
+                        type: integer
+                    type: object
+                type: object
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/employer-role:
+    get:
+      tags:
+        - User Roles
+      summary: Get a list of employer roles that can be assigned to users
+      operationId: 458dd77b935ac246664fac6b50504d06
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by uuid
+          schema:
+            type: string
+        - name: filter[employerId]
+          in: query
+          description: Filter by employer uuid
+          schema:
+            type: string
+        - name: filter[active]
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external_key
+          schema:
+            type: string
+        - name: filter[arboRoleId]
+          in: query
+          description: Filter by arboRole uuid
+          schema:
+            type: string
+        - name: include
+          in: query
+          description: Include relations
+          schema:
+            type: string
+            enum:
+              - arboRole
+      responses:
+        '200':
+          description: A list of available employer roles
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmployerRole'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+  /api/public/configuration/employment/employment-type:
+    get:
+      tags:
+        - Employment
+      summary: Get a list of employment types
+      operationId: 39ce4ea5bdef5e8480764c494b93f196
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific employment type
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[indefiniteContract]
+          in: query
+          description: Filter by employment types that are for a contract of indefinite duration ('onbepaalde tijd')
+          schema:
+            type: boolean
+        - name: filter[education]
+          in: query
+          description: Filter by employment types that are for education (internship)
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: A list of EmploymentTypes
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmploymentType'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+  /api/public/external-supervisor:
+    get:
+      tags:
+        - External Supervisor
+      summary: Get a list of external supervisors
+      operationId: 713b0d6a223bccdeba0e58765de66f41
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by uuid
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[employerId]
+          in: query
+          description: Filter by employer
+          schema:
+            type: string
+        - name: filter[organizationalUnitId]
+          in: query
+          description: Filter by organizational unit uuid
+          schema:
+            type: string
+        - name: filter[jobTitle]
+          in: query
+          description: Filter by `jobTitle` (case insensitive)
+          schema:
+            type: string
+        - name: include
+          in: query
+          description: Include related resources
+          schema:
+            type: string
+            enum:
+              - person
+      responses:
+        '200':
+          description: A list of external supervisors
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ExternalSupervisor'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+  /api/public/operation:
+    get:
+      tags:
+        - Operation
+      summary: Get a list of operations
+      operationId: 59d368c18a71c3e18524e037c8d25846
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by uuid
+          schema:
+            type: string
+        - name: filter[search]
+          in: query
+          description: Filter by operation name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of operations
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Operation'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, search.
+                      type: object
+                type: object
+  /api/public/billable-operation:
+    get:
+      tags:
+        - Billable Operation
+      summary: Get a list of billable operations
+      operationId: 39b8281d52095a101664b45af267a209
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific billable operation
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by the external key of a specific billable operation
+          schema:
+            type: string
+        - name: filter[operationId]
+          in: query
+          description: Filter by the UUID of a specific operation
+          schema:
+            type: string
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the UUID of a specific dossier
+          schema:
+            type: string
+        - name: filter[dossierTaskId]
+          in: query
+          description: Filter by dossierTaskId associated with the billable operation
+          schema:
+            type: integer
+        - name: filter[employmentId]
+          in: query
+          description: Filter by the UUID of a specific employment
+          schema:
+            type: string
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by date updated from
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter by date updated until
+          schema:
+            type: string
+            format: date-time
+        - name: sort
+          in: query
+          description: Sort results by date executed or external key, use - before the field name to sort descending
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of Operationable entities
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Operationable'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/billable-operation?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/billable-operation?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/billable-operation?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/billable-operation?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/billable-operation?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+  /api/public/organizational-unit:
+    get:
+      tags:
+        - Organizational Units
+      summary: Get a list of organizational units
+      operationId: e89a713b764f533020ad57a8082b79d1
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[name]
+          in: query
+          description: Filter by name
+          schema:
+            type: string
+        - name: filter[officialName]
+          in: query
+          description: Filter by official name
+          schema:
+            type: string
+        - name: filter[code]
+          in: query
+          description: Filter by code
+          schema:
+            type: string
+        - name: filter[root]
+          in: query
+          description: Filter root organizational units
+          schema:
+            type: boolean
+        - name: filter[employerId]
+          in: query
+          description: Filter by employer UUID
+          schema:
+            type: string
+        - name: filter[parentOrganizationalUnitId]
+          in: query
+          description: Filter by parent organizational unit UUID
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Sort by field (name, officialName, code, sbiCode, number, kvkNumber, vatNumber, relationNumber, externalKey). Prefix with '-' to sort descending
+          schema:
+            type: string
+        - name: include
+          in: query
+          description: Include related resources (employer, parentOrganizationalUnit, companyDoctor, dossierOfficer)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of organization units that match the given filters
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PublicApiOrganizationalUnit'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/organizational-unit?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/organizational-unit?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/organizational-unit?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/organizational-unit?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/organizational-unit?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    post:
+      tags:
+        - Organizational Units
+      summary: Create a new organizational unit
+      description: Create a new organizational unit
+      operationId: 5e7cdfe148bcd681b44a15aebacdddf0
+      requestBody:
+        description: 'Organizational Unit data - please be aware: ''company.normHours'' is required when ''company'' is present'
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - employerId
+                - employerKey
+                - organizationalUnitTypeId
+                - name
+              properties:
+                externalKey:
+                  description: External key of the organizational unit
+                  type: string
+                employerId:
+                  description: Employer ID of the organizational unit, mutually exclusive with 'employerKey'
+                  type: string
+                employerKey:
+                  description: Employer externalKey of the organizational unit, mutually exclusive with 'employerId'
+                  type: string
+                parentOrganizationalUnitId:
+                  description: Parent organizational unit ID of the organizational unit, mutually exclusive with 'parentOrganizationalUnitKey'
+                  type: string
+                parentOrganizationalUnitKey:
+                  description: Parent organizational unit key of the organizational unit, mutually exclusive with 'parentOrganizationalUnitId'
+                  type: string
+                organizationalUnitTypeId:
+                  description: Organizational unit type ID of the organizational unit - mutually exclusive with 'organizationalUnitTypeKey'
+                  type: string
+                organizationalUnitTypeKey:
+                  description: Organizational unit type key of the organizational unit, default values are 'company', 'department' and 'region' - mutually exclusive with 'organizationalUnitTypeId'
+                  type: string
+                name:
+                  description: Name of the organizational unit
+                  type: string
+                code:
+                  description: Code of the organizational unit
+                  type: string
+                companyDoctorId:
+                  description: Company doctor ID of the organizational unit. mutually exclusive with 'companyDoctorKey'
+                  type: string
+                companyDoctorKey:
+                  description: Company doctor key of the organizational unit. mutually exclusive with 'companyDoctorId'
+                  type: string
+                dossierOfficerId:
+                  description: Dossier officer ID of the organizational unit. mutually exclusive with 'dossierOfficerKey'
+                  type: string
+                dossierOfficerKey:
+                  description: Dossier officer key of the organizational unit, mutually exclusive with 'dossierOfficerId'
+                  type: string
+                company:
+                  description: Company data
+                  properties:
+                    legalName:
+                      description: Legal name of the company
+                      type: string
+                    legalForm:
+                      description: Legal form of the company
+                      type: string
+                      enum:
+                        - sole-proprietorship
+                        - partnership
+                        - limited-liability-partnership
+                        - limited-partnership
+                        - private-limited-company
+                        - public-limited-company
+                        - cooperative-and-mutual-insurance-company
+                        - foundation
+                        - association
+                    normHours:
+                      description: Norm hours of the company
+                      type: integer
+                      example: 40
+                    relationNumber:
+                      description: Your relation number for the company (shown in reports)
+                      type: string
+                    kvkNumber:
+                      description: KVK number of the company
+                      type: string
+                    vatNumber:
+                      description: VAT number of the company
+                      type: string
+                    payrollTaxIdentificationNumber:
+                      description: Payroll tax identification number ('loonheffingsnummer') of the company
+                      type: string
+                    uwv:
+                      description: UWV fields
+                      properties:
+                        registrationNumber:
+                          description: UWV Registration number ('aansluitnummer') of the company
+                          type: string
+                        riskCode:
+                          description: UWV Risk code ('risicocode') of the company
+                          type: integer
+                          example: 42
+                        sectorId:
+                          description: UWV Sector ID
+                          type: integer
+                          example: 42
+                      type: object
+                    dateStart:
+                      description: 'Start date, defaults to '
+                      type: string
+                      format: date
+                    dateEnd:
+                      description: End date
+                      type: string
+                      format: date
+                  type: object
+              type: object
+      responses:
+        '200':
+          description: Organizational unit successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiOrganizationalUnit'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/configuration/organizational-unit/organizational-unit-type:
+    get:
+      tags:
+        - Organizational Units
+      summary: Get a list of organizational unit types
+      operationId: 18941f3ff037acc2205c73e0fa5a5640
+      parameters:
+        - name: filter[employerId]
+          in: query
+          description: Filter by employer UUID
+          schema:
+            type: string
+        - name: include
+          in: query
+          description: Include related resources (employer)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of organization unit types that match the given filters
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrganizationalUnitType'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/organizational-unit?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/organizational-unit?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/organizational-unit?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/organizational-unit?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/organizational-unit?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/organizational-unit/{id}:
+    patch:
+      tags:
+        - Organizational Units
+      summary: Update an existing organizational unit
+      description: Updates an existing organizational unit. Allows for 'id' to be in the path or in the request body.
+      operationId: ba34008bf85672cd3cd3573690344cf8
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the organizational unit to update.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  description: Unique identifier of the organizational unit to be updated. Required if not provided in the path and 'key' is not provided. Mutually exclusive with 'key'
+                  type: string
+                  format: uuid
+                key:
+                  description: External key of the organizational unit to be updated. Required if no 'id' is provided. Mutually exclusive with 'id'.
+                  type: string
+                externalKey:
+                  description: External key of the organizational unit
+                  type: string
+                  nullable: true
+                parentOrganizationalUnitId:
+                  description: Parent org unit ID, mutually exclusive with 'parentOrganizationalUnitKey', nullable
+                  type: string
+                  format: uuid
+                  nullable: true
+                parentOrganizationalUnitKey:
+                  description: Parent org unit key, mutually exclusive with 'parentOrganizationalUnitId'
+                  type: string
+                organizationalUnitTypeId:
+                  description: Organizational Unit Type ID
+                  type: string
+                  format: uuid
+                organizationalUnitTypeKey:
+                  description: Organizational Unit Type key, default available values are 'company', 'department' and 'region' - mutually exclusive with 'organizationalUnitTypeId'
+                  type: string
+                name:
+                  description: Name of the organizational unit
+                  type: string
+                code:
+                  description: Code of the organizational unit, nullable
+                  type: string
+                  nullable: true
+                company:
+                  description: Company specific fields, applicable only when OU type is 'company'
+                  properties:
+                    legalName:
+                      description: Legal name of the company
+                      type: string
+                    legalForm:
+                      description: Legal form of the company
+                      type: string
+                      enum:
+                        - sole-proprietorship
+                        - partnership
+                        - limited-liability-partnership
+                        - limited-partnership
+                        - private-limited-company
+                        - public-limited-company
+                        - cooperative-and-mutual-insurance-company
+                        - foundation
+                        - association
+                    normHours:
+                      description: Norm hours of the company
+                      type: integer
+                      example: 40
+                    relationNumber:
+                      description: Your relation number for the company (shown in reports), nullable
+                      type: string
+                      nullable: true
+                    kvkNumber:
+                      description: KVK number of the company, nullable
+                      type: string
+                      nullable: true
+                    vatNumber:
+                      description: VAT number of the company, nullable
+                      type: string
+                      nullable: true
+                    uwv:
+                      description: UWV fields, nullable
+                      properties:
+                        registrationNumber:
+                          description: UWV Registration number of the company
+                          type: string
+                          nullable: true
+                        riskCode:
+                          description: UWV Risk code of the company
+                          type: integer
+                          nullable: true
+                        sectorId:
+                          description: UWV Sector ID of the company
+                          type: integer
+                          nullable: true
+                      type: object
+                  type: object
+                dateStart:
+                  description: Start date of the organizational unit, format as YYYY-MM-DD
+                  type: string
+                  format: date
+                dateEnd:
+                  description: End date of the organizational unit, format as YYYY-MM-DD, nullable
+                  type: string
+                  format: date
+                  nullable: true
+              type: object
+      responses:
+        '200':
+          description: Organizational unit successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiOrganizationalUnit'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/user/event:
+    post:
+      tags:
+        - PublicAPI
+      summary: Create/Update Users event Endpoint
+      description: Event endpoint to create/update users
+      operationId: UserEvent
+      requestBody:
+        description: Pass parameters used for creating/updating a user
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - key
+              properties:
+                key:
+                  type: string
+                  example: 98798779@12
+                type:
+                  type: string
+                  enum:
+                    - internal
+                    - external
+                    - employer
+                  example: internal
+                roleId:
+                  type: integer
+                  example: '1122334455667788'
+                username:
+                  type: string
+                  example: dotweb-user
+                active:
+                  type: boolean
+                  example: 'true'
+                hasSystemAccess:
+                  type: boolean
+                  example: 'false'
+                dateStart:
+                  description: YYYY-MM-DD Defaults to NOW()
+                  type: string
+                  format: date-time
+                dateEnd:
+                  description: YYYY-MM-DD Defaults to NULL
+                  type: string
+                  format: date-time
+                employerId:
+                  description: Key for assigning the user to a specific employer
+                  type: integer
+                  example: '1'
+                belongsToEmployeeKey:
+                  description: This will prevent the user from being able to see themselves as an employee
+                  type: string
+                  example: externalEmployeeKey
+                employeeKey:
+                  description: Key for generating personalia from employee data
+                  type: string
+                  example: employee-unique-identifier
+                ssoKey:
+                  description: SSO key unique in scope for partner/employer sso solution, not globally unique
+                  type: string
+                  example: nfr5ffg8jdnksDf3
+                person:
+                  required:
+                    - initials
+                    - surname
+                    - gender
+                  properties:
+                    mail:
+                      type: string
+                      format: email
+                      example: user1@mail.com
+                    phone:
+                      type: string
+                      example: '06123456789'
+                    initials:
+                      type: string
+                      example: J.K.
+                    surname:
+                      type: string
+                      example: Doe
+                    nickname:
+                      type: string
+                      example: Jan
+                    prefix:
+                      type: string
+                      example: Van
+                    gender:
+                      type: string
+                      enum:
+                        - M
+                        - F
+                        - X
+                      example: M
+                  type: object
+                authorization:
+                  properties:
+                    cleaning:
+                      description: If left out no change in existing authorizations
+                      type: string
+                      enum:
+                        - clean-all
+                        - clean-api-created
+                      example: clean-all
+                    organizationalUnits:
+                      type: array
+                      items:
+                        required:
+                          - key
+                          - authLevel
+                        properties:
+                          key:
+                            description: Required for each authorization created
+                            type: string
+                            example: 1511_interface@155
+                          authLevel:
+                            type: string
+                            enum:
+                              - authorized
+                              - authorized-plus-children
+                              - not-authorized
+                              - authorized-signals-only
+                              - authorized-viewing-only
+                            example: authorized
+                          childLevel:
+                            type: string
+                            enum:
+                              - authorized
+                              - authorized-plus-children
+                              - not-authorized
+                              - authorized-signals-only
+                              - authorized-viewing-only
+                            example: not-authorized
+                        type: object
+                    employments:
+                      type: array
+                      items:
+                        properties:
+                          key:
+                            description: Required for each authorization created
+                            type: string
+                            example: 1511_interface@155
+                          authLevel:
+                            type: string
+                            enum:
+                              - authorized
+                              - authorized-plus-children
+                              - not-authorized
+                              - authorized-signals-only
+                              - authorized-viewing-only
+                            example: authorized
+                        type: object
+                    employers:
+                      type: array
+                      items:
+                        properties:
+                          key:
+                            description: Required for each authorization created
+                            type: string
+                            example: 1511_interface@155
+                          authLevel:
+                            type: string
+                            enum:
+                              - authorized
+                              - authorized-plus-children
+                              - not-authorized
+                              - authorized-signals-only
+                              - authorized-viewing-only
+                            example: authorized
+                        type: object
+                  type: object
+              type: object
+      responses:
+        '200':
+          description: success - user updated
+        '201':
+          description: success - user created
+        '400':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Valid role missing
+                type: object
+components:
+  schemas:
+    PatchAbsenceCourseRequestBody:
+      required:
+        - id
+        - employmentId|employmentKey
+      properties:
+        id:
+          description: UUID of the absence course
+          type: string
+          format: uuid
+        employmentId:
+          description: UUID of the employment
+          type: string
+          format: uuid
+        employmentKey:
+          description: External identifier for the employment
+          type: string
+        externalKey:
+          description: External identifier for the absence
+          type: string
+        dateStart:
+          description: Date of the absence event
+          type: string
+          format: date
+        safetyNet:
+          description: If applicable, the type of safety net (vangnet) that applies to this absence
+          type: string
+          enum:
+            - disposal
+            - special-employment
+            - sick-due-to-pregnancy
+            - not-specified
+            - sick-due-to-childbirth
+            - unknown
+            - sick-due-to-organ-donation
+        absenceReasonId:
+          description: Set absence reason based on the UUID of the absence reason
+          type: string
+          format: uuid
+        absenceReasonCode:
+          description: Set absence reason based on the 'code' of the absence reason (code is user-configurable)
+          type: string
+        wageValue:
+          description: Wage value at the point in time the absence course is recorded
+          type: number
+          format: float
+        workedHours:
+          description: Worked hours at the point in time the absence course is recorded
+          type: integer
+          format: int32
+        recoveryPercentage:
+          description: Percentage of recovery, 0 being fully absent, 100 being fully recovered
+          type: integer
+          format: int32
+        recoveryReason:
+          description: Reason for recovery, only allowed with 'recoveryPercentage' equal to 100
+          type: string
+          enum:
+            - recovered
+            - ill-out-of-service
+            - passed-away
+            - partial-recovery
+            - fully-sick-again
+          nullable: true
+      type: object
+    PostAbsenceCourseRequestBody:
+      required:
+        - dateStart
+        - employmentId
+        - employmentKey
+        - recoveryPercentage
+      properties:
+        newDossier:
+          description: Flag to indicate if a new dossier is expected to be created, will perform additional validations - if the absence course is within 28 days of a previous absence course a new dossier will not actually be created, instead the absence course will be added to the previous dossier and it will become a compiled dossier
+          type: boolean
+        externalKey:
+          description: External identifier for the absence
+          type: string
+        safetyNet:
+          description: If applicable, the type of safety net (vangnet) that applies to this absence
+          type: string
+        accidentType:
+          description: If applicable, the type of accident that applies to this absence
+          type: string
+        absenceReasonId:
+          description: Set absence reason based on the UUID of the absence reason
+          type: string
+          format: uuid
+        absenceReasonCode:
+          description: Set absence reason based on the 'code' of the absence reason (code is user-configurable)
+          type: string
+        employmentId:
+          description: Identifier (UUID) for the employment the absence is related to, exclusive with 'employmentKey'
+          type: string
+        employmentKey:
+          description: Identifier (external key) for the employment the absence is related to, exclusive with 'employmentId'
+          type: string
+        dateReported:
+          description: Date the absence was reported, if omitted defaults to 'now'
+          type: string
+          format: date
+        dateStart:
+          description: Date of the absence event, required
+          type: string
+          format: date
+        wageValue:
+          description: Wage value at the point in time the absence course is recorded
+          type: number
+          format: float
+        workedHours:
+          description: Worked hours at the point in time the absence course is recorded
+          type: integer
+          format: int32
+        recoveryReason:
+          description: Reason for recovery, send any value to get a list of valid values, only allowed with 'recoveryPercentage' equal to 100
+          type: string
+          enum:
+            - recovered
+            - ill-out-of-service
+            - passed-away
+            - partial-recovery
+            - fully-sick-again
+        dateEmploymentEnd:
+          description: End date of employment. If the employment's base type allows it can automatically end the employment, will be ignored in other cases
+          type: string
+          format: date
+        setDossierKey:
+          description: If a new dossier is being created the external key for that dossier will be set to this value, ignored for existing or compiled dossiers
+          type: string
+        expectedDurationDays:
+          description: Expected duration of the absence in days, purely informational
+          type: integer
+          format: int32
+        recoveryPercentage:
+          description: Percentage of recovery, 0 being fully absent, 100 being fully recovered, required
+          type: integer
+          format: int32
+      type: object
+    AbsenceCourse:
+      properties:
+        id:
+          description: UUID of the absence course
+          type: string
+        externalKey:
+          description: External key associated with the absence course
+          type: string
+        employeeExternalKey:
+          description: External key of the associated employee
+          type: string
+          nullable: true
+        employmentExternalKey:
+          description: External key of the associated employment
+          type: string
+          nullable: true
+        employmentId:
+          description: UUID of the associated employment
+          type: string
+          nullable: true
+        dateReported:
+          description: The report date in YYYY-MM-DD format
+          type: string
+          format: date
+        dateStart:
+          description: The start date in YYYY-MM-DD format
+          type: string
+          format: date
+        dateEnd:
+          description: The end date in YYYY-MM-DD format
+          type: string
+          format: date
+        absenceReason:
+          oneOf:
+            - $ref: '#/components/schemas/AbsenceReason'
+          nullable: true
+          description: The absence reason associated with the absence course, available if the relation is included in the query
+        recoveryPercentage:
+          description: Percentage of recovery
+          type: number
+          format: float
+        recoveryReason:
+          description: The recovery reason associated with the absence course, available if the relation is included in the query
+          type: string
+          enum:
+            - recovered
+            - ill-out-of-service
+            - passed-away
+            - partial-recovery
+            - fully-sick-again
+          nullable: true
+        wageValue:
+          description: Value of the wage
+          type: number
+          format: float
+        workedHours:
+          description: Number of hours worked
+          type: number
+          format: float
+        safetyNet:
+          description: The safety net name
+          type: string
+          nullable: true
+        dossier:
+          oneOf:
+            - $ref: '#/components/schemas/Dossier'
+          nullable: true
+          description: The dossier associated with the absence course, available if the relation is included in the query
+        dateCreated:
+          description: The date and time the absence course was created in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date and time the absence course was last updated in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+      type: object
+    AbsenceReason:
+      properties:
+        id:
+          description: The ID of the AbsenceReason.
+          type: string
+          format: uuid
+        externalKey:
+          description: The external key associated with the AbsenceReason.
+          type: string
+        migrationKey:
+          description: The migration key associated with the AbsenceReason.
+          type: string
+        name:
+          description: The name of the AbsenceReason.
+          type: string
+        code:
+          description: The code assigned to the AbsenceReason.
+          type: string
+        isPrimary:
+          description: Whether this is a primary AbsenceReason or not.
+          type: boolean
+      type: object
+    AccessToken:
+      properties:
+        token_type:
+          description: Type of token
+          type: string
+          default: Bearer
+        expires_in:
+          description: Expiration time of token
+          type: integer
+          default: 10800
+        access_token:
+          description: The access token
+          type: string
+      type: object
+    AuthBadRequestResponse:
+      properties:
+        error:
+          type: string
+          default: invalid_client
+        error_description:
+          type: string
+          default: Client authentication failed
+        message:
+          type: string
+          default: Client authentication failed
+      type: object
+    Unauthorized:
+      properties:
+        error:
+          type: string
+          default: invalid_client
+        error_description:
+          type: string
+          default: Client authentication failed
+        message:
+          type: string
+          default: Client authentication failed
+      type: object
+    UnprocessableEntity:
+      properties:
+        error:
+          type: string
+          default: invalid_client
+        error_description:
+          type: string
+          default: Client authentication failed
+        message:
+          type: string
+          default: Client authentication failed
+      type: object
+    BadRequestResponse:
+      properties:
+        message:
+          type: string
+          example: Request validation failed
+        timestamp:
+          type: integer
+          example: 1697101490
+        status:
+          type: integer
+          example: 400
+        errors:
+          properties:
+            code:
+              type: string
+              example: REQ_00001
+            message:
+              type: string
+              example: Validation failed
+            detail:
+              type: array
+              items:
+                type: string
+              example:
+                - The request could not be validated
+                - Description of the first validation error
+                - Description of the second validation error
+          type: object
+        traceId:
+          type: string
+          example: sample-uuid-string
+      type: object
+    ServerErrorResponse:
+      properties:
+        message:
+          type: string
+          example: Server Error
+        timestamp:
+          type: integer
+          example: 1697101490
+        status:
+          type: integer
+          example: 500
+        errors:
+          properties:
+            code:
+              type: string
+              example: REQ_00001
+            message:
+              type: string
+              example: Server error
+            detail:
+              type: array
+              items:
+                type: string
+              example:
+                - A server error occurred
+                - Something bad happened that we did not expect
+          type: object
+        traceId:
+          type: string
+          example: sample-uuid-string
+      type: object
+    ArboRole:
+      required:
+        - id
+        - name
+        - externalKey
+        - migrationKey
+        - active
+      properties:
+        id:
+          description: Unique identifier for the arbo role
+          type: string
+          format: uuid
+        name:
+          description: The name of the arbo role
+          type: string
+          example: Administrator
+        externalKey:
+          description: The external key of the arbo role
+          type: string
+        migrationKey:
+          description: The migration key of the arbo role
+          type: string
+        active:
+          description: The active status of the arbo role
+          type: boolean
+      type: object
+    ArboService:
+      properties:
+        id:
+          description: UUID of the arbo service
+          type: string
+        externalKey:
+          description: The external key associated with the arbo service
+          type: string
+        migrationKey:
+          description: The migration key associated with the arbo service
+          type: string
+        name:
+          description: The name of the arbo service
+          type: string
+        dateCreated:
+          description: The date the arbo service was created
+          type: string
+        dateUpdated:
+          description: The date the arbo service was updated
+          type: string
+      type: object
+    CompanyDoctor:
+      properties:
+        id:
+          description: The UUID of the company doctor.
+          type: string
+          format: uuid
+        externalKey:
+          description: The external key associated with the company doctor.
+          type: string
+        migrationKey:
+          description: The migration key associated with the company doctor.
+          type: string
+        username:
+          description: The username of the company doctor. This is available if the user relation is loaded.
+          type: string
+        person:
+          $ref: '#/components/schemas/MasterPerson'
+      type: object
+    ContactPerson:
+      properties:
+        externalKey:
+          description: External key associated with the contact person
+          type: string
+        migrationKey:
+          description: Migration key associated with the contact person
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+        team:
+          description: The team the contact person is associated with
+          type: object
+        employee:
+          $ref: '#/components/schemas/EmployeeResource'
+        person:
+          $ref: '#/components/schemas/EmployerPersonResource'
+        organizationalUnit:
+          $ref: '#/components/schemas/OrganizationalUnit'
+        employer:
+          $ref: '#/components/schemas/Employer'
+        type:
+          description: The type of the contact person
+          type: string
+          enum:
+            - general
+            - uwv
+            - team-contact-person
+            - preferred-professional
+        isAuthorized:
+          description: Whether the contact person is authorized
+          type: boolean
+        isUwvContactPerson:
+          description: Whether the contact person is a UWV contact person
+          type: boolean
+        dateCreated:
+          description: The date the contact person was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date the contact person was updated
+          type: string
+          format: date-time
+      type: object
+    Contract:
+      properties:
+        id:
+          description: UUID of the contract
+          type: string
+        externalKey:
+          description: External key associated with the contract
+          type: string
+        migrationKey:
+          description: Migration key associated with the contract
+          type: string
+        type:
+          $ref: '#/components/schemas/ContractType'
+        service:
+          $ref: '#/components/schemas/ServiceType'
+        accountnumber:
+          description: Account number associated with the contract
+          type: string
+        active:
+          description: Whether the contract is active
+          type: boolean
+        dateStart:
+          description: The start date in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateEnd:
+          description: The end date in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateCreated:
+          description: The date the contract was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date the contract was updated
+          type: string
+          format: date-time
+      type: object
+    ContractType:
+      properties:
+        id:
+          description: UUID of the contract type
+          type: string
+        externalKey:
+          description: External key associated with the contract type
+          type: string
+        migrationKey:
+          description: Migration key associated with the contract type
+          type: string
+        name:
+          description: The name of the contract type
+          type: string
+        code:
+          description: The code of the contract type
+          type: string
+        description:
+          description: The description of the contract type
+          type: string
+        subscriptionFee:
+          description: The subscription fee of the contract type
+          type: string
+        type:
+          description: The type of the contract type
+          type: string
+        billingType:
+          description: The billing type of the contract type
+          type: string
+        dateStart:
+          description: The start date in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateEnd:
+          description: The end date in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateCreated:
+          description: The date the contract type was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date the contract type was updated
+          type: string
+          format: date-time
+      type: object
+    OwnRiskContract:
+      properties:
+        id:
+          description: UUID of the own risk contract
+          type: string
+        type:
+          description: The type of the own risk contract
+          type: string
+        dateCreated:
+          description: The date the own risk contract was created
+          type: string
+        dateUpdated:
+          description: The date the own risk contract was updated
+          type: string
+      type: object
+    Partnership:
+      properties:
+        id:
+          description: UUID of the partnership
+          type: string
+        name:
+          description: The name of the partnership
+          type: string
+        externalKey:
+          description: The external key of the partnership
+          type: string
+        active:
+          description: Whether the partnership is active
+          type: boolean
+        default:
+          description: Whether the partnership is the default partnership
+          type: boolean
+        dateCreated:
+          description: The date the partnership was created
+          type: string
+        dateUpdated:
+          description: The date the partnership was updated
+          type: string
+      type: object
+    ServiceType:
+      properties:
+        id:
+          description: UUID of the service type
+          type: string
+        name:
+          description: The name of the service type
+          type: string
+        active:
+          description: Whether the service type is active
+          type: boolean
+        dateCreated:
+          description: The date the service type was created
+          type: string
+        dateUpdated:
+          description: The date the service type was updated
+          type: string
+      type: object
+    PostDossierSpoor2RequestBody:
+      required:
+        - dateStart
+        - employmentId|employmentKey
+        - dossierStatus
+      properties:
+        externalKey:
+          description: External identifier for the absence
+          type: string
+        dossierStatus:
+          description: The status of the dossier
+          type: string
+          enum:
+            - open
+            - closed
+        dateReported:
+          description: Date the absence was reported, if omitted defaults to 'now'
+          type: string
+          format: date
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment, required if 'employmentKey' is omitted
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment, required if 'employmentId' is omitted
+          type: string
+        organizationalUnitId:
+          description: The id of the organizational unit, required if 'organizationalUnitKey' is omitted
+          type: string
+          format: uuid
+        organizationalUnitKey:
+          description: The key of the organizational unit, required if 'organizationalUnitId' is omitted
+          type: string
+        protocol:
+          description: The protocol of the dossier
+          type: string
+        dossierNumber:
+          description: The dossier number, defaults to 0
+          type: string
+        dossierOfficerId:
+          description: The id of the dossier officer, required if 'dossierOfficerKey' is omitted
+          type: string
+          format: uuid
+        dossierOfficerKey:
+          description: The key of the dossier officer, required if 'dossierOfficerId' is omitted
+          type: string
+        safetyNet:
+          description: If applicable, the type of safety net (vangnet) that applies to this absence
+          type: string
+        dossierClosureReason:
+          description: The reason the dossier was closed
+          type: string
+        contractId:
+          description: The id of the contract
+          type: string
+          format: uuid
+        expectedDurationDays:
+          description: The expected duration of the absence in days
+          type: integer
+        dateCompleted:
+          description: The date the dossier was completed
+          type: string
+          format: date
+        traject:
+          description: The type of traject this spoor 2 dossier is following
+          type: string
+      type: object
+    PostMedicalPreventiveDossierRequestBody:
+      required:
+        - dateStart
+        - employmentId|employmentKey
+      properties:
+        externalKey:
+          description: External identifier for the absence
+          type: string
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment
+          type: string
+      type: object
+    PostPreventiveDossierRequestBody:
+      required:
+        - dateStart
+        - employmentId|employmentKey
+        - dateReported
+      properties:
+        externalKey:
+          description: External identifier for the absence
+          type: string
+        dateReported:
+          description: The date the dossier was reported
+          type: string
+          format: date
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment
+          type: string
+        dateCompleted:
+          description: The date the dossier was completed
+          type: string
+          format: date
+      type: object
+    PostZwerdDossierRequestBody:
+      required:
+        - dateStart
+        - employmentId|employmentKey
+        - dateEmploymentEnd
+      properties:
+        externalKey:
+          description: External identifier for the absence
+          type: string
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment
+          type: string
+        payrollNumber:
+          description: The payroll number of the employee
+          type: string
+        daySalary:
+          description: The daily salary of the employee
+          type: number
+          format: float
+        dateEmploymentEnd:
+          description: The date the employee's employment was completed
+          type: string
+          format: date
+      type: object
+    DossierTask:
+      properties:
+        id:
+          description: UUID of the DossierTask
+          type: string
+        externalKey:
+          description: External key associated with the dossier task
+          type: string
+        migrationKey:
+          description: Migration key associated with the dossier task
+          type: string
+        dossier:
+          oneOf:
+            - $ref: '#/components/schemas/Dossier'
+          nullable: true
+          description: The dossier associated with the dossier task, available if the relation is included in the query
+        baseTaskId:
+          description: UUID of the base task
+          type: string
+        baseTask:
+          oneOf:
+            - $ref: '#/components/schemas/Task'
+          nullable: true
+          description: The base task associated with the dossier task
+        taskStatus:
+          description: status of the task
+          type: string
+        title:
+          description: title of the task
+          type: string
+        content:
+          description: content of the task
+          type: string
+        isPostoponed:
+          description: declares whether task is postponed
+          type: boolean
+        dateStart:
+          description: date start of the task
+          type: string
+          format: date
+        dateEnd:
+          description: date end of the task
+          type: string
+          format: date
+        dateCompleted:
+          description: date of completion of the task
+          type: string
+          format: date
+        dateCreated:
+          description: date created of the task
+          type: string
+          format: date
+        dateUpdated:
+          description: date upddated of the task
+          type: string
+          format: date
+      type: object
+    Dossier:
+      properties:
+        id:
+          description: The ID of the Dossier.
+          type: string
+          format: uuid
+        type:
+          description: The type of the Dossier.
+          type: string
+        externalKey:
+          description: The external key associated with the Dossier.
+          type: string
+        dateStart:
+          description: The start date in YYYY-MM-DD format.
+          type: string
+        dateEnd:
+          description: The end date in YYYY-MM-DD format.
+          type: string
+        dossierStatus:
+          description: The current status of the Dossier.
+          type: string
+        accidentType:
+          description: The accident type of the Dossier.
+          type: string
+        nursingAddress:
+          type: object
+      type: object
+    DossierOfficer:
+      properties:
+        id:
+          description: The UUID of the Dossier officer.
+          type: string
+          format: uuid
+        externalKey:
+          description: The external key associated with the dossier officer.
+          type: string
+        migrationKey:
+          description: The migration key associated with the dossier officer.
+          type: string
+        username:
+          description: The username of the dossier officer. This is available if the user relation is loaded.
+          type: string
+        person:
+          $ref: '#/components/schemas/MasterPerson'
+      type: object
+    PatchEmployeeRequestBody:
+      required:
+        - employeeId
+      properties:
+        employeeId:
+          description: The uuid of the existing employee
+          type: string
+          format: uuid
+        externalKey:
+          description: The external key of the employee
+          type: string
+        person:
+          properties:
+            initials:
+              description: The Initials of the Employee
+              type: string
+            firstName:
+              description: The first name of the Employee
+              type: string
+            prefix:
+              description: The prefix of the name of the Employee
+              type: string
+            lastName:
+              description: The last name of the Employee
+              type: string
+            prefixPartner:
+              description: The prefix of the name of the partner of the Employee
+              type: string
+            lastnamePartner:
+              description: The surname of the partner of the Employee
+              type: string
+            namePreference:
+              description: The name preference for the Employee.
+              type: string
+              default: own
+              enum:
+                - own
+                - partner
+                - own-partner
+                - partner-own
+            salutation:
+              description: The title of the Employee (Mr,Mrs or Mister,Missus).
+              type: string
+              enum:
+                - full
+                - short
+            gender:
+              description: The gender of the Employee.
+              type: string
+              enum:
+                - m
+                - f
+                - x
+            dateOfBirth:
+              description: The date of birth of the Employee.
+              type: string
+              format: date
+            dateOfDeath:
+              description: The date of death of the Employee.
+              type: string
+              format: date
+            nationality:
+              description: The nationality of the Employee in ISO 3166-1 alpha-2 format (2 letters).
+              type: string
+            placeOfBirth:
+              description: The city of birth of the Employee
+              type: string
+            maritalStatus:
+              description: The marital status of the Employee
+              type: string
+              enum:
+                - single
+                - married
+                - partnership
+                - widowed
+                - widowed_after_marriage
+                - widowed_after_partnership
+                - divorced
+                - divorced_after_marriage
+                - divorced_after_partnership
+                - unknown
+            noRisk:
+              description: No risk indication for the Employee.
+              type: boolean
+            sfb:
+              description: Structural Functional Disability (SFB) for the Employee.
+              type: boolean
+            socialSecurityNumber:
+              description: The SSN(BSN) of the employee.
+              type: string
+              pattern: ^\d{9}$
+          type: object
+        address:
+          properties:
+            street:
+              description: The street of the primary address of the Employee.
+              type: string
+            number:
+              description: The number of the primary address of the Employee.
+              type: string
+            postalCode:
+              description: The postal code of the primary address of the Employee.
+              type: string
+            city:
+              description: The city of the primary address of the Employee .
+              type: string
+            country:
+              description: The country of the Employee in ISO 3166-1 alpha-2 format (2 letters).
+              type: string
+          type: object
+        communicationMethods:
+          properties:
+            privateEmail:
+              description: The private email of the Employee
+              type: string
+              format: email
+            privatePhone:
+              description: The private phone of the Employee
+              type: string
+            privateMobile:
+              description: The private mobile phone of the Employee
+              type: string
+            businessEmail:
+              description: The business email of the Employee
+              type: string
+              format: email
+            businessPhone:
+              description: The business phone of the Employee
+              type: string
+            businessMobile:
+              description: The business mobile phone of the Employee
+              type: string
+          type: object
+      type: object
+    PostEmployeeRequestBody:
+      required:
+        - person.initials
+        - person.surname
+        - person.namePreference
+        - person.gender
+        - person.dateOfBirth
+        - address.street
+        - address.number
+        - address.postalCode
+        - address.city
+        - employment.organizationalUnitId|employment.organizationalUnitKey
+        - employment.hoursPerWeek
+        - employment.dateStart
+      properties:
+        externalKey:
+          description: The external key of the employee
+          type: string
+        person:
+          properties:
+            initials:
+              description: The Initials of the Employee
+              type: string
+            firstName:
+              description: The first name of the Employee
+              type: string
+            prefix:
+              description: The prefix of the name of the Employee
+              type: string
+            lastName:
+              description: The last name of the Employee
+              type: string
+            prefixPartner:
+              description: The prefix of the name of the partner of the Employee
+              type: string
+            lastnamePartner:
+              description: The surname of the partner of the Employee
+              type: string
+            namePreference:
+              description: The name preference for the Employee.
+              type: string
+              default: own
+              enum:
+                - own
+                - partner
+                - own-partner
+                - partner-own
+            salutation:
+              description: The title of the Employee (Mr,Mrs or Mister,Missus).
+              type: string
+              enum:
+                - full
+                - short
+            gender:
+              description: The gender of the Employee.
+              type: string
+              enum:
+                - m
+                - f
+                - x
+            dateOfBirth:
+              description: The date of birth of the Employee.
+              type: string
+              format: date
+            dateOfDeath:
+              description: The date of death of the Employee.
+              type: string
+              format: date
+            nationality:
+              description: The nationality of the Employee in ISO 3166-1 alpha-2 format (2 letters).
+              type: string
+            placeOfBirth:
+              description: The city of birth of the Employee
+              type: string
+            maritalStatus:
+              description: The marital status of the Employee
+              type: string
+              enum:
+                - single
+                - married
+                - partnership
+                - widowed
+                - widowed_after_marriage
+                - widowed_after_partnership
+                - divorced
+                - divorced_after_marriage
+                - divorced_after_partnership
+                - unkown
+            noRisk:
+              description: No risk indication for the Employee.
+              type: boolean
+            sfb:
+              description: Structural Functional Disability (SFB) for the Employee.
+              type: boolean
+            socialSecurityNumber:
+              description: The SSN(BSN) of the employee.
+              type: string
+              pattern: ^\d{9}$
+          type: object
+        address:
+          properties:
+            street:
+              description: The street of the primary address of the Employee.
+              type: string
+            number:
+              description: The number of the primary address of the Employee.
+              type: string
+            postalCode:
+              description: The postal code of the primary address of the Employee.
+              type: string
+            city:
+              description: The city of the primary address of the Employee .
+              type: string
+            country:
+              description: The country of the Employee in ISO 3166-1 alpha-2 format (2 letters).
+              type: string
+          type: object
+        communicationMethods:
+          properties:
+            privateEmail:
+              description: The private email of the Employee
+              type: string
+              format: email
+            privatePhone:
+              description: The private phone of the Employee
+              type: string
+            privateMobile:
+              description: The private mobile phone of the Employee
+              type: string
+            businessEmail:
+              description: The business email of the Employee
+              type: string
+              format: email
+            businessPhone:
+              description: The business phone of the Employee
+              type: string
+            businessMobile:
+              description: The business mobile phone of the Employee
+              type: string
+          type: object
+        employment:
+          properties:
+            organizationalUnitId:
+              description: The UUID of the Organisational Unit the Employee belongs to. Mutually exclusive with organizationalUnitKey
+              type: string
+              format: uuid
+            organizationalUnitKey:
+              description: The external key of the Organisational Unit the Employee belongs to. Mutually exclusive with organizationalUnitId
+              type: string
+            employmentExternalKey:
+              description: The external key assigned to the employment generated for the Employee
+              type: string
+            employeeNumber:
+              description: The employee number of the Employee
+              type: string
+            station:
+              description: The station (post) of the Employee
+              type: string
+            supervisorType:
+              description: The type of supervisor of the Employee.
+              type: string
+              enum:
+                - internal
+                - external
+            externalSupervisorId:
+              description: The id of the external supervisor of the Employee
+              type: string
+              format: uuid
+            internalSupervisorId:
+              description: The id of the internal supervisor of the Employee
+              type: string
+              format: uuid
+            employmentTypeId:
+              description: The id of the employment type of the Employee. Mutually exclusive with employmentTypeCode
+              type: string
+              format: uuid
+            employmentTypeCode:
+              description: The code of the employment type of the Employee. Mutually exclusive with employmentTypeId
+              type: string
+            jobTitle:
+              description: The job title (position) of the Employee
+              type: string
+            dateStart:
+              description: The start date of the first Employment Contract of the Employee.
+              type: string
+              format: date
+            dateEnd:
+              description: The end date of the first Employment Contract of the Employee.
+              type: string
+              format: date
+            dateSeniority:
+              description: The seniority date of the Employee.
+              type: string
+              format: date
+            employmentEndReason:
+              description: The reason for the end of employment of the Employee
+              type: string
+              enum:
+                - end_employment
+                - sick_during_end_of_employment
+                - death
+                - dismissal_own_request
+            normHoursPerWeek:
+              description: Standard hours per week the Employee works.
+              type: number
+              format: float
+            hoursPerWeek:
+              description: Hours per week the Employee works.
+              type: number
+              format: float
+            paymentPeriod:
+              description: The payment period of the Employee.
+              type: string
+              enum:
+                - hour
+                - day
+                - week
+                - four_weeks
+                - month
+                - year
+            grossSalary:
+              description: The gross salary of the employee.
+              type: number
+              format: float
+            universalSalary:
+              description: The universal(uniform) salary of the employee.
+              type: number
+              format: float
+          type: object
+        uwv:
+          properties:
+            registrationNumber:
+              description: The UWV registration number of the Employee
+              type: string
+            sectorId:
+              description: The UWV sector of the Employee
+              type: integer
+            riskCode:
+              description: The UWV risk code of the Employee
+              type: integer
+            waitingPeriod:
+              description: The waiting period (related to UWV) of the Employee
+              type: integer
+            payrollDiscountIndication:
+              description: Indication for payroll discount (related to UWV) for the Employee.
+              type: boolean
+          type: object
+      type: object
+    EmployeeResource:
+      properties:
+        id:
+          description: UUID of the employee
+          type: string
+        externalKey:
+          description: External key associated with the employee
+          type: string
+        socialSecurityNumber:
+          description: The SSN(CSN) of the employee.
+          type: string
+          pattern: ^\d{9}$
+        noRisk:
+          description: No risk indication for the Employee.
+          type: boolean
+        sfb:
+          description: Structural Functional Disability (SFB) for the Employee.
+          type: boolean
+        employment:
+          oneOf:
+            - $ref: '#/components/schemas/EmploymentResource'
+          nullable: true
+          description: The employment associated with the employee, available if the relation is included in the query
+        person:
+          oneOf:
+            - $ref: '#/components/schemas/EmployerPersonResource'
+          nullable: true
+          description: The personal details associated with the employee, available if the relation is included in the query
+        addressPrimary:
+          oneOf:
+            - $ref: '#/components/schemas/EmployerPersonAddressResource'
+          nullable: true
+          description: The primary address associated with the employee, available if the relation is included in the query
+        personAddresses:
+          oneOf:
+            - $ref: '#/components/schemas/EmployerPersonAddressResource'
+          nullable: true
+          description: The addresses associated with the employee, available if the relation is included in the query
+        personCommunications:
+          oneOf:
+            - $ref: '#/components/schemas/EmployerPersonCommunicationsResource'
+          nullable: true
+          description: The communications associated with the employee, available if the relation is included in the query
+          type: string
+        employmentContract:
+          oneOf:
+            - $ref: '#/components/schemas/EmploymentContractResource'
+          nullable: true
+          description: The employment contract associated with the employee, available if the relation is included in the query
+        dateCreated:
+          description: The date and time the employee was created in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date and time the absence course was last updated in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dossiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dossier'
+      type: object
+    PatchEmployerRequestBody:
+      description: Employer data
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          example: uuid
+        name:
+          type: string
+          example: Employer name
+        externalKey:
+          type: string
+          example: External key
+        relationNumber:
+          type: string
+          example: Relation number
+        policyNumber:
+          type: string
+          example: Policy number
+        email:
+          type: string
+          example: email@email.com
+        phone:
+          type: string
+          example: '0612345678'
+        employerDivisionId:
+          type: string
+          example: uuid
+        companyDoctorId:
+          type: string
+          example: uuid
+        dossierOfficerId:
+          type: string
+          example: uuid
+        arboServiceId:
+          type: integer
+          example: 1
+        visitAddress:
+          $ref: '#/components/schemas/Address'
+        postalAddress:
+          $ref: '#/components/schemas/Address'
+        contract:
+          required:
+            - contractType
+            - partnershipId
+            - dateStart
+          properties:
+            contractTypeId:
+              type: string
+              example: uuid
+            partnershipId:
+              type: string
+              example: uuid
+            contractnumber:
+              type: string
+              example: abc123
+            serviceTypeId:
+              type: string
+              example: uuid
+            accountnumber:
+              type: string
+              example: abc123
+            dateStart:
+              description: YYYY-MM-DD
+              type: string
+              format: date-time
+            dateEnd:
+              description: YYYY-MM-DD, defaults to NULL
+              type: string
+              format: date-time
+              nullable: true
+          type: object
+      type: object
+    PostEmployerRequestBody:
+      description: Employer data
+      required:
+        - name
+        - contract
+      properties:
+        name:
+          type: string
+          example: Employer name
+        externalKey:
+          type: string
+          example: External key
+        relationNumber:
+          type: string
+          example: Relation number
+        policyNumber:
+          type: string
+          example: Policy number
+        email:
+          type: string
+          example: email@email.com
+        phone:
+          type: string
+          example: '0612345678'
+        employerDivisionId:
+          type: string
+          example: uuid
+        companyDoctorId:
+          type: string
+          example: uuid
+        dossierOfficerId:
+          type: string
+          example: uuid
+        arboServiceId:
+          type: integer
+          example: 1
+        visitAddress:
+          $ref: '#/components/schemas/Address'
+        postalAddress:
+          $ref: '#/components/schemas/Address'
+        contract:
+          required:
+            - contractTypeId
+            - partnershipId
+            - dateStart
+          properties:
+            contractTypeId:
+              type: string
+              example: uuid
+            partnershipId:
+              type: string
+              example: uuid
+            contractnumber:
+              type: string
+              example: abc123
+            serviceTypeId:
+              type: string
+              example: uuid
+            accountnumber:
+              type: string
+              example: abc123
+            dateStart:
+              description: YYYY-MM-DD
+              type: string
+              format: date-time
+            dateEnd:
+              description: YYYY-MM-DD, defaults to NULL
+              type: string
+              format: date-time
+              nullable: true
+          type: object
+      type: object
+    Address:
+      description: Address
+      required:
+        - street
+        - number
+        - postalCode
+        - city
+        - region
+        - country
+      properties:
+        street:
+          type: string
+          example: Street
+        number:
+          type: string
+          example: 15a
+        postalCode:
+          type: string
+          example: 1234AB
+        country:
+          type: string
+          example: NL
+        region:
+          type: string
+          example: Region
+        city:
+          type: string
+          example: City
+      type: object
+    EmployerAddress:
+      properties:
+        uuid:
+          description: UUID of the employer  address
+          type: string
+        externalKey:
+          description: The external key associated with the employer  address
+          type: string
+        migration_key:
+          description: The migration key associated with the employer  address
+          type: string
+        country:
+          description: The country of the employer address
+          type: string
+        street:
+          description: The street of the employer address
+          type: string
+        number:
+          description: The number of the employer address
+          type: string
+        postalCode:
+          description: The postal code of the employer address
+          type: string
+        city:
+          description: The city of the employer address
+          type: string
+        dateCreated:
+          description: The date the employer address was created
+          type: string
+        dateUpdated:
+          description: The date the employer address was updated
+          type: string
+      type: object
+    EmployerCommunication:
+      properties:
+        externalKey:
+          description: The external key associated with the employer communication
+          type: string
+        migrationKey:
+          description: The migration key associated with the employer communication
+          type: string
+        employerId:
+          description: The employer id associated with the employer communication
+          type: string
+        type:
+          description: The type of the employer communication, e.g. 'email' or 'phone', etc.
+          type: string
+        value:
+          description: The value of the communication method (e.g. email address, phone number)
+          type: string
+        isPrimary:
+          description: Whether this is the primary means of communication for this type
+          type: boolean
+        dateCreated:
+          description: The date the employer communication was created
+          type: string
+        dateUpdated:
+          description: The date the employer communication was updated
+          type: string
+      type: object
+    Employer:
+      properties:
+        id:
+          description: UUID of the employer
+          type: string
+        externalKey:
+          description: The external key associated with the employer
+          type: string
+        migrationKey:
+          description: The migration key associated with the employer
+          type: string
+        name:
+          description: The name of the employer
+          type: string
+        relationNumber:
+          description: The relation number of the employer
+          type: string
+        policyNumber:
+          description: The policy number of the employer
+          type: string
+        communications:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployerCommunication'
+        allowCommunications:
+          description: Determines whether DWC can send communications (email, etc.) to employees of the employer
+          type: boolean
+        arboCanView:
+          description: The arbo can view of the employer
+          type: boolean
+        arboCanEdit:
+          description: The arbo can edit of the employer
+          type: boolean
+        absencePregnancyRegistrationByInterface:
+          description: The absence pregnancy registration by interface of the employer
+          type: boolean
+        insurancePolicies:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsurancePolicy'
+        employerDivision:
+          $ref: '#/components/schemas/EmployerDivision'
+        companyDoctor:
+          $ref: '#/components/schemas/CompanyDoctor'
+        dossierOfficer:
+          $ref: '#/components/schemas/DossierOfficer'
+        arboService:
+          $ref: '#/components/schemas/ArboService'
+        contracts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contract'
+        visitorAddress:
+          $ref: '#/components/schemas/EmployerAddress'
+        postalAddress:
+          $ref: '#/components/schemas/EmployerAddress'
+        contactPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactPerson'
+        ownRiskContracts:
+          type: array
+          items:
+            $ref: '#/components/schemas/OwnRiskContract'
+        dateCreated:
+          description: The date the employer was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date the employer was updated
+          type: string
+          format: date-time
+        remark:
+          description: The remark of the employer
+          type: string
+        organizationalUnitsCount:
+          description: The number of organizational units associated with the employer
+          type: integer
+      type: object
+    EmployerDivision:
+      title: Employer Division
+      properties:
+        id:
+          description: Unique identifier for the Employer Division
+          type: string
+          format: uuid
+        externalKey:
+          description: External key of the Employer Division
+          type: string
+        migrationKey:
+          description: Migration key of the Employer Division
+          type: string
+        parentId:
+          description: UUID of the parent division, if any
+          type: string
+          format: uuid
+        name:
+          description: Name of the Employer Division
+          type: string
+        color:
+          description: Color associated with the Employer Division
+          type: string
+        dateCreated:
+          description: Creation date of the Employer Division
+          type: string
+          format: date-time
+        dateUpdated:
+          description: Last update date of the Employer Division
+          type: string
+          format: date-time
+      type: object
+    EmployerPersonAddressResource:
+      properties:
+        uuid:
+          description: UUID of the employer person address
+          type: string
+        externalKey:
+          description: The external key associated with the employer person address
+          type: string
+        migration_key:
+          description: The migration key associated with the employer person address
+          type: string
+        street:
+          description: The street of the address associated with the employer person address.
+          type: string
+        number:
+          description: The number of the address associated with the employer person address.
+          type: string
+        postalCode:
+          description: The postal code of the address associated with the employer person address.
+          type: string
+        city:
+          description: The city of the address associated with the employer person address.
+          type: string
+        primary:
+          description: Indication if the address is flagged as primary or not.
+          type: string
+          enum:
+            - '0'
+            - '1'
+        dateCreated:
+          description: The date and time the employer person address was created in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date and time the employer person address was last updated in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+      type: object
+    EmployerPersonResource:
+      properties:
+        uuid:
+          description: UUID of the employer person
+          type: string
+        externalKey:
+          description: The external key associated with the employer person
+          type: string
+          nullable: true
+        migrationKey:
+          description: The migration key associated with the employer person
+          type: string
+        initials:
+          description: The initials of the employer person
+          type: string
+        firstName:
+          description: The first name associated with the employer person
+          type: string
+          nullable: true
+        lastName:
+          description: The last name associated with the employer person
+          type: string
+        lastNamePartner:
+          description: The surname of the partner associated with the employer person
+          type: string
+          nullable: true
+        namePreference:
+          description: The naming preference associated with the employer person
+          type: string
+          enum:
+            - own
+            - partner
+            - own-partner
+            - partner-own
+        prefix:
+          description: The prefix associated with the employer person
+          type: string
+          nullable: true
+        prefixPartner:
+          description: The prefix of the name of the partner associated with the employer person
+          type: string
+          nullable: true
+        placeOfBirth:
+          description: The city of birth associated with the employer person
+          type: string
+          nullable: true
+        gender:
+          description: The gender associated with the employer person.
+          type: string
+          enum:
+            - M
+            - F
+            - X
+        dateOfBirth:
+          description: The date of birth associated with the employer person.
+          type: string
+          format: date
+        dateOfDeath:
+          description: The date of death associated with the employer person.
+          type: string
+          format: date
+          nullable: true
+        maritalStatus:
+          description: The marital status associated with the employer person
+          type: string
+          enum:
+            - SINGLE
+            - MARRIED
+            - PARTNERSHIP
+            - WIDOWED
+            - WIDOWED_AFTER_MARRIAGE
+            - WIDOWED_AFTER_PARTNERSHIP
+            - DIVORCED
+            - DIVORCED_AFTER_MARRIAGE
+            - DIVORCED_AFTER_PARTNERSHIP
+            - UNKNOWN
+        salutation:
+          description: The salutation associated with the employer person
+          type: string
+          enum:
+            - full
+            - short
+        dateCreated:
+          description: The date and time the employer person was created in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date and time the employer person was last updated in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+      type: object
+    EmployerPersonCommunicationsResource:
+      properties:
+        uuid:
+          description: UUID of the current communication method
+          type: string
+        externalKey:
+          description: The external key associated with the current communication method
+          type: string
+        migrationKey:
+          description: The migration key associated with the current communication method
+          type: string
+        value:
+          description: The value associated with the current communication method
+          type: string
+        primary:
+          description: Indication if the communication method is flagged as primary or not.
+          type: boolean
+        type:
+          description: The type of communication
+          type: string
+          enum:
+            - email
+            - phone
+            - mobile
+        purpose:
+          description: The purpose of the communication
+          type: string
+          enum:
+            - personal
+            - business
+        dateCreated:
+          description: The date and time the employer person communication was created in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date and time the employer person communication was last updated in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+      type: object
+    EmployerRole:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        employerId:
+          type: string
+        externalKey:
+          type: string
+        migrationKey:
+          type: string
+        code:
+          type: string
+        base_role_name:
+          type: string
+        active:
+          type: boolean
+        arboRole:
+          oneOf:
+            - $ref: '#/components/schemas/ArboRole'
+          nullable: true
+      type: object
+    EmploymentResource:
+      properties:
+        uuid:
+          description: UUID of the employment
+          type: string
+        externalKey:
+          description: The external key associated with the employment
+          type: string
+        migration_key:
+          description: The migration key associated with the employment
+          type: string
+        employmentNumber:
+          description: The the total sum of employments of the employee
+          type: string
+        primary:
+          description: Indication if the employment is flagged as primary or not.
+          type: boolean
+        dateSeniority:
+          description: The seniority date of the employee associated with this employment in YYYY-MM-DD HH:MM:SS format.
+          type: string
+          format: date
+        employeeNumber:
+          description: The employee number of the employee associated with this employment
+          type: integer
+        startChainProvision:
+          description: The date of the start of the chain provision in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date
+        uwvRiskCode:
+          description: The UWV risk code of the Employee associated with this employment.
+          type: integer
+        waitingPeriod:
+          description: The waiting period (related to UWV) of the Employee associated with this employment.
+          type: integer
+        dateCreated:
+          description: The date and time the employment was created in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date and time the employment was last updated in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+      type: object
+    EmploymentType:
+      properties:
+        id:
+          description: UUID of the employment type
+          type: string
+        externalKey:
+          description: The external key of the employment type
+          type: string
+        migrationKey:
+          description: The migration key of the employment type
+          type: string
+        name:
+          description: The name of the employment type
+          type: string
+        code:
+          description: The code of the employment type
+          type: string
+        indefiniteContract:
+          description: Whether the employment type is for a contract of indefinite duration ('onbepaalde tijd')
+          type: boolean
+        education:
+          description: Whether the employment type is for education (internship)
+          type: boolean
+        dateCreated:
+          description: The date the employment type was created
+          type: string
+        dateUpdated:
+          description: The date the employment type was updated
+          type: string
+      type: object
+    EmploymentContractResource:
+      properties:
+        uuid:
+          description: UUID of the employment contract
+          type: string
+        externalKey:
+          description: The external key associated with the employment contract
+          type: string
+        migrationKey:
+          description: The migration key associated with the employment contract
+          type: string
+        dateStart:
+          description: The start date associated with the employment contract.
+          type: string
+          format: date
+        dateEnd:
+          description: The end date associated with the employment contract.
+          type: string
+          format: date
+          nullable: true
+        jobTitle:
+          description: The job title (position) associated with the employment contract
+          type: string
+        station:
+          description: The station associated with the employment contract
+          type: string
+        normHoursPerWeek:
+          description: Standard hours per week associated with the employment contract.
+          type: number
+          format: float
+        hoursPerWeek:
+          description: Hours per week associated with the employment contract.
+          type: number
+          format: float
+        grossSalary:
+          description: The gross salary associated with the employment contract.
+          type: number
+          format: float
+          nullable: true
+        univeralSalary:
+          description: The universal(uniform) salary associated with the employment contract.
+          type: number
+          format: float
+          nullable: true
+        paymentPeriod:
+          description: The payment period of the Employee.
+          type: string
+          enum:
+            - hour
+            - day
+            - week
+            - four_weeks
+            - month
+            - year
+          nullable: true
+        dateCreated:
+          description: The date and time the employment contract was created in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date and time the employment contract was last updated in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+      type: object
+    ExternalSupervisor:
+      properties:
+        id:
+          description: The UUID of the external supervisor.
+          type: string
+          format: uuid
+        externalKey:
+          description: The external key associated with the external supervisor.
+          type: string
+        migrationKey:
+          description: The migration key associated with the external supervisor.
+          type: string
+        employerId:
+          description: The UUID for the employer associated with the external supervisor. Null if the external supervisor is not authorized for the employer, in this scenario they are probably authorized on an OU underneath of the employer
+          type: string
+          format: uuid
+        organizationalUnitId:
+          description: The UUID for the OU associated with the external supervisor. Could be null if the external supervisor is authorized on the employer or the employer division the employer is part of.
+          type: string
+          format: uuid
+        jobTitle:
+          description: The job title (called 'position' in DWC) assigned to theexternal supervisor.
+          type: string
+        person:
+          $ref: '#/components/schemas/EmployerPersonResource'
+      type: object
+    InsurancePolicy:
+      properties:
+        id:
+          description: UUID of the insurance policy
+          type: string
+        externalKey:
+          description: External key associated with the insurance policy
+          type: string
+        migrationKey:
+          description: Migration key associated with the insurance policy
+          type: string
+        policyNumber:
+          description: The policy number of the insurance policy
+          type: string
+        dateStart:
+          description: The start date in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateEnd:
+          description: The end date in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateCreated:
+          description: The date the insurance policy was created
+          type: string
+        dateUpdated:
+          description: The date the insurance policy was updated
+          type: string
+      type: object
+    MasterPerson:
+      properties:
+        id:
+          description: UUID of the master person
+          type: string
+        name:
+          description: Name of the master person
+          type: string
+        surname:
+          description: Surname of the master person
+          type: string
+        initials:
+          description: Initials of the master person
+          type: string
+        nickname:
+          description: Nickname of the master person
+          type: string
+      type: object
+    Operation:
+      properties:
+        id:
+          description: UUID of the operation
+          type: string
+        name:
+          description: The name of the operation
+          type: string
+        description:
+          description: The description of the operation
+          type: string
+        normTime:
+          description: The time used to perform the operation in minutes
+          type: integer
+        vatPercentage:
+          description: The vat percentage of the operation
+          type: integer
+        hourlyPayment:
+          description: Determines wnether operation has hourly_payment
+          type: boolean
+        pricePerQuantity:
+          description: The unit price of the operation
+          type: number
+        pricePerHour:
+          description: The hourly cost of the operation
+          type: number
+        internalPrice:
+          description: The internal price of the operation
+          type: number
+        shouldBeBilled:
+          description: Determines whether operation shoud be billed
+          type: boolean
+        dateCreated:
+          description: The date of the creation of the operation
+          type: string
+        dateUpdated:
+          description: The date of the update of the operation
+          type: string
+      type: object
+    Operationable:
+      description: JSON resource representing an billable operation.
+      properties:
+        id:
+          description: UUID of the billable operation.
+          type: string
+        externalKey:
+          description: The external key of the billable operation.
+          type: string
+        operation:
+          $ref: '#/components/schemas/Operation'
+        dossier:
+          $ref: '#/components/schemas/Dossier'
+        dossierTask:
+          $ref: '#/components/schemas/DossierTask'
+        employmentId:
+          description: The ID of the employment associated with the billable operation.
+          type: string
+        time:
+          description: The time associated with the billable operation.
+          type: integer
+        vatPercentage:
+          description: The VAT percentage associated with the billable operation.
+          type: integer
+        pricePerHour:
+          description: The price per hour associated with the billable operation.
+          type: number
+        pricePerQuantity:
+          description: The price per quantity associated with the billable operation.
+          type: number
+        invoiceDescription:
+          description: The invoice description associated with the billable operation.
+          type: string
+        dateExecuted:
+          description: The date executed associated with the billable operation.
+          type: string
+        dateCreated:
+          description: The date of creation of the billable operation.
+          type: string
+        dateUpdated:
+          description: The date of update of the billable operation.
+          type: string
+      type: object
+    OrganizationalUnit:
+      properties:
+        id:
+          description: UUID of the organizational unit
+          type: string
+        externalKey:
+          description: External key of the organizational unit
+          type: string
+        migrationKey:
+          description: Migration key of the organizational unit
+          type: string
+        name:
+          description: Name of the organizational unit
+          type: string
+        officialName:
+          description: Official name of the organizational unit
+          type: string
+        code:
+          description: Code of the organizational unit
+          type: string
+        sbiCode:
+          description: SBI code of the organizational unit
+          type: string
+        number:
+          description: Number associated with the organizational unit
+          type: integer
+        kvkNumber:
+          description: KVK number of the organizational unit
+          type: string
+        vatNumber:
+          description: VAT number of the organizational unit
+          type: string
+        relationNumber:
+          description: Relation number of the organizational unit
+          type: string
+        employer:
+          type: object
+        parentOrganizationalUnit:
+          $ref: '#/components/schemas/OrganizationalUnit'
+        dossierOfficer:
+          type: object
+        companyDoctor:
+          $ref: '#/components/schemas/CompanyDoctor'
+      type: object
+    OrganizationalUnitCompany:
+      properties:
+        legalName:
+          description: Legal name of the company, equivalent to the official name of the organizational unit
+          type: string
+        legalForm:
+          description: Legal form of the company, represented as a lowercase string
+          type: string
+        relationNumber:
+          description: Relation number of the company
+          type: string
+        normHours:
+          description: Norm hours per week of the company
+          type: integer
+          example: 40
+        kvkNumber:
+          description: KVK number of the company
+          type: string
+        vatNumber:
+          description: VAT number of the company
+          type: string
+        uwv:
+          $ref: '#/components/schemas/OrganizationalUnitCompanyUwv'
+        dossierOfficer:
+          $ref: '#/components/schemas/DossierOfficer'
+        companyDoctor:
+          $ref: '#/components/schemas/CompanyDoctor'
+      type: object
+    OrganizationalUnitType:
+      properties:
+        id:
+          description: UUID of the Organizational Unit Type
+          type: string
+        externalKey:
+          description: External key of the Organizational Unit Type
+          type: string
+        employer:
+          $ref: '#/components/schemas/Employer'
+        name:
+          description: Name of the Organizational Unit Type
+          type: string
+        color:
+          description: Color associated with the Organizational Unit Type
+          type: string
+        legalEntity:
+          description: Indicates if it is a legal entity
+          type: boolean
+        active:
+          description: Indicates if the Organizational Unit Type is active
+          type: boolean
+        dateCreated:
+          description: Creation date of the Organizational Unit Type
+          type: string
+          format: date-time
+        dateUpdated:
+          description: Last update date of the Organizational Unit Type
+          type: string
+          format: date-time
+      type: object
+    PublicApiOrganizationalUnit:
+      properties:
+        id:
+          description: UUID of the organizational unit
+          type: string
+        externalKey:
+          description: External key of the organizational unit
+          type: string
+        migrationKey:
+          description: Migration key of the organizational unit
+          type: string
+        name:
+          description: Name of the organizational unit
+          type: string
+        code:
+          description: Code of the organizational unit
+          type: string
+        employer:
+          $ref: '#/components/schemas/Employer'
+        organizationalUnitType:
+          $ref: '#/components/schemas/OrganizationalUnitType'
+        parentOrganizationalUnit:
+          $ref: '#/components/schemas/PublicApiOrganizationalUnit'
+        company:
+          $ref: '#/components/schemas/OrganizationalUnitCompany'
+        dateStart:
+          description: Start date of the organizational unit
+          type: string
+          format: date
+        dateEnd:
+          description: End date of the organizational unit
+          type: string
+          format: date
+      type: object
+    OrganizationalUnitCompanyUwv:
+      properties:
+        registrationNumber:
+          description: UWV identification number ('aansluitnummer') of the company
+          type: string
+        riskCode:
+          description: UWV risk code of the company
+          type: integer
+        sectorId:
+          description: UWV sector ID of the company
+          type: integer
+        payrollTaxIdentificationNumber:
+          description: Payroll tax identification number ('loonheffingsnummer') of the company
+          type: string
+      type: object
+    RecoveryReason:
+      properties:
+        id:
+          description: The ID of the RecoveryReason.
+          type: string
+          format: uuid
+        externalKey:
+          description: The external key associated with the RecoveryReason.
+          type: string
+        migrationKey:
+          description: The migration key associated with the RecoveryReason.
+          type: string
+        name:
+          description: The name of the RecoveryReason.
+          type: string
+        code:
+          description: The code assigned to the RecoveryReason.
+          type: string
+        isPrimary:
+          description: Whether this is a primary RecoveryReason or not.
+          type: boolean
+      type: object
+    Task:
+      properties:
+        id:
+          description: UUID of the Task
+          type: string
+        externalKey:
+          description: External key associated with the  task
+          type: string
+        migrationKey:
+          description: Migration key associated with the  task
+          type: string
+        title:
+          description: title associated with the  task
+          type: string
+        code:
+          description: code associated with the  task
+          type: string
+        description:
+          description: description associated with the  task
+          type: string
+        dateCreated:
+          description: date created associated with the  task
+          type: string
+          format: date
+        dateUpdated:
+          description: date updated associated with the  task
+          type: string
+          format: date
+      type: object
+    User:
+      properties:
+        id:
+          description: UUID of the user
+          type: string
+        username:
+          description: Username of the user
+          type: string
+        user_type_id:
+          description: User type id of the user
+          type: integer
+        arboRole:
+          $ref: '#/components/schemas/ArboRole'
+        teamRole:
+          type: object
+        teams:
+          description: The teams the user is associated with
+          type: array
+          items:
+            type: object
+        person:
+          $ref: '#/components/schemas/MasterPerson'
+        masterPerson:
+          $ref: '#/components/schemas/MasterPerson'
+        dossiersCount:
+          description: Number of dossiers associated with the user
+          type: integer
+        tasksCount:
+          description: Number of tasks associated with the user
+          type: integer
+      type: object
