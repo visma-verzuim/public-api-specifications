@@ -3,6 +3,29 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-04-24
+
+### Added
+- New endpoints:
+  - `POST` method for `Dossier` endpoint to support pregnancy dossiers. (VV-4073)
+  - `DELETE` method for `Employer` endpoint. (VV-5060).
+
+### Changed
+- Improved OpenAPI documentation - corrected dossier/task route + improved Employee resource documentation. (VV-5063)
+
+
+## Release 2024-04-22
+
+### Added
+- New endpoints:
+  - `DELETE` method for `OrganizationalUnit` endpoint. (VV-4982).
+
+### Changed
+- Improved validation for PATCH employee lastNamePreference (VV-5048).
+- Updated OpenAPI documentation for publicAPI (VV-5028).
+- Billable operation documentation fix (VV-5017).
+
+
 ## Release 2024-04-17
 
 ### Added
