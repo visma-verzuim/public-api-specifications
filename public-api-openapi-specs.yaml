@@ -929,6 +929,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/pregnancy:
+    post:
+      tags:
+        - Dossier
+      summary: Create a pregnancy dossier
+      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new pregnancy dossier.
+      operationId: 7087fe05631fa73a0bae5d81782fa8a8
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPregnancyDossierRequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
   /api/public/dossier/preventive:
     post:
       tags:
@@ -995,18 +1022,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/configuration/dossier/dossier-tasks:
+  /api/public/dossier/task:
     get:
       tags:
         - Dossier
       summary: Get a list of contract types that can be applied to employer contracts
-      operationId: f1bbc15e9fd7597e79907f9644b4cf47
+      operationId: 5f97e5cbdf885b7e0da3fe7fa4051b4f
       parameters:
         - name: filter[id]
           in: query
           description: Filter by uuid
           schema:
             type: string
+            format: uuid
         - name: filter[externalKey]
           in: query
           description: Filter by externalKey
@@ -1022,6 +1050,7 @@ paths:
           description: Filter by  base task uid
           schema:
             type: string
+            format: uuid
         - name: filter[baseTaskCode]
           in: query
           description: Filter by  base task code
@@ -1037,26 +1066,36 @@ paths:
           description: 'Filter by  base task type. Available options: order, evaluation, legal, uwv, informative'
           schema:
             type: string
+            enum:
+              - order
+              - evaluation
+              - legal
+              - uwv
+              - informative
         - name: filter[dateCompletedFrom]
           in: query
           description: Filter by  task date completed from
           schema:
             type: string
+            format: date-time
         - name: filter[dateCompletedUntil]
           in: query
           description: 'Filter by  task until date completed '
           schema:
             type: string
+            format: date-time
         - name: filter[dateUpdatedFrom]
           in: query
           description: Filter by  task date updated from
           schema:
             type: string
+            format: date-time
         - name: filter[dateUpdatedUntil]
           in: query
           description: 'Filter by  task until date updated '
           schema:
             type: string
+            format: date-time
         - name: filter[active]
           in: query
           description: Filter by active status
@@ -1418,12 +1457,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/employer/{id}:
+    delete:
+      tags:
+        - Employer
+      summary: Delete an employer
+      description: Deletes an employer based on the ID. This operation also removes any users, contracts, roles, authorizations and organizational unit types linked to the employer.
+      operationId: 20761f9842722eb266fbfec5f5a00cbe
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the employer to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Employer successfully deleted
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/employer:
     get:
       tags:
         - Employer
       summary: Get a list of employers
-      operationId: 9990c791d9c3ec5f6adf1c928fcac374
+      operationId: b7305f681e5245b0afc36af2f38f1317
       parameters:
         - name: filter[search]
           in: query
@@ -1536,7 +1605,7 @@ paths:
       tags:
         - Employer
       summary: Create an employer
-      operationId: b6ca7dcd06798bf7916dda14e7c5be8b
+      operationId: e8fe4081efd52e2ce4f07e20236abfbd
       requestBody:
         description: Employer data
         required: true
@@ -1567,7 +1636,7 @@ paths:
       tags:
         - Employer
       summary: Update an employer
-      operationId: b7d9e58d92dbd84b901565689754194c
+      operationId: dee04ecfc9d8b55d50f88dd5e92dbc7f
       requestBody:
         description: Employer data
         required: true
@@ -2186,6 +2255,169 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+  /api/public/organizational-unit/{id}:
+    delete:
+      tags:
+        - Organizational Units
+      summary: Delete an organizational unit
+      description: Deletes an organizational unit based on the ID. This operation also removes any employees linked to the organizational unit, along with their associated employment contracts.
+      operationId: a4f618d423ca935788815c8416bea707
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the organizational unit to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Organizational unit successfully deleted
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Organizational Units
+      summary: Update an existing organizational unit
+      description: Updates an existing organizational unit. Allows for 'id' to be in the path or in the request body.
+      operationId: ba34008bf85672cd3cd3573690344cf8
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the organizational unit to update.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  description: Unique identifier of the organizational unit to be updated. Required if not provided in the path and 'key' is not provided. Mutually exclusive with 'key'
+                  type: string
+                  format: uuid
+                key:
+                  description: External key of the organizational unit to be updated. Required if no 'id' is provided. Mutually exclusive with 'id'.
+                  type: string
+                externalKey:
+                  description: External key of the organizational unit
+                  type: string
+                  nullable: true
+                parentOrganizationalUnitId:
+                  description: Parent org unit ID, mutually exclusive with 'parentOrganizationalUnitKey', nullable
+                  type: string
+                  format: uuid
+                  nullable: true
+                parentOrganizationalUnitKey:
+                  description: Parent org unit key, mutually exclusive with 'parentOrganizationalUnitId'
+                  type: string
+                organizationalUnitTypeId:
+                  description: Organizational Unit Type ID
+                  type: string
+                  format: uuid
+                organizationalUnitTypeKey:
+                  description: Organizational Unit Type key, default available values are 'company', 'department' and 'region' - mutually exclusive with 'organizationalUnitTypeId'
+                  type: string
+                name:
+                  description: Name of the organizational unit
+                  type: string
+                code:
+                  description: Code of the organizational unit, nullable
+                  type: string
+                  nullable: true
+                company:
+                  description: Company specific fields, applicable only when OU type is 'company'
+                  properties:
+                    legalName:
+                      description: Legal name of the company
+                      type: string
+                    legalForm:
+                      description: Legal form of the company
+                      type: string
+                      enum:
+                        - sole-proprietorship
+                        - partnership
+                        - limited-liability-partnership
+                        - limited-partnership
+                        - private-limited-company
+                        - public-limited-company
+                        - cooperative-and-mutual-insurance-company
+                        - foundation
+                        - association
+                    normHours:
+                      description: Norm hours of the company
+                      type: integer
+                      example: 40
+                    relationNumber:
+                      description: Your relation number for the company (shown in reports), nullable
+                      type: string
+                      nullable: true
+                    kvkNumber:
+                      description: KVK number of the company, nullable
+                      type: string
+                      nullable: true
+                    vatNumber:
+                      description: VAT number of the company, nullable
+                      type: string
+                      nullable: true
+                    uwv:
+                      description: UWV fields, nullable
+                      properties:
+                        registrationNumber:
+                          description: UWV Registration number of the company
+                          type: string
+                          nullable: true
+                        riskCode:
+                          description: UWV Risk code of the company
+                          type: integer
+                          nullable: true
+                        sectorId:
+                          description: UWV Sector ID of the company
+                          type: integer
+                          nullable: true
+                      type: object
+                  type: object
+                dateStart:
+                  description: Start date of the organizational unit, format as YYYY-MM-DD
+                  type: string
+                  format: date
+                dateEnd:
+                  description: End date of the organizational unit, format as YYYY-MM-DD, nullable
+                  type: string
+                  format: date
+                  nullable: true
+              type: object
+      responses:
+        '200':
+          description: Organizational unit successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiOrganizationalUnit'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/organizational-unit:
     get:
       tags:
@@ -2506,140 +2738,6 @@ paths:
                         example: 5
                     type: object
                 type: object
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/organizational-unit/{id}:
-    patch:
-      tags:
-        - Organizational Units
-      summary: Update an existing organizational unit
-      description: Updates an existing organizational unit. Allows for 'id' to be in the path or in the request body.
-      operationId: ba34008bf85672cd3cd3573690344cf8
-      parameters:
-        - name: id
-          in: path
-          description: Unique identifier of the organizational unit to update.
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              properties:
-                id:
-                  description: Unique identifier of the organizational unit to be updated. Required if not provided in the path and 'key' is not provided. Mutually exclusive with 'key'
-                  type: string
-                  format: uuid
-                key:
-                  description: External key of the organizational unit to be updated. Required if no 'id' is provided. Mutually exclusive with 'id'.
-                  type: string
-                externalKey:
-                  description: External key of the organizational unit
-                  type: string
-                  nullable: true
-                parentOrganizationalUnitId:
-                  description: Parent org unit ID, mutually exclusive with 'parentOrganizationalUnitKey', nullable
-                  type: string
-                  format: uuid
-                  nullable: true
-                parentOrganizationalUnitKey:
-                  description: Parent org unit key, mutually exclusive with 'parentOrganizationalUnitId'
-                  type: string
-                organizationalUnitTypeId:
-                  description: Organizational Unit Type ID
-                  type: string
-                  format: uuid
-                organizationalUnitTypeKey:
-                  description: Organizational Unit Type key, default available values are 'company', 'department' and 'region' - mutually exclusive with 'organizationalUnitTypeId'
-                  type: string
-                name:
-                  description: Name of the organizational unit
-                  type: string
-                code:
-                  description: Code of the organizational unit, nullable
-                  type: string
-                  nullable: true
-                company:
-                  description: Company specific fields, applicable only when OU type is 'company'
-                  properties:
-                    legalName:
-                      description: Legal name of the company
-                      type: string
-                    legalForm:
-                      description: Legal form of the company
-                      type: string
-                      enum:
-                        - sole-proprietorship
-                        - partnership
-                        - limited-liability-partnership
-                        - limited-partnership
-                        - private-limited-company
-                        - public-limited-company
-                        - cooperative-and-mutual-insurance-company
-                        - foundation
-                        - association
-                    normHours:
-                      description: Norm hours of the company
-                      type: integer
-                      example: 40
-                    relationNumber:
-                      description: Your relation number for the company (shown in reports), nullable
-                      type: string
-                      nullable: true
-                    kvkNumber:
-                      description: KVK number of the company, nullable
-                      type: string
-                      nullable: true
-                    vatNumber:
-                      description: VAT number of the company, nullable
-                      type: string
-                      nullable: true
-                    uwv:
-                      description: UWV fields, nullable
-                      properties:
-                        registrationNumber:
-                          description: UWV Registration number of the company
-                          type: string
-                          nullable: true
-                        riskCode:
-                          description: UWV Risk code of the company
-                          type: integer
-                          nullable: true
-                        sectorId:
-                          description: UWV Sector ID of the company
-                          type: integer
-                          nullable: true
-                      type: object
-                  type: object
-                dateStart:
-                  description: Start date of the organizational unit, format as YYYY-MM-DD
-                  type: string
-                  format: date
-                dateEnd:
-                  description: End date of the organizational unit, format as YYYY-MM-DD, nullable
-                  type: string
-                  format: date
-                  nullable: true
-              type: object
-      responses:
-        '200':
-          description: Organizational unit successfully updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PublicApiOrganizationalUnit'
         '400':
           description: Invalid input
           content:
@@ -3531,6 +3629,72 @@ components:
           description: The key of the employment
           type: string
       type: object
+    PostPregnancyDossierRequestBody:
+      required:
+        - dateStart
+        - employmentId
+      properties:
+        externalKey:
+          description: External identifier for the absence
+          type: string
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment
+          type: string
+        dateOfBirthExpected:
+          description: The expected date of birth
+          type: string
+          format: date
+        dateOfActualBirth:
+          description: The actual date of birth
+          type: string
+          format: date
+        dateActualLeave:
+          description: The actual start date of birth leave
+          type: string
+          format: date
+        dateExpectedLeave:
+          description: The expected leave date
+          type: string
+          format: date
+        dateFirstWorkingDay:
+          description: The first working day
+          type: string
+          format: date
+        dateActualFirstWorkingDay:
+          description: The actual first working day
+          type: string
+          format: date
+        expectsMultiples:
+          description: Flag to indicate if multiple babies are expected
+          type: boolean
+        hospitalizationChild:
+          description: Flag to indicate if the child had to be Hospitalized
+          type: boolean
+        flexibleLeave:
+          description: Flag to indicate if the leave is flexible
+          type: boolean
+          nullable: true
+        dateReported:
+          description: The report date
+          type: string
+          format: date
+        dateCompleted:
+          description: The date the dossier was completed
+          type: string
+          format: date
+        requestedLeavePeriod:
+          description: The requested leave period
+          type: integer
+          format: int32
+      type: object
     PostPreventiveDossierRequestBody:
       required:
         - dateStart
@@ -4081,13 +4245,16 @@ components:
         id:
           description: UUID of the employee
           type: string
+          format: uuid
         externalKey:
           description: External key associated with the employee
           type: string
+          nullable: true
         socialSecurityNumber:
           description: The SSN(CSN) of the employee.
           type: string
           pattern: ^\d{9}$
+          nullable: true
         noRisk:
           description: No risk indication for the Employee.
           type: boolean
@@ -4104,22 +4271,18 @@ components:
             - $ref: '#/components/schemas/EmployerPersonResource'
           nullable: true
           description: The personal details associated with the employee, available if the relation is included in the query
-        addressPrimary:
-          oneOf:
-            - $ref: '#/components/schemas/EmployerPersonAddressResource'
-          nullable: true
-          description: The primary address associated with the employee, available if the relation is included in the query
-        personAddresses:
-          oneOf:
-            - $ref: '#/components/schemas/EmployerPersonAddressResource'
-          nullable: true
+        addresses:
           description: The addresses associated with the employee, available if the relation is included in the query
-        personCommunications:
-          oneOf:
-            - $ref: '#/components/schemas/EmployerPersonCommunicationsResource'
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployerPersonAddressResource'
           nullable: true
-          description: The communications associated with the employee, available if the relation is included in the query
-          type: string
+        communicationMethods:
+          description: The communication methods associated with the employee, available if the relation is included in the query
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployerPersonCommunicationsResource'
+          nullable: true
         employmentContract:
           oneOf:
             - $ref: '#/components/schemas/EmploymentContractResource'
