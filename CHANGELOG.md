@@ -3,6 +3,18 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-05-01
+
+### Added
+- New endpoints:
+  - `POST` method for `EmploymentContracts` endpoint to allow adding new (or past) employment contracts for employees. (VV-4969)
+
+- As requested:
+  - Added `dateUpdated` sorting option to `GET` `Billable-operation` endpoint. (VV-5075)
+
+### Changed
+- Using an invalid token should no longer return a 'server error' when proxying through 'input' (VV-5005)
+
 ## Release 2024-04-24
 
 ### Added
