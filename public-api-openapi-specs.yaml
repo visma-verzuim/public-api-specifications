@@ -863,27 +863,26 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
-  /api/public/dossier/spoor-2:
+  /api/public/employer-contract:
     post:
       tags:
-        - Dossier
-      summary: Create a Spoor 2 dossier
-      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new spoor 2 dossier.
-      operationId: a31090898efb1281abb5afb3c9938578
+        - EmployerContract
+      summary: Create an employer contract
+      operationId: 929692eede64bb5d224d034f223326bb
       requestBody:
-        description: Dossier data
+        description: Employer Contract data
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PostDossierSpoor2RequestBody'
+              $ref: '#/components/schemas/PostEmployerContractRequestBody'
       responses:
         '200':
-          description: Dossier successfully created
+          description: Employer successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Dossier'
+                $ref: '#/components/schemas/EmployerContract'
         '400':
           description: Invalid input
           content:
@@ -910,6 +909,41 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PostMedicalPreventiveDossierRequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/paid-parental-leave:
+    post:
+      tags:
+        - Dossier
+      summary: Create a paid parental leave dossier
+      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new paid parental leave dossier.
+      operationId: 369f00a9321a26b5b268d2580c4762e4
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PostDossierRequestBody'
+                - $ref: '#/components/schemas/PostPaidParentalLeaveRequestBody'
       responses:
         '200':
           description: Dossier successfully created
@@ -970,6 +1004,41 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PostPreventiveDossierRequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/spoor2:
+    post:
+      tags:
+        - Dossier
+      summary: Create a spoor 2 dossier
+      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new spoor 2 dossier.
+      operationId: d44cf8cde22f18c4c3e850be1a3184e1
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PostDossierRequestBody'
+                - $ref: '#/components/schemas/PostSpoor2RequestBody'
       responses:
         '200':
           description: Dossier successfully created
@@ -3526,6 +3595,77 @@ components:
           type: string
           format: date-time
       type: object
+    PostEmployerContractRequestBody:
+      description: Employer Contract data
+      required:
+        - employerId
+        - contractTypeId
+        - partnershipId
+        - dateStart
+        - contractStatus
+      properties:
+        employerId:
+          description: The UUID of the Employer.
+          type: string
+          example: bc1a50da-1093-4809-8efc-e3553b2f49b0
+        contractTypeId:
+          description: The UUID of the Contract type.
+          type: string
+          example: bc1a50da-1093-4809-8efc-e3553b2f49b0
+        partnershipId:
+          description: The UUID of the Partnership.
+          type: string
+          example: bc1a50da-1093-4809-8efc-e3553b2f49b0
+        serviceTypeId:
+          description: The UUID of the service type. REQUIRED if the partner uses service contracts
+          type: string
+          example: bc1a50da-1093-4809-8efc-e3553b2f49b0
+        dateStart:
+          description: YYYY-MM-DD
+          type: string
+          format: date-time
+          example: '2024-01-01'
+        dateEnd:
+          description: YYYY-MM-DD
+          type: string
+          format: date-time
+          example: '2024-03-01'
+          nullable: true
+        contractStatus:
+          type: string
+          enum:
+            - active
+            - ended
+            - blocked
+          example: active
+        closePrevious:
+          description: When adding a new employer contract and the employer already has an open employment contract with no end date you can use this parameter to close the previous contract at the start date of the current contract.
+          type: boolean
+          example: 'true'
+          nullable: true
+        incomingDossiers:
+          type: boolean
+          example: 'true'
+          nullable: true
+        contractNumber:
+          type: integer
+          example: '58697'
+          nullable: true
+        accountNumber:
+          type: integer
+          example: '7105698'
+          nullable: true
+        startingHoursFrom:
+          description: For non service contracts you can determine the minimum hours per week for the contract
+          type: number
+          example: '80.00'
+          nullable: true
+        startingHoursUntil:
+          description: For non service contracts you can determine the maximum hours per week for the contract
+          type: number
+          example: '80.00'
+          nullable: true
+      type: object
     Contract:
       properties:
         id:
@@ -3610,6 +3750,48 @@ components:
           type: string
           format: date-time
       type: object
+    EmployerContract:
+      properties:
+        id:
+          description: UUID of the contract
+          type: string
+        externalKey:
+          description: External key associated with the contract
+          type: string
+        migrationKey:
+          description: Migration key associated with the contract
+          type: string
+        type:
+          $ref: '#/components/schemas/ContractType'
+        service:
+          $ref: '#/components/schemas/ServiceType'
+        accountNumber:
+          description: Account number associated with the contract ( if not a service contract)
+          type: string
+        contractNumber:
+          description: Contract number associated with the contract ( if not a service contract)
+          type: string
+        active:
+          description: Whether the contract is active
+          type: boolean
+        dateStart:
+          description: The start date in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateEnd:
+          description: The end date in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+          nullable: true
+        dateCreated:
+          description: The date the contract was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date the contract was updated
+          type: string
+          format: date-time
+      type: object
     OwnRiskContract:
       properties:
         id:
@@ -3667,17 +3849,16 @@ components:
           description: The date the service type was updated
           type: string
       type: object
-    PostDossierSpoor2RequestBody:
+    PostDossierRequestBody:
       required:
         - dateStart
         - employmentId|employmentKey
-        - dossierStatus
       properties:
         externalKey:
           description: External identifier for the absence
           type: string
         dossierStatus:
-          description: The status of the dossier
+          description: The status of the dossier, if omitted defaults to 'open', unless 'dateCompleted' is set  in the past, then it defaults to 'closed'
           type: string
           enum:
             - open
@@ -3696,13 +3877,6 @@ components:
           format: uuid
         employmentKey:
           description: The key of the employment, required if 'employmentId' is omitted
-          type: string
-        organizationalUnitId:
-          description: The id of the organizational unit, required if 'organizationalUnitKey' is omitted
-          type: string
-          format: uuid
-        organizationalUnitKey:
-          description: The key of the organizational unit, required if 'organizationalUnitId' is omitted
           type: string
         protocol:
           description: The protocol of the dossier
@@ -3734,9 +3908,6 @@ components:
           description: The date the dossier was completed
           type: string
           format: date
-        traject:
-          description: The type of traject this spoor 2 dossier is following
-          type: string
       type: object
     PostMedicalPreventiveDossierRequestBody:
       required:
@@ -3757,6 +3928,40 @@ components:
         employmentKey:
           description: The key of the employment
           type: string
+      type: object
+    PostPaidParentalLeaveRequestBody:
+      required:
+        - dateOfBirth
+        - dateFirstLeave
+        - paidParentalLeaveType
+        - weeks
+      properties:
+        paidParentalLeaveType:
+          description: What type of parental leave is being taken
+          type: string
+          enum:
+            - birth
+            - adoption
+            - foster-care
+            - cohabiting
+        dateOfBirth:
+          description: The birthdate of the child
+          type: string
+          format: date
+        dateFirstLeave:
+          description: The start date of the requested leave
+          type: string
+          format: date
+        dateAdmission:
+          description: The date of admission
+          type: string
+          format: date
+        weeks:
+          description: The number of weeks of leave
+          type: integer
+        children:
+          description: The number of children the leave applies to
+          type: integer
       type: object
     PostPregnancyDossierRequestBody:
       required:
@@ -3852,6 +4057,23 @@ components:
           description: The date the dossier was completed
           type: string
           format: date
+      type: object
+    PostSpoor2RequestBody:
+      properties:
+        traject:
+          description: What type of parental leave is being taken
+          type: string
+          enum:
+            - haalbaarheidsonderzoek
+            - spoor-2
+            - spoor-2-orienterend
+            - spoor-3
+            - outplacement
+            - jobcoaching
+            - loopbaancoaching
+            - loopbaancoaching-orientatie
+            - talentenanalyse-act-meting
+            - ontwikkeltraject
       type: object
     PostZwerdDossierRequestBody:
       required:

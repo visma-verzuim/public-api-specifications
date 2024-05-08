@@ -3,6 +3,17 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-05-08
+
+### Added
+- New endpoints:
+  - `POST` method for `EmployerContract` endpoint to allow adding new (or past) employment contracts for employees. (VV-4912)
+  - `POST` method for `Dossier` endpoint to support Paid Parental Leave dossiers. (VV-4082)
+  
+### Changed
+  - Sending a null value for an 'id' (UUID) field in a POST request will no longer result in a server error (VV-5130)
+
+
 ## Release 2024-05-01
 
 ### Added
@@ -14,6 +25,7 @@ The changelog has been tracked since March 15, 2024. Changes prior to this date 
 
 ### Changed
 - Using an invalid token should no longer return a 'server error' when proxying through 'input' (VV-5005)
+
 
 ## Release 2024-04-24
 
