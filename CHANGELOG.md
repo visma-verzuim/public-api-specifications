@@ -7,7 +7,7 @@ The changelog has been tracked since March 15, 2024. Changes prior to this date 
 
 ### Added
 - New endpoints:
-  - `POST` method for `EmployerContract` endpoint to allow adding new (or past) employment contracts for employees. (VV-4912)
+  - `POST` method for `EmployerContract` endpoint to allow adding new (or past) employer contracts for employers. (VV-4912)
   - `POST` method for `Dossier` endpoint to support Paid Parental Leave dossiers. (VV-4082)
   
 ### Changed
