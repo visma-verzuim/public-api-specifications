@@ -3,6 +3,19 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-05-15
+
+### Added
+- New endpoints:
+  - `POST` method for `Dossier` endpoint to support Birth Leave dossiers. (VV-4074)
+  - `DELETE` method for `Employee` endpoint. (VV-5067)
+  - `DELETE` method for `AbsenceCourse` endpoint. (VV-5178)
+  - `GET` method for `DossierSection` endpoint - this is a supporting endpoint for the upcoming `POST` `DossierContent` endpoint. (VV-5091)
+
+### Changed
+  - OpenAPI documentation minor corrections. (VV-5190)
+
+
 ## Release 2024-05-08
 
 ### Added

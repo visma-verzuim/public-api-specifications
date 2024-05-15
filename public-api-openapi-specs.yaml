@@ -3,182 +3,6 @@ info:
   title: Public API Documentation
   version: 1.0.0
 paths:
-  /api/public/absence-course:
-    get:
-      tags:
-        - Absence
-      summary: Get a list of absence courses
-      operationId: 9d16773f7ee5ad2ba198bb1fb26a451d
-      parameters:
-        - name: filter[id]
-          in: query
-          description: Filter by UUID to get a specific absence course
-          schema:
-            type: string
-        - name: filter[dossierId]
-          in: query
-          description: Filter by the UUID of a specific dossier
-          schema:
-            type: string
-        - name: filter[dossierKey]
-          in: query
-          description: Filter by the external key of a specific dossier
-          schema:
-            type: string
-        - name: filter[externalKey]
-          in: query
-          description: Filter by external key
-          schema:
-            type: string
-        - name: filter[employeeId]
-          in: query
-          description: Filter by the UUID of a specific employee
-          schema:
-            type: string
-        - name: filter[employmentId]
-          in: query
-          description: Filter by the UUID of a specific employment
-          schema:
-            type: string
-        - name: filter[absenceReasonId]
-          in: query
-          description: Filter by the UUID of a specific absence reason
-          schema:
-            type: string
-        - name: filter[employeeNumber]
-          in: query
-          description: Filter by an employee's employee number
-          schema:
-            type: string
-        - name: sort[dateStart]
-          in: query
-          description: Sort results by start date, use '-dateStart' to sort descending
-          schema:
-            type: string
-        - name: sort[externalKey]
-          in: query
-          description: Sort results by external key, use '-externalKey' to sort descending
-          schema:
-            type: string
-      responses:
-        '200':
-          description: A list of AbsenceCourses
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AbsenceCourse'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
-                      first:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
-                      last:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
-                      prev:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-    post:
-      tags:
-        - Absence
-      summary: Create an absence course
-      description: 'An AbsenceCourse is an event within an absence dossier: an employee is reported sick, is reported partially or fully recovered, etc. This endpoint starts a new dossier or automagically adds the absence to an existing dossier'
-      operationId: a54dc1546f93dbbb8d45bccb2b43b22c
-      requestBody:
-        description: Absence course data
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostAbsenceCourseRequestBody'
-      responses:
-        '200':
-          description: Absence course successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AbsenceCourse'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-    patch:
-      tags:
-        - Absence
-      summary: Update an existing absence course
-      description: Update an AbsenceCourse by applying changes to an existing course.
-      operationId: 0dda362e02c2fa8ad63b956b16ac49db
-      requestBody:
-        description: Absence course data to update
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchAbsenceCourseRequestBody'
-      responses:
-        '200':
-          description: Absence course successfully updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AbsenceCourse'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/absence-reason:
     get:
       tags:
@@ -895,27 +719,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/medical-preventive:
-    post:
+  /api/public/absence course/{id}:
+    delete:
       tags:
-        - Dossier
-      summary: Create a medical preventive dossier
-      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new medical preventive dossier.
-      operationId: 7e8923bb4d34d5933b6dd5d5f837b60d
-      requestBody:
-        description: Dossier data
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostMedicalPreventiveDossierRequestBody'
+        - Absence
+      summary: Delete an absence course
+      description: Deletes an absence course based on the ID. This operation also updates the status of a dossier.
+      operationId: 66929e136ff07151dbcda144c71fd360
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the absence course to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
       responses:
         '200':
-          description: Dossier successfully created
+          description: Absence course successfully deleted
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Dossier'
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
           description: Invalid input
           content:
@@ -928,29 +753,138 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/paid-parental-leave:
+  /api/public/absence-course:
+    get:
+      tags:
+        - Absence
+      summary: Get a list of absence courses
+      operationId: a4e6d75f2d3f39a2a470d55c3e258a34
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific absence course
+          schema:
+            type: string
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the UUID of a specific dossier
+          schema:
+            type: string
+        - name: filter[dossierKey]
+          in: query
+          description: Filter by the external key of a specific dossier
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[employeeId]
+          in: query
+          description: Filter by the UUID of a specific employee
+          schema:
+            type: string
+        - name: filter[employmentId]
+          in: query
+          description: Filter by the UUID of a specific employment
+          schema:
+            type: string
+        - name: filter[absenceReasonId]
+          in: query
+          description: Filter by the UUID of a specific absence reason
+          schema:
+            type: string
+        - name: filter[employeeNumber]
+          in: query
+          description: Filter by an employee's employee number
+          schema:
+            type: string
+        - name: sort[dateStart]
+          in: query
+          description: Sort results by start date, use '-dateStart' to sort descending
+          schema:
+            type: string
+        - name: sort[externalKey]
+          in: query
+          description: Sort results by external key, use '-externalKey' to sort descending
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of AbsenceCourses
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AbsenceCourse'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
     post:
       tags:
-        - Dossier
-      summary: Create a paid parental leave dossier
-      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new paid parental leave dossier.
-      operationId: 369f00a9321a26b5b268d2580c4762e4
+        - Absence
+      summary: Create an absence course
+      description: 'An AbsenceCourse is an event within an absence dossier: an employee is reported sick, is reported partially or fully recovered, etc. This endpoint starts a new dossier or automagically adds the absence to an existing dossier'
+      operationId: 5a1232c1a483b7bebb4eeb342c0d4031
       requestBody:
-        description: Dossier data
+        description: Absence course data
         required: true
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/PostDossierRequestBody'
-                - $ref: '#/components/schemas/PostPaidParentalLeaveRequestBody'
+              $ref: '#/components/schemas/PostAbsenceCourseRequestBody'
       responses:
         '200':
-          description: Dossier successfully created
+          description: Absence course successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Dossier'
+                $ref: '#/components/schemas/AbsenceCourse'
         '400':
           description: Invalid input
           content:
@@ -963,122 +897,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/pregnancy:
-    post:
+    patch:
       tags:
-        - Dossier
-      summary: Create a pregnancy dossier
-      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new pregnancy dossier.
-      operationId: 7087fe05631fa73a0bae5d81782fa8a8
+        - Absence
+      summary: Update an existing absence course
+      description: Update an AbsenceCourse by applying changes to an existing course.
+      operationId: a6408eaab6a45519e4ab7a0f67e5bb5e
       requestBody:
-        description: Dossier data
+        description: Absence course data to update
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PostPregnancyDossierRequestBody'
+              $ref: '#/components/schemas/PatchAbsenceCourseRequestBody'
       responses:
         '200':
-          description: Dossier successfully created
+          description: Absence course successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Dossier'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-  /api/public/dossier/preventive:
-    post:
-      tags:
-        - Dossier
-      summary: Create a preventive dossier
-      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new preventive dossier.
-      operationId: 31c0e0428464694b78725c0b843176d2
-      requestBody:
-        description: Dossier data
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostPreventiveDossierRequestBody'
-      responses:
-        '200':
-          description: Dossier successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dossier'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/spoor2:
-    post:
-      tags:
-        - Dossier
-      summary: Create a spoor 2 dossier
-      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new spoor 2 dossier.
-      operationId: d44cf8cde22f18c4c3e850be1a3184e1
-      requestBody:
-        description: Dossier data
-        required: true
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/PostDossierRequestBody'
-                - $ref: '#/components/schemas/PostSpoor2RequestBody'
-      responses:
-        '200':
-          description: Dossier successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dossier'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/zwerd:
-    post:
-      tags:
-        - Dossier
-      summary: Create a ZW ERD dossier
-      description: A dossier is a collection of documents and information about a specific absence. This endpoint is used to create a new ZW ERD dossier.
-      operationId: 15898cf794cb148714cd5dc374c1eab4
-      requestBody:
-        description: Dossier data
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostZwerdDossierRequestBody'
-      responses:
-        '200':
-          description: Dossier successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dossier'
+                $ref: '#/components/schemas/AbsenceCourse'
         '400':
           description: Invalid input
           content:
@@ -1096,7 +934,7 @@ paths:
       tags:
         - Dossier
       summary: Get a list of contract types that can be applied to employer contracts
-      operationId: 5f97e5cbdf885b7e0da3fe7fa4051b4f
+      operationId: 919532ae9ae96208191aeae669fff57c
       parameters:
         - name: filter[id]
           in: query
@@ -1252,6 +1090,391 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
+  /api/public/configuration/dossier/section:
+    get:
+      tags:
+        - DossierSection
+      summary: Get a list of dossier sections that can be applied to dossier contents
+      operationId: 0afe2c20c2a7a875e2bd4090abf752f5
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by uuid
+          schema:
+            type: string
+            format: uuid
+        - name: filter[externalKey]
+          in: query
+          description: Filter by externalKey
+          schema:
+            type: string
+        - name: filter[name]
+          in: query
+          description: Filter by name
+          schema:
+            type: string
+        - name: filter[code]
+          in: query
+          description: Filter by code
+          schema:
+            type: string
+        - name: filter[canContainNotes]
+          in: query
+          description: Filter by canContainNotes
+          schema:
+            type: boolean
+        - name: filter[canContainDocuments]
+          in: query
+          description: Filter by canContainDocuments
+          schema:
+            type: boolean
+        - name: dosserType
+          in: query
+          description: Filter by dossier type
+          schema:
+            type: string
+            enum:
+              - illness
+              - pregnancy
+              - preventive
+              - medical
+              - adoption
+              - organ-donation
+              - company-dossier
+              - wga
+              - zwerd
+              - objection-and-appeal
+              - reintegration
+              - medical-preventive
+              - frequent-absence
+              - research-by-occupational-health-expert
+              - employee
+              - absence-dossier
+              - budgetcoaching
+              - rie
+              - pago
+              - pmo
+              - workplace-survey
+              - training
+              - vitality
+              - care-coaching
+              - consultancy
+              - job-coaching
+              - act-meting
+              - career-guidance
+              - assessment
+              - outplacement
+              - acquisition-of-employment
+              - spoor-3
+              - development-advice
+              - spoor-2
+              - birth-leave
+              - illness-and-zwerd
+              - paid-parental-leave
+      responses:
+        '200':
+          description: A list of dossier sections
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DossierSection'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/section?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/section?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/section?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/section?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/section?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+  /api/public/dossier/birth-leave:
+    post:
+      tags:
+        - Dossier
+      summary: Create a birth leave dossier
+      description: This endpoint is used to create a new birth leave dossier.
+      operationId: b19eebff1684fd52328ce898ca78b5a8
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PostDossierRequestBody'
+                - $ref: '#/components/schemas/PostBirthLeaveRequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/medical-preventive:
+    post:
+      tags:
+        - Dossier
+      summary: Create a medical preventive dossier
+      description: This endpoint is used to create a new medical preventive dossier.
+      operationId: 8d498c8b303dc4c7d02ee67f1bc604cb
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostMedicalPreventiveDossierRequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/paid-parental-leave:
+    post:
+      tags:
+        - Dossier
+      summary: Create a paid parental leave dossier
+      description: This endpoint is used to create a new paid parental leave dossier.
+      operationId: c9eafbcfe9070968e768bf981ef2d9f2
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PostDossierRequestBody'
+                - $ref: '#/components/schemas/PostPaidParentalLeaveRequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/pregnancy:
+    post:
+      tags:
+        - Dossier
+      summary: Create a pregnancy dossier
+      description: This endpoint is used to create a new pregnancy dossier.
+      operationId: ab831e781e993bd573470514b25e3de1
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPregnancyDossierRequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+  /api/public/dossier/preventive:
+    post:
+      tags:
+        - Dossier
+      summary: Create a preventive dossier
+      description: This endpoint is used to create a new preventive dossier.
+      operationId: f1940a3a18cf51c4b7b354105a2b1a8d
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPreventiveDossierRequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/spoor2:
+    post:
+      tags:
+        - Dossier
+      summary: Create a spoor 2 dossier
+      description: This endpoint is used to create a new spoor 2 dossier.
+      operationId: 2b6ca23fee91d878e82a5d0c0dd3215a
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PostDossierRequestBody'
+                - $ref: '#/components/schemas/PostSpoor2RequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/zwerd:
+    post:
+      tags:
+        - Dossier
+      summary: Create a ZW ERD dossier
+      description: This endpoint is used to create a new ZW ERD dossier.
+      operationId: b0f2c294c3271d972108581990340525
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostZwerdDossierRequestBody'
+      responses:
+        '200':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier-officer:
     get:
       tags:
@@ -1350,6 +1573,40 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, username`.
                       type: object
                 type: object
+  /api/public/employee/{id}:
+    delete:
+      tags:
+        - Employee
+      summary: Delete an employee
+      description: Deletes an employee based on the ID.
+      operationId: c91034f1b616d209966bda3f3d460bd6
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the employee to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Employee successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/employee:
     get:
       tags:
@@ -1934,7 +2191,7 @@ paths:
   /api/public/configuration/employment/employment-type:
     get:
       tags:
-        - Employment
+        - Employments
       summary: Get a list of employment types
       operationId: 7516577c7a4886461b9bdaee2a13c765
       parameters:
@@ -3137,220 +3394,6 @@ paths:
                 type: object
 components:
   schemas:
-    PatchAbsenceCourseRequestBody:
-      required:
-        - id
-        - employmentId|employmentKey
-      properties:
-        id:
-          description: UUID of the absence course
-          type: string
-          format: uuid
-        employmentId:
-          description: UUID of the employment
-          type: string
-          format: uuid
-        employmentKey:
-          description: External identifier for the employment
-          type: string
-        externalKey:
-          description: External identifier for the absence
-          type: string
-        dateStart:
-          description: Date of the absence event
-          type: string
-          format: date
-        safetyNet:
-          description: If applicable, the type of safety net (vangnet) that applies to this absence
-          type: string
-          enum:
-            - disposal
-            - special-employment
-            - sick-due-to-pregnancy
-            - not-specified
-            - sick-due-to-childbirth
-            - unknown
-            - sick-due-to-organ-donation
-        absenceReasonId:
-          description: Set absence reason based on the UUID of the absence reason
-          type: string
-          format: uuid
-        absenceReasonCode:
-          description: Set absence reason based on the 'code' of the absence reason (code is user-configurable)
-          type: string
-        wageValue:
-          description: Wage value at the point in time the absence course is recorded
-          type: number
-          format: float
-        workedHours:
-          description: Worked hours at the point in time the absence course is recorded
-          type: integer
-          format: int32
-        recoveryPercentage:
-          description: Percentage of recovery, 0 being fully absent, 100 being fully recovered
-          type: integer
-          format: int32
-        recoveryReason:
-          description: Reason for recovery, only allowed with 'recoveryPercentage' equal to 100
-          type: string
-          enum:
-            - recovered
-            - ill-out-of-service
-            - passed-away
-            - partial-recovery
-            - fully-sick-again
-          nullable: true
-      type: object
-    PostAbsenceCourseRequestBody:
-      required:
-        - dateStart
-        - employmentId
-        - employmentKey
-        - recoveryPercentage
-      properties:
-        newDossier:
-          description: Flag to indicate if a new dossier is expected to be created, will perform additional validations - if the absence course is within 28 days of a previous absence course a new dossier will not actually be created, instead the absence course will be added to the previous dossier and it will become a compiled dossier
-          type: boolean
-        externalKey:
-          description: External identifier for the absence
-          type: string
-        safetyNet:
-          description: If applicable, the type of safety net (vangnet) that applies to this absence
-          type: string
-        accidentType:
-          description: If applicable, the type of accident that applies to this absence
-          type: string
-        absenceReasonId:
-          description: Set absence reason based on the UUID of the absence reason
-          type: string
-          format: uuid
-        absenceReasonCode:
-          description: Set absence reason based on the 'code' of the absence reason (code is user-configurable)
-          type: string
-        employmentId:
-          description: Identifier (UUID) for the employment the absence is related to, exclusive with 'employmentKey'
-          type: string
-        employmentKey:
-          description: Identifier (external key) for the employment the absence is related to, exclusive with 'employmentId'
-          type: string
-        dateReported:
-          description: Date the absence was reported, if omitted defaults to 'now'
-          type: string
-          format: date
-        dateStart:
-          description: Date of the absence event, required
-          type: string
-          format: date
-        wageValue:
-          description: Wage value at the point in time the absence course is recorded
-          type: number
-          format: float
-        workedHours:
-          description: Worked hours at the point in time the absence course is recorded
-          type: integer
-          format: int32
-        recoveryReason:
-          description: Reason for recovery, send any value to get a list of valid values, only allowed with 'recoveryPercentage' equal to 100
-          type: string
-          enum:
-            - recovered
-            - ill-out-of-service
-            - passed-away
-            - partial-recovery
-            - fully-sick-again
-        dateEmploymentEnd:
-          description: End date of employment. If the employment's base type allows it can automatically end the employment, will be ignored in other cases
-          type: string
-          format: date
-        setDossierKey:
-          description: If a new dossier is being created the external key for that dossier will be set to this value, ignored for existing or compiled dossiers
-          type: string
-        expectedDurationDays:
-          description: Expected duration of the absence in days, purely informational
-          type: integer
-          format: int32
-        recoveryPercentage:
-          description: Percentage of recovery, 0 being fully absent, 100 being fully recovered, required
-          type: integer
-          format: int32
-      type: object
-    AbsenceCourse:
-      properties:
-        id:
-          description: UUID of the absence course
-          type: string
-        externalKey:
-          description: External key associated with the absence course
-          type: string
-        employeeExternalKey:
-          description: External key of the associated employee
-          type: string
-          nullable: true
-        employmentExternalKey:
-          description: External key of the associated employment
-          type: string
-          nullable: true
-        employmentId:
-          description: UUID of the associated employment
-          type: string
-          nullable: true
-        dateReported:
-          description: The report date in YYYY-MM-DD format
-          type: string
-          format: date
-        dateStart:
-          description: The start date in YYYY-MM-DD format
-          type: string
-          format: date
-        dateEnd:
-          description: The end date in YYYY-MM-DD format
-          type: string
-          format: date
-        absenceReason:
-          oneOf:
-            - $ref: '#/components/schemas/AbsenceReason'
-          nullable: true
-          description: The absence reason associated with the absence course, available if the relation is included in the query
-        recoveryPercentage:
-          description: Percentage of recovery
-          type: number
-          format: float
-        recoveryReason:
-          description: The recovery reason associated with the absence course, available if the relation is included in the query
-          type: string
-          enum:
-            - recovered
-            - ill-out-of-service
-            - passed-away
-            - partial-recovery
-            - fully-sick-again
-          nullable: true
-        wageValue:
-          description: Value of the wage
-          type: number
-          format: float
-        workedHours:
-          description: Number of hours worked
-          type: number
-          format: float
-        safetyNet:
-          description: The safety net name
-          type: string
-          nullable: true
-        dossier:
-          oneOf:
-            - $ref: '#/components/schemas/Dossier'
-          nullable: true
-          description: The dossier associated with the absence course, available if the relation is included in the query
-        dateCreated:
-          description: The date and time the absence course was created in YYYY-MM-DD HH:MM:SS format
-          type: string
-          format: date-time
-        dateUpdated:
-          description: The date and time the absence course was last updated in YYYY-MM-DD HH:MM:SS format
-          type: string
-          format: date-time
-      type: object
     AbsenceReason:
       properties:
         id:
@@ -3482,6 +3525,21 @@ components:
                 - A server error occurred
                 - Something bad happened that we did not expect
           type: object
+        traceId:
+          type: string
+          example: sample-uuid-string
+      type: object
+    SuccessResponse:
+      properties:
+        message:
+          type: string
+          example: success
+        timestamp:
+          type: integer
+          example: 1697101490
+        status:
+          type: integer
+          example: 200
         traceId:
           type: string
           example: sample-uuid-string
@@ -3849,6 +3907,167 @@ components:
           description: The date the service type was updated
           type: string
       type: object
+    PatchAbsenceCourseRequestBody:
+      required:
+        - id
+        - employmentId|employmentKey
+      properties:
+        id:
+          description: UUID of the absence course
+          type: string
+          format: uuid
+        employmentId:
+          description: UUID of the employment
+          type: string
+          format: uuid
+        employmentKey:
+          description: External identifier for the employment
+          type: string
+        externalKey:
+          description: External identifier for the absence
+          type: string
+        dateStart:
+          description: Date of the absence event
+          type: string
+          format: date
+        safetyNet:
+          description: If applicable, the type of safety net (vangnet) that applies to this absence
+          type: string
+          enum:
+            - disposal
+            - special-employment
+            - sick-due-to-pregnancy
+            - not-specified
+            - sick-due-to-childbirth
+            - unknown
+            - sick-due-to-organ-donation
+        absenceReasonId:
+          description: Set absence reason based on the UUID of the absence reason
+          type: string
+          format: uuid
+        absenceReasonCode:
+          description: Set absence reason based on the 'code' of the absence reason (code is user-configurable)
+          type: string
+        wageValue:
+          description: Wage value at the point in time the absence course is recorded
+          type: number
+          format: float
+        workedHours:
+          description: Worked hours at the point in time the absence course is recorded
+          type: integer
+          format: int32
+        recoveryPercentage:
+          description: Percentage of recovery, 0 being fully absent, 100 being fully recovered
+          type: integer
+          format: int32
+        recoveryReason:
+          description: Reason for recovery, only allowed with 'recoveryPercentage' equal to 100
+          type: string
+          enum:
+            - recovered
+            - ill-out-of-service
+            - passed-away
+            - partial-recovery
+            - fully-sick-again
+          nullable: true
+      type: object
+    PostAbsenceCourseRequestBody:
+      required:
+        - dateStart
+        - employmentId
+        - employmentKey
+        - recoveryPercentage
+      properties:
+        newDossier:
+          description: Flag to indicate if a new dossier is expected to be created, will perform additional validations - if the absence course is within 28 days of a previous absence course a new dossier will not actually be created, instead the absence course will be added to the previous dossier and it will become a compiled dossier
+          type: boolean
+        externalKey:
+          description: External identifier for the absence
+          type: string
+        safetyNet:
+          description: If applicable, the type of safety net (vangnet) that applies to this absence
+          type: string
+        accidentType:
+          description: If applicable, the type of accident that applies to this absence
+          type: string
+        absenceReasonId:
+          description: Set absence reason based on the UUID of the absence reason
+          type: string
+          format: uuid
+        absenceReasonCode:
+          description: Set absence reason based on the 'code' of the absence reason (code is user-configurable)
+          type: string
+        employmentId:
+          description: Identifier (UUID) for the employment the absence is related to, exclusive with 'employmentKey'
+          type: string
+        employmentKey:
+          description: Identifier (external key) for the employment the absence is related to, exclusive with 'employmentId'
+          type: string
+        dateReported:
+          description: Date the absence was reported, if omitted defaults to 'now'
+          type: string
+          format: date
+        dateStart:
+          description: Date of the absence event, required
+          type: string
+          format: date
+        wageValue:
+          description: Wage value at the point in time the absence course is recorded
+          type: number
+          format: float
+        workedHours:
+          description: Worked hours at the point in time the absence course is recorded
+          type: integer
+          format: int32
+        recoveryReason:
+          description: Reason for recovery, send any value to get a list of valid values, only allowed with 'recoveryPercentage' equal to 100
+          type: string
+          enum:
+            - recovered
+            - ill-out-of-service
+            - passed-away
+            - partial-recovery
+            - fully-sick-again
+        dateEmploymentEnd:
+          description: End date of employment. If the employment's base type allows it can automatically end the employment, will be ignored in other cases
+          type: string
+          format: date
+        setDossierKey:
+          description: If a new dossier is being created the external key for that dossier will be set to this value, ignored for existing or compiled dossiers
+          type: string
+        expectedDurationDays:
+          description: Expected duration of the absence in days, purely informational
+          type: integer
+          format: int32
+        recoveryPercentage:
+          description: Percentage of recovery, 0 being fully absent, 100 being fully recovered, required
+          type: integer
+          format: int32
+      type: object
+    PostBirthLeaveRequestBody:
+      required:
+        - beneficiary
+        - dateOfBirthExpected
+        - weeks
+      properties:
+        beneficiary:
+          description: Who the beneficiary of the leave is
+          type: string
+          enum:
+            - employee
+            - employer
+        dateOfBirthExpected:
+          description: The expected birthdate of the child
+          type: string
+          format: date
+        dateStartActual:
+          description: The actual start date of the requested leave
+          type: string
+          format: date
+        weeks:
+          description: The number of weeks of leave
+          type: integer
+      type: object
     PostDossierRequestBody:
       required:
         - dateStart
@@ -4107,6 +4326,150 @@ components:
           type: string
           format: date
       type: object
+    AbsenceCourse:
+      properties:
+        id:
+          description: UUID of the absence course
+          type: string
+        externalKey:
+          description: External key associated with the absence course
+          type: string
+        employeeExternalKey:
+          description: External key of the associated employee
+          type: string
+          nullable: true
+        employmentExternalKey:
+          description: External key of the associated employment
+          type: string
+          nullable: true
+        employmentId:
+          description: UUID of the associated employment
+          type: string
+          nullable: true
+        dateReported:
+          description: The report date in YYYY-MM-DD format
+          type: string
+          format: date
+        dateStart:
+          description: The start date in YYYY-MM-DD format
+          type: string
+          format: date
+        dateEnd:
+          description: The end date in YYYY-MM-DD format
+          type: string
+          format: date
+        absenceReason:
+          oneOf:
+            - $ref: '#/components/schemas/AbsenceReason'
+          nullable: true
+          description: The absence reason associated with the absence course, available if the relation is included in the query
+        recoveryPercentage:
+          description: Percentage of recovery
+          type: number
+          format: float
+        recoveryReason:
+          description: The recovery reason associated with the absence course, available if the relation is included in the query
+          type: string
+          enum:
+            - recovered
+            - ill-out-of-service
+            - passed-away
+            - partial-recovery
+            - fully-sick-again
+          nullable: true
+        wageValue:
+          description: Value of the wage
+          type: number
+          format: float
+        workedHours:
+          description: Number of hours worked
+          type: number
+          format: float
+        safetyNet:
+          description: The safety net name
+          type: string
+          nullable: true
+        dossier:
+          oneOf:
+            - $ref: '#/components/schemas/Dossier'
+          nullable: true
+          description: The dossier associated with the absence course, available if the relation is included in the query
+        dateCreated:
+          description: The date and time the absence course was created in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date and time the absence course was last updated in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+      type: object
+    Dossier:
+      properties:
+        id:
+          description: The ID of the Dossier.
+          type: string
+          format: uuid
+        type:
+          description: The type of the Dossier.
+          type: string
+        externalKey:
+          description: The external key associated with the Dossier.
+          type: string
+        dateStart:
+          description: The start date in YYYY-MM-DD format.
+          type: string
+        dateEnd:
+          description: The end date in YYYY-MM-DD format.
+          type: string
+        dossierStatus:
+          description: The current status of the Dossier.
+          type: string
+        accidentType:
+          description: The accident type of the Dossier.
+          type: string
+        nursingAddress:
+          type: object
+      type: object
+    DossierSection:
+      properties:
+        id:
+          description: UUID of the DossierSection
+          type: string
+          format: uuid
+        externalKey:
+          description: External key associated with the dossier section
+          type: string
+          nullable: true
+        migrationKey:
+          description: Migration key associated with the dossier section
+          type: string
+        name:
+          description: Name of the dossier section
+          type: string
+        code:
+          description: Code of the dossier section
+          type: string
+        color:
+          description: Color of the dossier section
+          type: string
+        canContainNotes:
+          description: Whether the dossier section can contain notes
+          type: boolean
+        canContainDocuments:
+          description: Whether the dossier section can contain documents
+          type: boolean
+        dossierType:
+          description: Type of dossier
+          type: string
+        dateCreated:
+          description: Date the dossier section was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: Date the dossier section was last updated
+          type: string
+          format: date-time
+      type: object
     DossierTask:
       properties:
         id:
@@ -4163,33 +4526,6 @@ components:
           description: date upddated of the task
           type: string
           format: date
-      type: object
-    Dossier:
-      properties:
-        id:
-          description: The ID of the Dossier.
-          type: string
-          format: uuid
-        type:
-          description: The type of the Dossier.
-          type: string
-        externalKey:
-          description: The external key associated with the Dossier.
-          type: string
-        dateStart:
-          description: The start date in YYYY-MM-DD format.
-          type: string
-        dateEnd:
-          description: The end date in YYYY-MM-DD format.
-          type: string
-        dossierStatus:
-          description: The current status of the Dossier.
-          type: string
-        accidentType:
-          description: The accident type of the Dossier.
-          type: string
-        nursingAddress:
-          type: object
       type: object
     DossierOfficer:
       properties:
