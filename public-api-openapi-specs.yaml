@@ -484,6 +484,185 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
+  /api/public/employer-contract:
+    get:
+      tags:
+        - EmployerContracts
+      summary: Get a list of employer contracts
+      operationId: d2de932de301766d42bd220185f26257
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by uuid
+          schema:
+            type: string
+        - name: filter[employerId]
+          in: query
+          description: Filter by employer uuid
+          schema:
+            type: string
+        - name: filter[employerKey]
+          in: query
+          description: Filter by employer external key
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[dateStartFrom]
+          in: query
+          description: Filter Employer Contracts by start date (Employer Contracts that start on or  after this date)
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateStartUntil]
+          in: query
+          description: Filter Employer Contracts by start date (Employer Contracts that start on or  before this date)
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter Employer Contracts by update date (Employer Contracts that have been updated on or  after this date)
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter Employer Contracts by update date (Employer Contracts that have been updated on or  before this date)
+          schema:
+            type: string
+            format: date-time
+        - name: filter[active]
+          in: query
+          description: Filter by status
+          schema:
+            type: string
+            enum:
+              - active
+              - ended
+              - blocked
+        - name: include[contractType]
+          in: query
+          description: Include the contract type in the output
+          schema:
+            type: string
+        - name: include[serviceType]
+          in: query
+          description: Include the service type (only for service contracts) in the output
+          schema:
+            type: string
+        - name: include[employer]
+          in: query
+          description: Include the employer in the output
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of service types
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Contract'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+    post:
+      tags:
+        - EmployerContracts
+      summary: Create an employer contract
+      operationId: 929692eede64bb5d224d034f223326bb
+      requestBody:
+        description: Employer Contract data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostEmployerContractRequestBody'
+      responses:
+        '200':
+          description: Employer successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerContract'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/configuration/contract/partnership:
     get:
       tags:
@@ -687,38 +866,6 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
-  /api/public/employer-contract:
-    post:
-      tags:
-        - EmployerContract
-      summary: Create an employer contract
-      operationId: 929692eede64bb5d224d034f223326bb
-      requestBody:
-        description: Employer Contract data
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostEmployerContractRequestBody'
-      responses:
-        '200':
-          description: Employer successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmployerContract'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/absence course/{id}:
     delete:
       tags:
@@ -1090,10 +1237,139 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
+  /api/public/configuration/dossier/note-types:
+    get:
+      tags:
+        - DossierContent
+      summary: Get a list of note types that can be applied to dossier content
+      operationId: 90a04fcb8ef0ed38ddeeeb1985399deb
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by the note type's UUID
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: filter[externalKey]
+          in: query
+          description: Filter by the note type's external key
+          required: false
+          schema:
+            type: string
+        - name: filter[name]
+          in: query
+          description: Filter by the note type's name
+          required: false
+          schema:
+            type: string
+        - name: filter[code]
+          in: query
+          description: Filter by the note type's code
+          required: false
+          schema:
+            type: string
+        - name: filter[isMedical]
+          in: query
+          description: Filter by the note type's medical status
+          required: false
+          schema:
+            type: boolean
+        - name: filter[isMedicalConfidential]
+          in: query
+          description: Filter by the note type's medical confidentiality status
+          required: false
+          schema:
+            type: boolean
+        - name: filter[isAbsence]
+          in: query
+          description: Filter by the note type's absence status
+          required: false
+          schema:
+            type: boolean
+        - name: filter[isHr]
+          in: query
+          description: Filter by the note type's HR status
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: A list of note types
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DossierNoteType'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/note-types?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/note-types?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/note-types?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/note-types?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/note-types?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
   /api/public/configuration/dossier/section:
     get:
       tags:
-        - DossierSection
+        - DossierContent
       summary: Get a list of dossier sections that can be applied to dossier contents
       operationId: 0afe2c20c2a7a875e2bd4090abf752f5
       parameters:
@@ -3666,6 +3942,11 @@ components:
           description: The UUID of the Employer.
           type: string
           example: bc1a50da-1093-4809-8efc-e3553b2f49b0
+        externalKey:
+          description: The external Key for the Employer Contract to be created.
+          type: string
+          example: External-Key-Test
+          nullable: true
         contractTypeId:
           description: The UUID of the Contract type.
           type: string
@@ -3823,6 +4104,8 @@ components:
           $ref: '#/components/schemas/ContractType'
         service:
           $ref: '#/components/schemas/ServiceType'
+        employer:
+          $ref: '#/components/schemas/Employer'
         accountNumber:
           description: Account number associated with the contract ( if not a service contract)
           type: string
@@ -4403,6 +4686,47 @@ components:
           type: string
           format: date-time
       type: object
+    DossierNoteType:
+      properties:
+        id:
+          description: UUID of the Note type
+          type: string
+          format: uuid
+        externalKey:
+          description: External key associated with the note type
+          type: string
+          nullable: true
+        migrationKey:
+          description: Migration key associated with the note type
+          type: string
+        name:
+          description: Name of the note type
+          type: string
+        code:
+          description: Code of the note type
+          type: string
+          nullable: true
+        isMedical:
+          description: Indicates if the note type is medical
+          type: boolean
+        isMedicalConfidential:
+          description: Indicates if the note type is medical confidential
+          type: boolean
+        isAbsence:
+          description: Indicates if the note type is an absence
+          type: boolean
+        isHr:
+          description: Indicates if the note type is HR
+          type: boolean
+        dateCreated:
+          description: Date the note type was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: Date the note type was last updated
+          type: string
+          format: date-time
+      type: object
     Dossier:
       properties:
         id:
@@ -4771,7 +5095,7 @@ components:
               description: No risk indication for the Employee.
               type: boolean
             sfb:
-              description: Structural Functional Disability (SFB) for the Employee.
+              description: Structural Functional Disability (SFB) status of the Employee.
               type: boolean
             socialSecurityNumber:
               description: The SSN(BSN) of the employee.
@@ -4837,20 +5161,16 @@ components:
             station:
               description: The station (post) of the Employee
               type: string
-            supervisorType:
-              description: The type of supervisor of the Employee.
-              type: string
-              enum:
-                - internal
-                - external
             externalSupervisorId:
               description: The id of the external supervisor of the Employee
               type: string
               format: uuid
+              nullable: true
             internalSupervisorId:
-              description: The id of the internal supervisor of the Employee
+              description: The id of the internal supervisor of the Employee (should be another employee.id)
               type: string
               format: uuid
+              nullable: true
             employmentTypeId:
               description: The id of the employment type of the Employee. Mutually exclusive with employmentTypeCode
               type: string
@@ -4885,10 +5205,12 @@ components:
               description: Standard hours per week the Employee works.
               type: number
               format: float
+              nullable: true
             hoursPerWeek:
               description: Hours per week the Employee works.
               type: number
               format: float
+              nullable: true
             paymentPeriod:
               description: The payment period of the Employee.
               type: string
@@ -4899,14 +5221,17 @@ components:
                 - four_weeks
                 - month
                 - year
+              nullable: true
             grossSalary:
               description: The gross salary of the employee.
               type: number
               format: float
+              nullable: true
             universalSalary:
               description: The universal(uniform) salary of the employee.
               type: number
               format: float
+              nullable: true
           type: object
         uwv:
           properties:
@@ -4938,7 +5263,7 @@ components:
           type: string
           nullable: true
         socialSecurityNumber:
-          description: The SSN(CSN) of the employee.
+          description: The SSN(BSN) of the employee.
           type: string
           pattern: ^\d{9}$
           nullable: true
@@ -4946,13 +5271,11 @@ components:
           description: No risk indication for the Employee.
           type: boolean
         sfb:
-          description: Structural Functional Disability (SFB) for the Employee.
+          description: Structural Functional Disability (SFB) status of the Employee.
           type: boolean
-        employment:
-          oneOf:
-            - $ref: '#/components/schemas/EmploymentResource'
-          nullable: true
-          description: The employment associated with the employee, available if the relation is included in the query
+        absenceFrequency:
+          description: The number of absences for the employee over the past 12 months. Updated nightly.
+          type: integer
         person:
           oneOf:
             - $ref: '#/components/schemas/EmployerPersonResource'
@@ -4987,6 +5310,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Dossier'
+        employments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employment'
       type: object
     PatchEmployerRequestBody:
       description: Employer data
@@ -5537,7 +5864,7 @@ components:
           type: string
           example: External@Key
           nullable: true
-        migration_key:
+        migrationKey:
           description: The migration key associated with the employment contract
           type: string
           example: Migration@Key
@@ -5570,13 +5897,16 @@ components:
           description: Standard hours per week associated with the employment contract.
           type: number
           format: float
+          nullable: true
         hoursPerWeek:
           description: Hours per week associated with the employment contract.
           type: number
           format: float
+          nullable: true
         functionYears:
           description: Function Years information
           type: integer
+          nullable: true
         paymentPeriod:
           description: The choice of interval during which the employment contract payment is given out
           type: string
@@ -5588,11 +5918,13 @@ components:
             - month
             - year
           example: month
+          nullable: true
         grossSalary:
           description: The gross salary associated with the employment contract.
           type: number
           format: float
           example: '99998.12'
+          nullable: true
         organizationalUnit:
           $ref: '#/components/schemas/PublicApiOrganizationalUnit'
         univeralSalary:
@@ -5600,6 +5932,7 @@ components:
           type: number
           format: float
           example: '99899.34'
+          nullable: true
         dateCreated:
           description: The date and time the employment contract was created in YYYY-MM-DD HH:MM:SS format
           type: string
@@ -5609,7 +5942,7 @@ components:
           type: string
           format: date-time
       type: object
-    EmploymentResource:
+    Employment:
       properties:
         uuid:
           description: UUID of the employment
@@ -5617,7 +5950,7 @@ components:
         externalKey:
           description: The external key associated with the employment
           type: string
-        migration_key:
+        migrationKey:
           description: The migration key associated with the employment
           type: string
         employmentNumber:
@@ -5633,10 +5966,24 @@ components:
         employeeNumber:
           description: The employee number of the employee associated with this employment
           type: integer
-        startChainProvision:
-          description: The date of the start of the chain provision in YYYY-MM-DD HH:MM:SS format
+        supervisorType:
+          description: The type of supervisor associated with this employment
+          type: string
+        internalSupervisorId:
+          description: The UUID of the internal supervisor associated with this employment
+          type: string
+          format: uuid
+          nullable: true
+        externalSupervisorId:
+          description: The UUID of the external supervisor associated with this employment
+          type: string
+          format: uuid
+          nullable: true
+        dateStartChainProvision:
+          description: The date of the start of the chain provision in YYYY-MM-DD format
           type: string
           format: date
+          nullable: true
         uwvRiskCode:
           description: The UWV risk code of the Employee associated with this employment.
           type: integer
@@ -5691,20 +6038,25 @@ components:
         externalKey:
           description: The external key associated with the external supervisor.
           type: string
+          nullable: true
         migrationKey:
           description: The migration key associated with the external supervisor.
           type: string
+          nullable: true
         employerId:
           description: The UUID for the employer associated with the external supervisor. Null if the external supervisor is not authorized for the employer, in this scenario they are probably authorized on an OU underneath of the employer
           type: string
           format: uuid
+          nullable: true
         organizationalUnitId:
           description: The UUID for the OU associated with the external supervisor. Could be null if the external supervisor is authorized on the employer or the employer division the employer is part of.
           type: string
           format: uuid
+          nullable: true
         jobTitle:
           description: The job title (called 'position' in DWC) assigned to theexternal supervisor.
           type: string
+          nullable: true
         person:
           $ref: '#/components/schemas/EmployerPersonResource'
       type: object

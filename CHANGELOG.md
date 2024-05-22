@@ -3,6 +3,15 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-05-22
+
+### Added
+- New endpoints:
+  - `GET` method for `DossierNoteType` endpoint - this is a supporting endpoint for the upcoming `POST` `DossierContent` endpoints. (VV-5092)
+  - `GET` method for `EmployerContracts` endpoint. (VV-4047)
+- The `POST` method for the `Employee` endpoint now allows setting an External Supervisor on the employee's employment. (VV-4222)
+
+
 ## Release 2024-05-15
 
 ### Added
