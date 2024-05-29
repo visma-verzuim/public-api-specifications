@@ -645,7 +645,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PostEmployerContractRequestBody'
       responses:
-        '200':
+        '201':
           description: Employer successfully created
           content:
             application/json:
@@ -1026,7 +1026,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PostAbsenceCourseRequestBody'
       responses:
-        '200':
+        '201':
           description: Absence course successfully created
           content:
             application/json:
@@ -1072,6 +1072,72 @@ paths:
                 $ref: '#/components/schemas/BadRequestResponse'
         '500':
           description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/content/note:
+    post:
+      tags:
+        - DossierContent
+      summary: Create a new note
+      description: Create a new note for a dossier
+      operationId: 1e3dbe50874bd9facd90f97c9f6486e1
+      requestBody:
+        description: The note data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDossierNoteRequestBody'
+      responses:
+        '201':
+          description: The note was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierNoteResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/external-resource:
+    post:
+      tags:
+        - Dossier External Resource
+      summary: Create an external resource
+      description: Create an external resource associated with a dossier
+      operationId: 0c86f40f9082f8bfa70ec2e411b468cd
+      requestBody:
+        description: Dossier external resource data for creating a new dossier external resource
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDossierExternalResourceRequestBody'
+      responses:
+        '201':
+          description: Dossier external resource created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierExternalResourceResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server Error
           content:
             application/json:
               schema:
@@ -1237,12 +1303,159 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
+  /api/public/configuration/dossier/document-types:
+    get:
+      tags:
+        - DossierContent
+      summary: Get a list of document types that can be applied to dossier content
+      operationId: bbcd193ec310b1611fe04c2b6aef1d0d
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by the document type's UUID
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: filter[externalKey]
+          in: query
+          description: Filter by the document type's external key
+          required: false
+          schema:
+            type: string
+        - name: filter[name]
+          in: query
+          description: Filter by the document type's name
+          required: false
+          schema:
+            type: string
+        - name: filter[code]
+          in: query
+          description: Filter by the document type's code
+          required: false
+          schema:
+            type: string
+        - name: filter[communicateWithEmployee]
+          in: query
+          description: Filter by communicateWithEmployee to get document types
+          required: false
+          schema:
+            type: boolean
+        - name: filter[reviewable]
+          in: query
+          description: Filter by reviewable to get document types
+          required: false
+          schema:
+            type: boolean
+        - name: filter[isMedical]
+          in: query
+          description: Filter by isMedical to get document types
+          required: false
+          schema:
+            type: boolean
+        - name: filter[isAbsence]
+          in: query
+          description: Filter by isAbsence to get document types
+          required: false
+          schema:
+            type: boolean
+        - name: filter[isHr]
+          in: query
+          description: Filter by isHr to get document types
+          required: false
+          schema:
+            type: boolean
+        - name: filter[feedbackToDossier]
+          in: query
+          description: Filter by feedbackToDossier to get document types
+          required: false
+          schema:
+            type: boolean
+        - name: filter[forceDiagnose]
+          in: query
+          description: Filter by forceDiagnose to get document types
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: A list of document types
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DossierDocumentType'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/document-types?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/document-types?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/document-types?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/document-types?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/document-types?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
   /api/public/configuration/dossier/note-types:
     get:
       tags:
         - DossierContent
       summary: Get a list of note types that can be applied to dossier content
-      operationId: 90a04fcb8ef0ed38ddeeeb1985399deb
+      operationId: 53d2c071e30001bafab9665b94e748e0
       parameters:
         - name: filter[id]
           in: query
@@ -1537,7 +1750,7 @@ paths:
                 - $ref: '#/components/schemas/PostDossierRequestBody'
                 - $ref: '#/components/schemas/PostBirthLeaveRequestBody'
       responses:
-        '200':
+        '201':
           description: Dossier successfully created
           content:
             application/json:
@@ -1570,7 +1783,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PostMedicalPreventiveDossierRequestBody'
       responses:
-        '200':
+        '201':
           description: Dossier successfully created
           content:
             application/json:
@@ -1605,7 +1818,7 @@ paths:
                 - $ref: '#/components/schemas/PostDossierRequestBody'
                 - $ref: '#/components/schemas/PostPaidParentalLeaveRequestBody'
       responses:
-        '200':
+        '201':
           description: Dossier successfully created
           content:
             application/json:
@@ -1638,7 +1851,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PostPregnancyDossierRequestBody'
       responses:
-        '200':
+        '201':
           description: Dossier successfully created
           content:
             application/json:
@@ -1665,7 +1878,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PostPreventiveDossierRequestBody'
       responses:
-        '200':
+        '201':
           description: Dossier successfully created
           content:
             application/json:
@@ -1700,7 +1913,7 @@ paths:
                 - $ref: '#/components/schemas/PostDossierRequestBody'
                 - $ref: '#/components/schemas/PostSpoor2RequestBody'
       responses:
-        '200':
+        '201':
           description: Dossier successfully created
           content:
             application/json:
@@ -1733,7 +1946,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PostZwerdDossierRequestBody'
       responses:
-        '200':
+        '201':
           description: Dossier successfully created
           content:
             application/json:
@@ -2009,7 +2222,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PostEmployeeRequestBody'
       responses:
-        '200':
+        '201':
           description: Absence course successfully created
           content:
             application/json:
@@ -2111,6 +2324,20 @@ paths:
           description: Filter by external key
           schema:
             type: string
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter employers that were updated on after this date/time
+          schema:
+            type: string
+            format: date-time
+          example: '2022-01-01 11:22:33'
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter employers that were updated before or on this date/time
+          schema:
+            type: string
+            format: date-time
+          example: '2022-01-01 22:33:44'
         - name: include
           in: query
           description: |-
@@ -2216,7 +2443,7 @@ paths:
             schema:
               $ref: '#/components/schemas/PostEmployerRequestBody'
       responses:
-        '200':
+        '201':
           description: Employer successfully created
           content:
             application/json:
@@ -2464,36 +2691,92 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
-  /api/public/configuration/employment/employment-type:
+  /api/public/employment/contract:
     get:
       tags:
         - Employments
-      summary: Get a list of employment types
-      operationId: 7516577c7a4886461b9bdaee2a13c765
+      summary: Get a list of employment contracts
+      operationId: 9807b30a3c4f57cfeff8a92e80b37fce
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific employment type
+          description: Find by UUID of employment contract
           schema:
             type: string
         - name: filter[externalKey]
           in: query
-          description: Filter by external key
+          description: Filter by external key of employment contract
           schema:
             type: string
-        - name: filter[indefiniteContract]
+        - name: filter[employmentId]
           in: query
-          description: Filter by employment types that are for a contract of indefinite duration ('onbepaalde tijd')
+          description: Filter by the UUID of employment
           schema:
-            type: boolean
-        - name: filter[education]
+            type: string
+        - name: filter[employmentKey]
           in: query
-          description: Filter by employment types that are for education (internship)
+          description: Filter by the external key of employment
           schema:
-            type: boolean
+            type: string
+        - name: filter[organizationalUnitId]
+          in: query
+          description: Filter by the UUID of organizational unit
+          schema:
+            type: string
+        - name: filter[organizationalUnitKey]
+          in: query
+          description: Filter by the external key of organizational unit
+          schema:
+            type: string
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by date of latest update being after or the same day as the one given
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter by date of latest update being before or on the same day as the one given
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateStartFrom]
+          in: query
+          description: Filter by start date being after or the same day as the one given
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateStartUntil]
+          in: query
+          description: Filter by start date being before or on the same day as the one given
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateEndFrom]
+          in: query
+          description: Filter by end date being after or the same day as the one given
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateEndUntil]
+          in: query
+          description: Filter by end date being before or on the same day as the one given
+          schema:
+            type: string
+            format: date-time
+        - name: include
+          in: query
+          description: Include related resources in the output (organizationalUnit, employmentType, employment)
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Sort results by field, use '-keyName' to sort in descending order (externalKey, dateUpdated)
+          schema:
+            type: string
       responses:
         '200':
-          description: A list of EmploymentTypes
+          description: A list of Employment Contracts
           content:
             application/json:
               schema:
@@ -2501,30 +2784,30 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/EmploymentType'
+                      $ref: '#/components/schemas/EmploymentContractResource'
                   links:
                     properties:
                       self:
                         type: string
                         format: uri
-                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                        example: https://api.dotweb.test/public/employment/contract?page[number]=1&page[size]=25
                       first:
                         type: string
                         format: uri
-                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        example: https://api.dotweb.test/public/employment/contract?page[size]=25
                       last:
                         type: string
                         format: uri
-                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                        example: https://api.dotweb.test/public/employment/contract?page[number]=1&page[size]=25
                       prev:
                         type: string
                         format: uri
-                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        example: https://api.dotweb.test/public/employment/contract?page[size]=25
                         nullable: true
                       next:
                         type: string
                         format: uri
-                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        example: https://api.dotweb.test/public/employment/contract?page[number]=2&page[size]=25
                         nullable: true
                     type: object
                   meta:
@@ -2546,7 +2829,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
-  /api/public/employment/contract:
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - Employments
@@ -2650,7 +2938,7 @@ paths:
                   nullable: true
               type: object
       responses:
-        '200':
+        '201':
           description: Employment contract successfully created
           content:
             application/json:
@@ -2668,6 +2956,383 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/employment:
+    get:
+      tags:
+        - Employments
+      summary: Get a list of employments
+      operationId: 2f9b383a272de018aeb33ba3a63ba558
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Find by UUID of employment
+          schema:
+            type: string
+            format: uuid
+          example: 5bb912f0-ed8e-4af1-8714-a7d295843122
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key of employment
+          schema:
+            type: string
+          example: c84563d5-2fd8-4c02-b329-f2f9142e7c23
+        - name: filter[employeeId]
+          in: query
+          description: Filter by the UUID of employee
+          schema:
+            type: string
+            format: uuid
+          example: 9c77ba70-fc65-4715-9158-17d65f55c373
+        - name: filter[employeeKey]
+          in: query
+          description: Filter by the external key of employee
+          schema:
+            type: string
+          example: 8b242b19-c11a-4d9e-b9ed-1117ab0ac6e0
+        - name: filter[currentOrLastEmploymentContract]
+          in: query
+          description: Filter by the UUID of the current or last employment contract
+          schema:
+            type: string
+            format: uuid
+          example: 9c77ba70-fc65-4715-9158-17d65f55c373
+        - name: filter[employmentEndReason]
+          in: query
+          description: Filter by the employmentEndReason ('end-employment', 'sick-during-end-of-employment', 'death', 'dismissal-own-request')
+          schema:
+            type: string
+          example: end-employment
+        - name: filter[primary]
+          in: query
+          description: Filter by whether this is a primary employment or not
+          schema:
+            type: boolean
+          example: 'false'
+        - name: filter[internalSupervisorId]
+          in: query
+          description: Filter by the UUID of internal supervisor
+          schema:
+            type: string
+            format: uuid
+          example: 9c77ba70-fc65-4715-9158-17d65f55c373
+        - name: filter[internalSupervisorKey]
+          in: query
+          description: Filter by the external key of internal supervisor
+          schema:
+            type: string
+          example: 9c77ba70-fc65-4715-9158-17d65f55c373
+        - name: filter[externalSupervisorId]
+          in: query
+          description: Filter by the UUID of external supervisor
+          schema:
+            type: string
+            format: uuid
+          example: 9c77ba70-fc65-4715-9158-17d65f55c373
+        - name: filter[externalSupervisorKey]
+          in: query
+          description: Filter by the external key of external supervisor
+          schema:
+            type: string
+          example: 9c77ba70-fc65-4715-9158-17d65f55c373
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by date of last update being after or the same day as the one given
+          schema:
+            type: string
+            format: date-time
+          example: '2000-01-01 12:34:56'
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter by date of last update being before or on the same day as the one given
+          schema:
+            type: string
+            format: date-time
+          example: '2030-01-01 12:34:56'
+        - name: include
+          in: query
+          description: Include related resources in the output (employmentEndReason,employee,supervisor,externalSupervisor,currentOrLastEmploymentContract,firstEmploymentContract,uwvSector)
+          schema:
+            type: string
+          example: employmentEndReason,employee,supervisor,externalSupervisor,uwvSector
+        - name: sort
+          in: query
+          description: Sort results by field, use '-keyName' to sort in descending order (externalKey, dateUpdated)
+          schema:
+            type: string
+          example: '-dateUpdated'
+      responses:
+        '200':
+          description: A list of Employments
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Employment'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/employment/contract?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/employment/contract?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/employment/contract?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/employment/contract?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/employment/contract?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    post:
+      tags:
+        - Employments
+      summary: Create a new employment
+      description: Create a new employment
+      operationId: 631e26afdd05ca422ee8f04605319818
+      requestBody:
+        description: Employment data
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - employeeId
+                - employeeKey
+                - employmentTypeId
+                - organizationalUnitId
+                - organizationalUnitKey
+              properties:
+                employeeId:
+                  description: Employee ID, mutually exclusive with 'employeeKey'
+                  type: string
+                  format: uuid
+                  example: b4b1ae1a-8683-4f6b-a3f6-3fff05c90d50
+                employeeKey:
+                  description: Employee Key, mutually exclusive with 'employeeId'
+                  type: string
+                  example: Employee@Key
+                employmentTypeId:
+                  description: The ID of the Employment Type for the new Employment Contract
+                  type: string
+                  format: uuid
+                  example: 58d28f4f-ecdf-4420-b7a0-aeb5aa367376
+                organizationalUnitId:
+                  description: The ID of the Organizational Unit, mutually exclusive with 'organizationalUnitKey'
+                  type: string
+                  format: uuid
+                  example: 42a384fb-de7e-421c-ba81-2598fb510016
+                organizationalUnitKey:
+                  description: Organizational Unit Key, mutually exclusive with 'organizationalUnitId'
+                  type: string
+                  example: OrganizationalUnit@Key
+                externalKey:
+                  description: External Key as an identifier for the employment
+                  type: string
+                  example: External@Key
+                waitingDays:
+                  description: The number of waiting days
+                  type: integer
+                  example: '3'
+                  nullable: true
+                uwvSector:
+                  description: The UWV Sector in which the employment belongs
+                  type: integer
+                  example: '2'
+                  nullable: true
+                employmentEndReason:
+                  description: The reason for the end of employment - e.g. 'end-employment'
+                  type: string
+                  example: end-employment
+                internalSupervisorId:
+                  description: UUID identifier for the employee set as a supervisor to the employment
+                  type: string
+                  format: uuid
+                  example: 42a384fb-de7e-421c-ba81-2598fb510016
+                externalSupervisorId:
+                  description: UUID identifier for the external supervisor set as a supervisor to the employment
+                  type: string
+                  format: uuid
+                  example: 42a384fb-de7e-421c-ba81-2598fb510016
+                uwvRiskCode:
+                  description: Uwv Risk Code
+                  type: string
+                  example: Uwv@Risk@Code
+                dateStart:
+                  description: Start date for the new employment contract, defaults to current day
+                  type: string
+                  format: date
+                  example: '2000-01-01'
+                  nullable: true
+                dateEnd:
+                  description: End date for the new employment contract, if applicable
+                  type: string
+                  format: date
+                  example: '2037-03-03'
+                  nullable: true
+                jobTitle:
+                  description: Job title for the employee
+                  type: string
+                  example: Chief Executive Officer
+                  nullable: true
+                normHoursPerWeek:
+                  description: The normal hours to be worked per week as part of the new employment contract
+                  type: number
+                  example: '40'
+                  nullable: true
+                hoursPerWeek:
+                  description: The current actual hours worked per week as part of the new employment contract
+                  type: number
+                  example: '39'
+                  nullable: true
+                employeeNumber:
+                  description: The employee number related to the employment
+                  type: string
+                  example: Employee@Number#12345
+                  nullable: true
+                paymentPeriod:
+                  description: The payment period wording - e.g. 'month' - for the new employment contract.
+                  type: string
+                  example: month
+              type: object
+      responses:
+        '200':
+          description: Employment successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employment'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/configuration/employment/employment-type:
+    get:
+      tags:
+        - Employments
+      summary: Get a list of employment types
+      operationId: 7516577c7a4886461b9bdaee2a13c765
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific employment type
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[indefiniteContract]
+          in: query
+          description: Filter by employment types that are for a contract of indefinite duration ('onbepaalde tijd')
+          schema:
+            type: boolean
+        - name: filter[education]
+          in: query
+          description: Filter by employment types that are for education (internship)
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: A list of EmploymentTypes
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmploymentType'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
   /api/public/external-supervisor:
     get:
       tags:
@@ -3385,7 +4050,7 @@ paths:
                   type: object
               type: object
       responses:
-        '200':
+        '201':
           description: Organizational unit successfully created
           content:
             application/json:
@@ -4327,6 +4992,84 @@ components:
           type: integer
           format: int32
       type: object
+    PostDossierNoteRequestBody:
+      required:
+        - dossierId
+        - noteTypeId
+        - dossierSectionId
+        - forBothParties
+        - medicalOnly
+        - title
+        - content
+      properties:
+        dossierId:
+          description: The uuid of the dossier
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        externalKey:
+          description: External identifier for the note
+          type: string
+          example: exKey123
+        noteTypeId:
+          description: The uuid of the note type
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        dossierSectionId:
+          description: The uuid of the dossier section
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        taskId:
+          description: The id of the task
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        isConcept:
+          description: Whether the note is a concept
+          type: boolean
+          example: 'true'
+        forBothParties:
+          description: Whether the note is for both parties
+          type: boolean
+          example: 'true'
+        medicalOnly:
+          description: Whether the note is medical only
+          type: boolean
+          example: 'false'
+        title:
+          description: The title of the note
+          type: string
+          example: Note title
+        content:
+          description: The content of the note
+          type: string
+          example: Content of this note.
+        dateCreated:
+          description: The date the note was created
+          type: string
+          format: date-time
+          example: '2021-12-31 23:59:59'
+      type: object
+    PostDossierExternalResourceRequestBody:
+      properties:
+        priority:
+          description: Priority position of the external resource
+          type: integer
+        name:
+          description: Name of the external resource
+          type: string
+        url:
+          description: URL of the external resource
+          type: string
+        icon:
+          description: Icon of the external resource
+          type: string
+        dossierId:
+          description: Dossier associated with the external resource
+          type: string
+      type: object
     PostBirthLeaveRequestBody:
       required:
         - beneficiary
@@ -4683,6 +5426,118 @@ components:
           format: date-time
         dateUpdated:
           description: The date and time the absence course was last updated in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+      type: object
+    DossierNoteResource:
+      properties:
+        externalKey:
+          description: The external key associated with the Dossier Note.
+          type: string
+        dossierId:
+          description: The UUID of the Dossier.
+          type: string
+        noteTypeId:
+          description: The UUID of the Note Type.
+          type: string
+        dossierSectionId:
+          description: The UUID of the Dossier Section.
+          type: string
+        title:
+          description: The title of the Dossier Note.
+          type: string
+        content:
+          description: The content of the Dossier Note.
+          type: string
+        forBothParties:
+          description: Whether the Dossier Note is for both parties.
+          type: boolean
+        medicalOnly:
+          description: Whether the Dossier Note is medical only.
+          type: boolean
+        dateCreated:
+          description: The date and time the Dossier Note was created.
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date and time the Dossier Note was updated.
+          type: string
+          format: date-time
+      type: object
+    DossierDocumentType:
+      properties:
+        id:
+          description: UUID of the document type
+          type: string
+          format: uuid
+        externalKey:
+          description: External key associated with the document type
+          type: string
+        migrationKey:
+          description: Migration key associated with the document type
+          type: string
+        name:
+          description: Name of the document type
+          type: string
+        code:
+          description: Code of the document type
+          type: string
+        communicateWithEmployee:
+          description: Communicate with employee
+          type: boolean
+        reviewable:
+          description: Reviewable
+          type: boolean
+        isMedical:
+          description: Is medical
+          type: boolean
+        isAbsence:
+          description: Is absence
+          type: boolean
+        isHr:
+          description: Is HR
+          type: boolean
+        feedbackToDossier:
+          description: Feedback to dossier
+          type: boolean
+        forceDiagnose:
+          description: Force diagnose
+          type: boolean
+        feedbackDocumentTypeId:
+          description: Feedback document type ID
+          type: string
+          format: uuid
+        dateCreated:
+          description: Date the document type was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: Date the document type was last updated
+          type: string
+          format: date-time
+      type: object
+    DossierExternalResourceResource:
+      properties:
+        dossier:
+          oneOf:
+            - $ref: '#/components/schemas/Dossier'
+          nullable: true
+          description: Dossier associated with the external resource
+        name:
+          description: Name of the dossier external resource
+          type: string
+        url:
+          description: URL of the dossier external resource
+          type: string
+        icon:
+          description: Icon of the dossier external resource
+          type: string
+        dateCreated:
+          description: The date the dossier external resource was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date the dossier external resource was updated
           type: string
           format: date-time
       type: object

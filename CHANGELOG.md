@@ -3,6 +3,21 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-05-29
+
+### Added
+- New endpoints:
+  - `POST` method for `Employment`. (VV-4965)
+  - `GET` method for `EmploymentContract` endpoint. (VV-5217)
+  - `GET` method for `Employment` endpoint. (VV-5239)
+  - `POST` method for `DossierExternalResource` endpoint - allows adding links to a dossier, for example to access related resources in the customer's application. (VV-5099)
+  - `POST` method for `DossierContent` endpoint for `Notes` - allows adding notes to a dossier. (VV-4966)
+  - `GET` method for `DossierDocumentType` endpoint - this is a supporting endpoint for the `POST` `DossierContent` endpoint. (VV-5186)
+
+### Changed
+- The `GET` `Employer` endpoint has had `dateUpdated` filters added to allow polling for changes. (VV-4992)
+- (most) existing POST endpoints have been updated to return an HTTP status code of `201 - Created` instead of `200 - OK`. (VV-5214)
+
 ## Release 2024-05-22
 
 ### Added
