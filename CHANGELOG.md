@@ -3,6 +3,20 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-06-05
+
+### Added
+- New endpoints:
+  - `GET` method for `Dossier` endpoint. (VV-5107)
+  - `GET` method for `Dossier` `Spoor 2` endpoint. (VV-5107)
+  - `GET` method for `Dossier` `ZWERD` endpoint. (VV-5107)
+  - `GET` method for `Dossier` `Medical Preventive` endpoint. (VV-5107)
+  - `GET` method for `Dossier` `Preventive` endpoint. (VV-5107)
+
+### Changed
+- Admin portal: QoL improvement which allows the user to "select all" and to modify scopes on an existing 'application' (VV-5253)
+- Fixed validation for `PATCH` `Employee` endpoint - resolves an issue which required an OU to be provided when updating an employee. (VV-5310)
+
 ## Release 2024-05-29
 
 ### Added

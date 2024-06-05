@@ -1303,6 +1303,441 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
+  /api/public/dossier:
+    get:
+      tags:
+        - Dossier
+      summary: Get a list of dossiers
+      operationId: e416e323bc575e01f66eee13662525c4
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific dossier
+          schema:
+            type: string
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the UUID of a specific dossier
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[type]
+          in: query
+          description: Filter by the dossier type
+          schema:
+            type: string
+        - name: filter[employmentId]
+          in: query
+          description: Filter by the UUID of a specific employment
+          schema:
+            type: string
+        - name: filter[employmentNumber]
+          in: query
+          description: Filter by the employment number
+          schema:
+            type: string
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by the update date
+          schema:
+            type: string
+        - name: filter[dateStart]
+          in: query
+          description: Filter by the start date
+          schema:
+            type: string
+        - name: filter[dateEnd]
+          in: query
+          description: Filter by the end date
+          schema:
+            type: string
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter up to (and including) the update date
+          schema:
+            type: string
+        - name: sort[dateStart]
+          in: query
+          description: Sort results by start date, use '-dateStart' to sort descending
+          schema:
+            type: string
+        - name: sort[externalKey]
+          in: query
+          description: Sort results by external key, use '-externalKey' to sort descending
+          schema:
+            type: string
+        - name: sort[dateUpdated]
+          in: query
+          description: Sort results by updated date, use '-dateUpdated' to sort descending
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of Dossiers
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Dossier'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+  /api/public/dossier/preventive:
+    get:
+      tags:
+        - Dossier
+      summary: Get a list of preventive dossiers
+      operationId: 75151379495782283fef835218ad383a
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific dossier
+          schema:
+            type: string
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the UUID of a specific dossier
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[employmentId]
+          in: query
+          description: Filter by the UUID of a specific employment
+          schema:
+            type: string
+        - name: filter[employmentNumber]
+          in: query
+          description: Filter by the employment number
+          schema:
+            type: string
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by the update date
+          schema:
+            type: string
+        - name: filter[dateStart]
+          in: query
+          description: Filter by the start date
+          schema:
+            type: string
+        - name: filter[dateEnd]
+          in: query
+          description: Filter by the end date
+          schema:
+            type: string
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter up to (and including) the update date
+          schema:
+            type: string
+        - name: sort[dateStart]
+          in: query
+          description: Sort results by start date, use '-dateStart' to sort descending
+          schema:
+            type: string
+        - name: sort[externalKey]
+          in: query
+          description: Sort results by external key, use '-externalKey' to sort descending
+          schema:
+            type: string
+        - name: sort[dateUpdated]
+          in: query
+          description: Sort results by updated date, use '-dateUpdated' to sort descending
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of Preventive Dossiers
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Dossier'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+    post:
+      tags:
+        - Dossier
+      summary: Create a preventive dossier
+      description: This endpoint is used to create a new preventive dossier.
+      operationId: f1940a3a18cf51c4b7b354105a2b1a8d
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPreventiveDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/medical-preventive:
+    get:
+      tags:
+        - Dossier
+      summary: Get a list of Medical Preventive dossiers
+      operationId: 8d124e3d41725e6cc06e33900efd9d8b
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific dossier
+          schema:
+            type: string
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the UUID of a specific dossier
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[employmentId]
+          in: query
+          description: Filter by the UUID of a specific employment
+          schema:
+            type: string
+        - name: filter[employmentNumber]
+          in: query
+          description: Filter by the employment number
+          schema:
+            type: string
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by the update date
+          schema:
+            type: string
+        - name: filter[dateStart]
+          in: query
+          description: Filter by the start date
+          schema:
+            type: string
+        - name: filter[dateEnd]
+          in: query
+          description: Filter by the end date
+          schema:
+            type: string
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter up to (and including) the update date
+          schema:
+            type: string
+        - name: sort[dateStart]
+          in: query
+          description: Sort results by start date, use '-dateStart' to sort descending
+          schema:
+            type: string
+        - name: sort[externalKey]
+          in: query
+          description: Sort results by external key, use '-externalKey' to sort descending
+          schema:
+            type: string
+        - name: sort[dateUpdated]
+          in: query
+          description: Sort results by updated date, use '-dateUpdated' to sort descending
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of Medical Preventive Dossiers
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Dossier'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+    post:
+      tags:
+        - Dossier
+      summary: Create a medical preventive dossier
+      description: This endpoint is used to create a new medical preventive dossier.
+      operationId: 8d498c8b303dc4c7d02ee67f1bc604cb
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostMedicalPreventiveDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/configuration/dossier/document-types:
     get:
       tags:
@@ -1733,13 +2168,134 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
-  /api/public/dossier/birth-leave:
+  /api/public/dossier/spoor-2:
+    get:
+      tags:
+        - Dossier
+      summary: Get a list of Spoor-2 dossiers
+      operationId: 995ab03e97c191e6fd86e83448166655
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific dossier
+          schema:
+            type: string
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the UUID of a specific dossier
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[employmentId]
+          in: query
+          description: Filter by the UUID of a specific employment
+          schema:
+            type: string
+        - name: filter[employmentNumber]
+          in: query
+          description: Filter by the employment number
+          schema:
+            type: string
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by the update date
+          schema:
+            type: string
+        - name: filter[dateStart]
+          in: query
+          description: Filter by the start date
+          schema:
+            type: string
+        - name: filter[dateEnd]
+          in: query
+          description: Filter by the end date
+          schema:
+            type: string
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter up to (and including) the update date
+          schema:
+            type: string
+        - name: sort[dateStart]
+          in: query
+          description: Sort results by start date, use '-dateStart' to sort descending
+          schema:
+            type: string
+        - name: sort[externalKey]
+          in: query
+          description: Sort results by external key, use '-externalKey' to sort descending
+          schema:
+            type: string
+        - name: sort[dateUpdated]
+          in: query
+          description: Sort results by updated date, use '-dateUpdated' to sort descending
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of Spoor-2 Dossiers
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Spoor2Dossier'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
     post:
       tags:
         - Dossier
-      summary: Create a birth leave dossier
-      description: This endpoint is used to create a new birth leave dossier.
-      operationId: b19eebff1684fd52328ce898ca78b5a8
+      summary: Create a spoor 2 dossier
+      description: This endpoint is used to create a new spoor 2 dossier.
+      operationId: 18762c7f5dddb75bc30ad07ce3c3e47e
       requestBody:
         description: Dossier data
         required: true
@@ -1748,7 +2304,7 @@ paths:
             schema:
               allOf:
                 - $ref: '#/components/schemas/PostDossierRequestBody'
-                - $ref: '#/components/schemas/PostBirthLeaveRequestBody'
+                - $ref: '#/components/schemas/PostSpoor2RequestBody'
       responses:
         '201':
           description: Dossier successfully created
@@ -1768,20 +2324,176 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/medical-preventive:
+  /api/public/dossier/zwerd:
+    get:
+      tags:
+        - Dossier
+      summary: Get a list of ZW ERD dossiers
+      operationId: 732d1e80a3971f76814326ad41c8869b
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific dossier
+          schema:
+            type: string
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the UUID of a specific dossier
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[employmentId]
+          in: query
+          description: Filter by the UUID of a specific employment
+          schema:
+            type: string
+        - name: filter[employmentNumber]
+          in: query
+          description: Filter by the employment number
+          schema:
+            type: string
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by the update date
+          schema:
+            type: string
+        - name: filter[dateStart]
+          in: query
+          description: Filter by the start date
+          schema:
+            type: string
+        - name: filter[dateEnd]
+          in: query
+          description: Filter by the end date
+          schema:
+            type: string
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter up to (and including) the update date
+          schema:
+            type: string
+        - name: sort[dateStart]
+          in: query
+          description: Sort results by start date, use '-dateStart' to sort descending
+          schema:
+            type: string
+        - name: sort[externalKey]
+          in: query
+          description: Sort results by external key, use '-externalKey' to sort descending
+          schema:
+            type: string
+        - name: sort[dateUpdated]
+          in: query
+          description: Sort results by updated date, use '-dateUpdated' to sort descending
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of ZW-ERD Dossiers
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ZwerdDossier'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
     post:
       tags:
         - Dossier
-      summary: Create a medical preventive dossier
-      description: This endpoint is used to create a new medical preventive dossier.
-      operationId: 8d498c8b303dc4c7d02ee67f1bc604cb
+      summary: Create a ZW ERD dossier
+      description: This endpoint is used to create a new ZW ERD dossier.
+      operationId: b0f2c294c3271d972108581990340525
       requestBody:
         description: Dossier data
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PostMedicalPreventiveDossierRequestBody'
+              $ref: '#/components/schemas/PostZwerdDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/birth-leave:
+    post:
+      tags:
+        - Dossier
+      summary: Create a birth leave dossier
+      description: This endpoint is used to create a new birth leave dossier.
+      operationId: b19eebff1684fd52328ce898ca78b5a8
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PostDossierRequestBody'
+                - $ref: '#/components/schemas/PostBirthLeaveRequestBody'
       responses:
         '201':
           description: Dossier successfully created
@@ -1863,107 +2575,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
-  /api/public/dossier/preventive:
-    post:
-      tags:
-        - Dossier
-      summary: Create a preventive dossier
-      description: This endpoint is used to create a new preventive dossier.
-      operationId: f1940a3a18cf51c4b7b354105a2b1a8d
-      requestBody:
-        description: Dossier data
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostPreventiveDossierRequestBody'
-      responses:
-        '201':
-          description: Dossier successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dossier'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/spoor2:
-    post:
-      tags:
-        - Dossier
-      summary: Create a spoor 2 dossier
-      description: This endpoint is used to create a new spoor 2 dossier.
-      operationId: 2b6ca23fee91d878e82a5d0c0dd3215a
-      requestBody:
-        description: Dossier data
-        required: true
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/PostDossierRequestBody'
-                - $ref: '#/components/schemas/PostSpoor2RequestBody'
-      responses:
-        '201':
-          description: Dossier successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dossier'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/zwerd:
-    post:
-      tags:
-        - Dossier
-      summary: Create a ZW ERD dossier
-      description: This endpoint is used to create a new ZW ERD dossier.
-      operationId: b0f2c294c3271d972108581990340525
-      requestBody:
-        description: Dossier data
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostZwerdDossierRequestBody'
-      responses:
-        '201':
-          description: Dossier successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dossier'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier-officer:
     get:
       tags:
@@ -5608,6 +6219,14 @@ components:
           type: string
         nursingAddress:
           type: object
+        dateCreated:
+          description: Date the note type was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: Date the note type was last updated
+          type: string
+          format: date-time
       type: object
     DossierSection:
       properties:
@@ -5705,6 +6324,83 @@ components:
           description: date upddated of the task
           type: string
           format: date
+      type: object
+    Spoor2Dossier:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Dossier'
+    Spoor2DossierExtension:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Dossier'
+        - properties:
+            id:
+              description: The ID of the Dossier.
+              type: string
+              format: uuid
+            safetyNet:
+              description: The type of the Dossier.
+              type: string
+            spoor2:
+              description: The external key associated with the Dossier.
+              type: string
+          type: object
+    Spoor2:
+      properties:
+        id:
+          description: The ID of the Dossier.
+          type: string
+          format: uuid
+        traject:
+          description: The traject type of the Dossier.
+          type: string
+        externalKey:
+          description: The external key associated with the Dossier.
+          type: string
+      type: object
+    ZwerdDossier:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Dossier'
+    ZwerdDossierExtension:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Dossier'
+        - properties:
+            id:
+              description: The ID of the Dossier.
+              type: string
+              format: uuid
+            type:
+              description: The type of the Dossier.
+              type: string
+            externalKey:
+              description: The external key associated with the Dossier.
+              type: string
+            dateStart:
+              description: The start date in YYYY-MM-DD format.
+              type: string
+            dateEnd:
+              description: The end date in YYYY-MM-DD format.
+              type: string
+            dossierStatus:
+              description: The current status of the Dossier.
+              type: string
+            accidentType:
+              description: The accident type of the Dossier.
+              type: string
+            nursingAddress:
+              type: object
+          type: object
+    Zwerd:
+      properties:
+        id:
+          description: The ID of the Dossier.
+          type: string
+          format: uuid
+        externalKey:
+          description: The external key associated with the Dossier.
+          type: string
       type: object
     DossierOfficer:
       properties:
