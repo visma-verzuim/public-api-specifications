@@ -3,6 +3,14 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-06-12
+
+### Added
+- New endpoints:
+  - `POST` method for `DossierContent` endpoint for `Documents` - allows adding documents to a dossier. (VV-5182)
+  - `GET` method for `DossierExternalResource` endpoint. (VV-5278)
+  - `GET` method for `UploadType` endpoint - this is a supporting endpoint for the `POST` `DossierContent` endpoint. (VV-5315)
+
 ## Release 2024-06-05
 
 ### Added
