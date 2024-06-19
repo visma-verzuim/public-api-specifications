@@ -3,6 +3,19 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-06-19
+
+### Added
+- New endpoints:
+  - `POST` method for `DossierContent` endpoint for `Uploads` - allows uploading files to a dossier. (VV-5317)
+  - `GET` method for `DossierContent` `Note` endpoint. (VV-5416)
+  - `GET` method for `Dossier` `Birth Leave` endpoint. (VV-5412)
+
+### Changed
+- Fixed a problem with the `GET` `Employer` endpoint when using the `contactPersons.details` filter. (VV-5204)
+- The `POST` `Token` method used to obtain a bearer token now accepts UUIDs for 'client_id' (VV-5140)
+- Admin portal: the 'Applications' page now shows UUID instead of numerical ID for 'client_id' (VV-5407)
+
 ## Release 2024-06-12
 
 ### Added
