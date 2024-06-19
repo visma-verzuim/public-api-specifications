@@ -6298,9 +6298,9 @@ components:
           type: string
           example: Note of this upload.
         file:
-          description: The file belonging to the upload
+          description: Base64-encoded file content
           type: string
-          example: The file of this upload.
+          example: JVBERi0xLjcNCiW1tbW1DQoxIDAgb2JqDQo8PC9UeXBlL5jZXMgODg1IDAgUj4=
         dateCreated:
           description: The date the upload was created
           type: string
