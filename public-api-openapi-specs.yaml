@@ -650,7 +650,43 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmployerContract'
+                oneOf:
+                  - $ref: '#/components/schemas/EmployerContract'
+                  - $ref: '#/components/schemas/EmployerServiceContract'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - EmployerContracts
+      summary: Update an existing employer contract
+      description: Update an Employer Contract by applying changes to an existing contract.
+      operationId: 774828c5e7ed6d31e0fff89e6ad28f81
+      requestBody:
+        description: Employer Contract data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchEmployerContractRequestBody'
+      responses:
+        '200':
+          description: Employer successfully updated
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/EmployerContract'
+                  - $ref: '#/components/schemas/EmployerServiceContract'
         '400':
           description: Invalid input
           content:
@@ -2747,6 +2783,322 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
+  /api/public/dossier/paid-parental-leave:
+    get:
+      tags:
+        - Dossier
+      summary: Get a list of paid parental leave dossiers
+      operationId: d5d5ae6a248636f8b6de09f24b4fcb81
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific dossier
+          schema:
+            type: string
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the UUID of a specific dossier
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[employmentId]
+          in: query
+          description: Filter by the UUID of a specific employment
+          schema:
+            type: string
+        - name: filter[employmentNumber]
+          in: query
+          description: Filter by the employment number
+          schema:
+            type: string
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by the update date
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateStart]
+          in: query
+          description: Filter by the start date
+          schema:
+            type: string
+            format: date
+        - name: filter[dateEnd]
+          in: query
+          description: Filter by the end date
+          schema:
+            type: string
+            format: date
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter up to (and including) the update date
+          schema:
+            type: string
+            format: date-time
+        - name: sort[dateStart]
+          in: query
+          description: Sort results by start date, use '-dateStart' to sort descending
+          schema:
+            type: string
+            format: date
+        - name: sort[externalKey]
+          in: query
+          description: Sort results by external key, use '-externalKey' to sort descending
+          schema:
+            type: string
+        - name: sort[dateUpdated]
+          in: query
+          description: Sort results by updated date, use '-dateUpdated' to sort descending
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: A list of paid parental leave dossiers
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PaidParentalLeaveDossier'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+    post:
+      tags:
+        - Dossier
+      summary: Create a paid parental leave dossier
+      description: This endpoint is used to create a new paid parental leave dossier.
+      operationId: c9eafbcfe9070968e768bf981ef2d9f2
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PostDossierRequestBody'
+                - $ref: '#/components/schemas/PostPaidParentalLeaveRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/pregnancy:
+    get:
+      tags:
+        - Dossier
+      summary: Get a list of pregnancy dossiers
+      operationId: 848cd74531d9d1d27a899469fa491421
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific dossier
+          schema:
+            type: string
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the UUID of a specific dossier
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by external key
+          schema:
+            type: string
+        - name: filter[employmentId]
+          in: query
+          description: Filter by the UUID of a specific employment
+          schema:
+            type: string
+        - name: filter[employmentNumber]
+          in: query
+          description: Filter by the employment number
+          schema:
+            type: string
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by the update date
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateStart]
+          in: query
+          description: Filter by the start date
+          schema:
+            type: string
+            format: date
+        - name: filter[dateEnd]
+          in: query
+          description: Filter by the end date
+          schema:
+            type: string
+            format: date
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter up to (and including) the update date
+          schema:
+            type: string
+            format: date-time
+        - name: sort[dateStart]
+          in: query
+          description: Sort results by start date, use '-dateStart' to sort descending
+          schema:
+            type: string
+            format: date
+        - name: sort[externalKey]
+          in: query
+          description: Sort results by external key, use '-externalKey' to sort descending
+          schema:
+            type: string
+        - name: sort[dateUpdated]
+          in: query
+          description: Sort results by updated date, use '-dateUpdated' to sort descending
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: A list of pregnancy dossiers
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PaidParentalLeaveDossier'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+    post:
+      tags:
+        - Dossier
+      summary: Create a pregnancy dossier
+      description: This endpoint is used to create a new pregnancy dossier.
+      operationId: ab831e781e993bd573470514b25e3de1
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostPregnancyDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
   /api/public/dossier/spoor-2:
     get:
       tags:
@@ -3057,68 +3409,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/paid-parental-leave:
-    post:
-      tags:
-        - Dossier
-      summary: Create a paid parental leave dossier
-      description: This endpoint is used to create a new paid parental leave dossier.
-      operationId: c9eafbcfe9070968e768bf981ef2d9f2
-      requestBody:
-        description: Dossier data
-        required: true
-        content:
-          application/json:
-            schema:
-              allOf:
-                - $ref: '#/components/schemas/PostDossierRequestBody'
-                - $ref: '#/components/schemas/PostPaidParentalLeaveRequestBody'
-      responses:
-        '201':
-          description: Dossier successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dossier'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/pregnancy:
-    post:
-      tags:
-        - Dossier
-      summary: Create a pregnancy dossier
-      description: This endpoint is used to create a new pregnancy dossier.
-      operationId: ab831e781e993bd573470514b25e3de1
-      requestBody:
-        description: Dossier data
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostPregnancyDossierRequestBody'
-      responses:
-        '201':
-          description: Dossier successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dossier'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
   /api/public/dossier-officer:
     get:
       tags:
@@ -5749,6 +6039,80 @@ components:
           type: string
           format: date-time
       type: object
+    PatchEmployerContractRequestBody:
+      required:
+        - employerContractId,employerContractExternalKey
+      properties:
+        employerContractId:
+          description: Id of the employer contract (required if employerContractExternalKey is not provided)
+          type: string
+          format: uuid
+        employerContractExternalKey:
+          description: The external key of the employer contract to be used as an identifier instead of employerContractId (required if employerContractId is not provided)
+          type: string
+        externalKey:
+          description: The external key of the employer contract (This property is used to change the external key of the employer contract)
+          type: string
+          nullable: true
+        employerId:
+          description: Id of the employer
+          type: string
+          format: uuid
+        serviceTypeId:
+          description: Id of the service type
+          type: string
+          format: uuid
+        organizationalUnitId:
+          description: Id of the organizational unit
+          type: string
+          format: uuid
+        contractTypeId:
+          description: Id of the contract type
+          type: string
+          format: uuid
+        partnershipId:
+          description: Id of the partnership
+          type: string
+          format: uuid
+        dateStart:
+          description: Start date of the employer contract
+          type: string
+          format: date
+        dateEnd:
+          description: End date of the employer contract
+          type: string
+          format: date
+          nullable: true
+        contractStatus:
+          description: Status of the employer contract
+          type: string
+          enum:
+            - active
+            - ended
+            - blocked
+        contractNumber:
+          description: The employer contract number
+          type: string
+          nullable: true
+        accountNumber:
+          description: The account number of the employer contract
+          type: string
+          nullable: true
+        contractHoursFrom:
+          description: The minimum starting hours of the employer contract
+          type: number
+          format: float
+          nullable: true
+        contractHoursUntil:
+          description: The maximum starting hours of the employer contract
+          type: number
+          format: float
+          nullable: true
+        incomingDossiers:
+          description: Whether the employer contract receives incoming dossiers
+          type: boolean
+          nullable: true
+      type: object
     PostEmployerContractRequestBody:
       description: Employer Contract data
       required:
@@ -5807,19 +6171,19 @@ components:
           example: 'true'
           nullable: true
         contractNumber:
-          type: integer
+          type: string
           example: '58697'
           nullable: true
         accountNumber:
-          type: integer
+          type: string
           example: '7105698'
           nullable: true
-        startingHoursFrom:
+        contractHoursFrom:
           description: For non service contracts you can determine the minimum hours per week for the contract
           type: number
           example: '80.00'
           nullable: true
-        startingHoursUntil:
+        contractHoursUntil:
           description: For non service contracts you can determine the maximum hours per week for the contract
           type: number
           example: '80.00'
@@ -5912,7 +6276,7 @@ components:
     EmployerContract:
       properties:
         id:
-          description: UUID of the contract
+          description: Id of the contract
           type: string
         externalKey:
           description: External key associated with the contract
@@ -5920,21 +6284,85 @@ components:
         migrationKey:
           description: Migration key associated with the contract
           type: string
-        type:
+        contractType:
           $ref: '#/components/schemas/ContractType'
-        service:
+        employer:
+          $ref: '#/components/schemas/Employer'
+        partnership:
+          $ref: '#/components/schemas/Partnership'
+        organizationalUnit:
+          $ref: '#/components/schemas/OrganizationalUnit'
+        contractStatus:
+          description: The status of the contract
+          type: string
+          enum:
+            - active
+            - active
+            - ended
+            - blocked
+        accountNumber:
+          description: Account number associated with the contract
+          type: string
+        contractNumber:
+          description: Contract number associated with the contract
+          type: string
+        contractHoursFrom:
+          description: The minimum starting hours of the employer contract
+          type: number
+          format: float
+          nullable: true
+        contractHoursUntil:
+          description: The maximum starting hours of the employer contract
+          type: number
+          format: float
+          nullable: true
+        dateStart:
+          description: The start date in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateEnd:
+          description: The end date in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+          nullable: true
+        dateCreated:
+          description: The date the contract was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date the contract was updated
+          type: string
+          format: date-time
+      type: object
+    EmployerServiceContract:
+      properties:
+        id:
+          description: Id of the service contract
+          type: string
+        externalKey:
+          description: External key associated with the contract
+          type: string
+        migrationKey:
+          description: Migration key associated with the contract
+          type: string
+        contractType:
+          $ref: '#/components/schemas/ContractType'
+        serviceType:
           $ref: '#/components/schemas/ServiceType'
         employer:
           $ref: '#/components/schemas/Employer'
-        accountNumber:
-          description: Account number associated with the contract ( if not a service contract)
+        partnership:
+          $ref: '#/components/schemas/Partnership'
+        organizationalUnit:
+          $ref: '#/components/schemas/OrganizationalUnit'
+        contractStatus:
+          description: The status of the contract
           type: string
-        contractNumber:
-          description: Contract number associated with the contract ( if not a service contract)
-          type: string
-        active:
-          description: Whether the contract is active
-          type: boolean
+          enum:
+            - active
+            - active
+            - ended
+            - blocked
         dateStart:
           description: The start date in YYYY-MM-DD HH:MM:SS format
           type: string
@@ -7163,6 +7591,125 @@ components:
           description: date upddated of the task
           type: string
           format: date
+      type: object
+    PaidParentalLeaveDossier:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Dossier'
+        - $ref: '#/components/schemas/PaidParentalLeaveDossierExtension'
+    PaidParentalLeaveDossierExtension:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Dossier'
+        - properties:
+            paidParentalLeave:
+              type: array
+              items:
+                $ref: '#/components/schemas/PaidParentalLeave'
+          type: object
+    PaidParentalLeave:
+      properties:
+        id:
+          description: The ID of the Dossier.
+          type: string
+          format: uuid
+        externalKey:
+          description: The external key associated with the Dossier.
+          type: string
+          nullable: true
+        paidParentalLeaveType:
+          description: What type of parental leave is being taken
+          type: string
+          enum:
+            - birth
+            - adoption
+            - foster-care
+            - cohabiting
+        dateOfBirth:
+          description: The birthdate of the child
+          type: string
+          format: date
+        dateFirstLeave:
+          description: The start date of the requested leave
+          type: string
+          format: date
+        dateAdmission:
+          description: The date of admission
+          type: string
+          format: date
+          nullable: true
+        weeks:
+          description: The number of weeks of leave
+          type: integer
+        children:
+          description: The number of children the leave applies to
+          type: integer
+          nullable: true
+      type: object
+    PregnancyDossier:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Dossier'
+        - $ref: '#/components/schemas/PregnancyDossierExtension'
+    PregnancyDossierExtension:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Dossier'
+        - properties:
+            Pregnancy:
+              type: array
+              items:
+                $ref: '#/components/schemas/Pregnancy'
+          type: object
+    Pregnancy:
+      properties:
+        id:
+          description: The ID of the Dossier.
+          type: string
+          format: uuid
+        externalKey:
+          description: The external key associated with the Dossier.
+          type: string
+          nullable: true
+        dateOfBirthExpected:
+          description: The expected date of birth
+          type: string
+          format: date
+          nullable: true
+        dateOfActualBirth:
+          description: The actual date of birth
+          type: string
+          format: date
+          nullable: true
+        dateActualLeave:
+          description: The actual start date of birth leave
+          type: string
+          format: date
+          nullable: true
+        dateExpectedLeave:
+          description: The expected leave date
+          type: string
+          format: date
+          nullable: true
+        dateFirstWorkingDay:
+          description: The first working day
+          type: string
+          format: date
+          nullable: true
+        dateActualFirstWorkingDay:
+          description: The actual first working day
+          type: string
+          format: date
+          nullable: true
+        expectsMultiples:
+          description: Flag to indicate if multiple babies are expected
+          type: boolean
+        hospitalizationChild:
+          description: Flag to indicate if the child had to be hospitalized
+          type: boolean
+        flexibleLeave:
+          description: Flag to indicate if the leave is flexible
+          type: boolean
       type: object
     Spoor2Dossier:
       type: object
