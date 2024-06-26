@@ -3,6 +3,22 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-06-26
+ 
+### Added
+- New endpoints
+  - `GET` method for `DossierContent` endpoint for `Uploads`. (VV-5418)
+  - `GET` method for `DossierContent` endpoint for `Documents`. (VV-5417)
+  - `DELETE` method for `EmployerContract` endpoint. (VV-5513)
+
+### Changed
+- `POST` method for `Employment` endpoint now supports `employmentTypeCode`. (VV-5291)
+- `POST` method for `EmploymentContract` endpoint now supports `employmentTypeCode`. (VV-5351)
+- Documentation improvements for `DossierNoteResource`. (VV-5496)
+- Documentation fixes for `EmployerServiceContract` and `EmployerContract` resources (VV-5496)
+- Documentation fix for Pregnancy Dossier schema (VV-5495)
+- Documentation fix for `normHours` on `CompanyResource` - it is now a `number` instead of an `int` (VV-5417)
+
 ## Release 2024-06-21
 
 ### Added
