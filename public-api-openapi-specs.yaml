@@ -3402,6 +3402,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+  /api/public/dossier/{id}/return-to-work-advice:
+    get:
+      tags:
+        - Return to work advice
+      summary: Get the return to work advice base on the dossier
+      description: Returns the return to work advice based on the dossier ID.
+      operationId: 3459409a4ce71438d9f531bc02d8ebf1
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the absence course to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Retrieved return to work advice successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnToWorkAdvice'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier/spoor-2:
     get:
       tags:
@@ -4050,6 +4084,99 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/configuration/employer/arbo-service:
+    get:
+      tags:
+        - Employer
+      summary: Get a list of arbo services
+      operationId: f8d248a44deb469688638a00638e1078
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter arbo services by uuid
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: filter[externalKey]
+          in: query
+          description: Filter arbo services by external key
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of available arbo services
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ArboService'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/arbo?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/arbo?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/arbo?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/arbo?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/arbo?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
   /api/public/employer:
     get:
       tags:
@@ -4691,6 +4818,130 @@ paths:
               type: object
       responses:
         '201':
+          description: Employment contract successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmploymentContractResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Employments
+      summary: Update an existing employment contract
+      description: Update an existing employment contract
+      operationId: 959f823a4355303f3c74e2453ca00ed7
+      requestBody:
+        description: Employment Contract data
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - id
+                - key
+              properties:
+                id:
+                  description: Employment Contract UUID, mutually exclusive with 'key'
+                  type: string
+                  format: uuid
+                  example: b4b1ae1a-8683-4f6b-a3f6-3fff05c90d50
+                key:
+                  description: Employment Contract external key, mutually exclusive with 'id'
+                  type: string
+                  example: EmploymentContract@Key
+                employmentTypeId:
+                  description: The ID of the new Employment Type, mutually exclusive with 'employmentTypeCode'
+                  type: string
+                  format: uuid
+                  example: 58d28f4f-ecdf-4420-b7a0-aeb5aa367376
+                  nullable: true
+                employmentTypeCode:
+                  description: The code of the new Employment Type, mutually exclusive with 'employmentTypeId'
+                  type: string
+                  example: employment@type#code
+                  nullable: true
+                organizationalUnitId:
+                  description: The ID of the new Organizational Unit, mutually exclusive with 'organizationalUnitKey'
+                  type: string
+                  format: uuid
+                  example: 42a384fb-de7e-421c-ba81-2598fb510016
+                  nullable: true
+                organizationalUnitKey:
+                  description: The External Key of the new Organizational Unit, mutually exclusive with 'organizationalUnitId'
+                  type: string
+                  example: OrganizationalUnit@Key
+                  nullable: true
+                paymentPeriod:
+                  description: The new payment period wording - e.g. 'month' - for the employment contract.
+                  type: string
+                  example: month
+                  nullable: true
+                dateStart:
+                  description: New start date for the employment contract
+                  type: string
+                  format: date
+                  example: '2000-01-01'
+                  nullable: true
+                dateEnd:
+                  description: New end date for the employment contract, if applicable
+                  type: string
+                  format: date
+                  example: '2037-03-03'
+                  nullable: true
+                jobTitle:
+                  description: New job title for the employee
+                  type: string
+                  example: Chief Executive Officer
+                  nullable: true
+                normHoursPerWeek:
+                  description: The new normal hours to be worked per week as part of the employment contract
+                  type: number
+                  example: '40.01'
+                  nullable: true
+                hoursPerWeek:
+                  description: The new actual hours worked per week as part of the employment contract
+                  type: number
+                  example: '39.02'
+                  nullable: true
+                grossSalary:
+                  description: Updated gross salary the employee will earn as part of the employment contract
+                  type: number
+                  example: '99998.12'
+                  nullable: true
+                universalSalary:
+                  description: Updated universal salary the employee will earn as part of the employment contract
+                  type: number
+                  example: '99899.34'
+                  nullable: true
+                costCenterDescription:
+                  description: New Cost Center Description for the employment contract
+                  type: string
+                  example: This cost center has an updated description
+                  nullable: true
+                costCenterCode:
+                  description: New Cost Center Code for the employment contract
+                  type: string
+                  example: CCC123
+                  nullable: true
+                station:
+                  description: The new station to which the employee is assigned as part of the employment contract
+                  type: string
+                  example: Third Subdivision
+                  nullable: true
+              type: object
+      responses:
+        '200':
           description: Employment contract successfully created
           content:
             application/json:
@@ -6267,27 +6518,6 @@ components:
           description: The active status of the arbo role
           type: boolean
       type: object
-    ArboService:
-      properties:
-        id:
-          description: UUID of the arbo service
-          type: string
-        externalKey:
-          description: The external key associated with the arbo service
-          type: string
-        migrationKey:
-          description: The migration key associated with the arbo service
-          type: string
-        name:
-          description: The name of the arbo service
-          type: string
-        dateCreated:
-          description: The date the arbo service was created
-          type: string
-        dateUpdated:
-          description: The date the arbo service was updated
-          type: string
-      type: object
     CompanyDoctor:
       properties:
         id:
@@ -6725,9 +6955,11 @@ components:
         dateCreated:
           description: The date the partnership was created
           type: string
+          format: date-time
         dateUpdated:
           description: The date the partnership was updated
           type: string
+          format: date-time
       type: object
     ServiceType:
       properties:
@@ -6743,9 +6975,11 @@ components:
         dateCreated:
           description: The date the service type was created
           type: string
+          format: date-time
         dateUpdated:
           description: The date the service type was updated
           type: string
+          format: date-time
       type: object
     PatchAbsenceCourseRequestBody:
       required:
@@ -7890,23 +8124,23 @@ components:
         dateStart:
           description: date start of the task
           type: string
-          format: date
+          format: date-time
         dateEnd:
           description: date end of the task
           type: string
-          format: date
+          format: date-time
         dateCompleted:
           description: date of completion of the task
           type: string
-          format: date
+          format: date-time
         dateCreated:
           description: date created of the task
           type: string
-          format: date
+          format: date-time
         dateUpdated:
           description: date upddated of the task
           type: string
-          format: date
+          format: date-time
       type: object
     PaidParentalLeaveDossier:
       type: object
@@ -8026,6 +8260,47 @@ components:
         flexibleLeave:
           description: Flag to indicate if the leave is flexible
           type: boolean
+      type: object
+    ReturnToWorkAdviceAbsenceCourse:
+      properties:
+        dateStart:
+          description: The start date in YYYY-MM-DD format
+          type: string
+          format: date
+        dateEnd:
+          description: The end date in YYYY-MM-DD format
+          type: string
+          format: date
+        recoveryPercentage:
+          description: Percentage of recovery
+          type: number
+          format: float
+      type: object
+    ReturnToWorkAdvice:
+      properties:
+        data:
+          properties:
+            employerId:
+              description: The ID of the employer
+              type: string
+              format: uuid
+            employeeId:
+              description: The ID of the employee
+              type: string
+              format: uuid
+            dossierId:
+              description: The ID of the dossier
+              type: string
+              format: uuid
+            dateReport:
+              description: The report date of the dossier
+              type: string
+              format: datetime
+            absenceCourses:
+              type: array
+              items:
+                $ref: '#/components/schemas/ReturnToWorkAdviceAbsenceCourse'
+          type: object
       type: object
     Spoor2Dossier:
       type: object
@@ -8582,16 +8857,16 @@ components:
           example: '0612345678'
         employerDivisionId:
           type: string
-          example: uuid
+          format: uuid
         companyDoctorId:
           type: string
-          example: uuid
+          format: uuid
         dossierOfficerId:
           type: string
-          example: uuid
+          format: uuid
         arboServiceId:
-          type: integer
-          example: 1
+          type: string
+          format: uuid
         visitAddress:
           $ref: '#/components/schemas/Address'
         postalAddress:
@@ -8729,6 +9004,29 @@ components:
           type: string
           example: City
       type: object
+    ArboService:
+      properties:
+        id:
+          description: UUID of the arbo service
+          type: string
+        externalKey:
+          description: The external key associated with the arbo service
+          type: string
+        migrationKey:
+          description: The migration key associated with the arbo service
+          type: string
+        name:
+          description: The name of the arbo service
+          type: string
+        dateCreated:
+          description: The date the arbo service was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date the arbo service was updated
+          type: string
+          format: date-time
+      type: object
     EmployerAddress:
       properties:
         uuid:
@@ -8758,9 +9056,11 @@ components:
         dateCreated:
           description: The date the employer address was created
           type: string
+          format: date-time
         dateUpdated:
           description: The date the employer address was updated
           type: string
+          format: date-time
       type: object
     EmployerCommunication:
       properties:
@@ -8785,9 +9085,11 @@ components:
         dateCreated:
           description: The date the employer communication was created
           type: string
+          format: date-time
         dateUpdated:
           description: The date the employer communication was updated
           type: string
+          format: date-time
       type: object
     Employer:
       properties:
@@ -9261,12 +9563,6 @@ components:
         education:
           description: Whether the employment type is for education (internship)
           type: boolean
-        dateCreated:
-          description: The date the employment type was created
-          type: string
-        dateUpdated:
-          description: The date the employment type was updated
-          type: string
       type: object
     ExternalSupervisor:
       properties:
@@ -9324,9 +9620,11 @@ components:
         dateCreated:
           description: The date the insurance policy was created
           type: string
+          format: date-time
         dateUpdated:
           description: The date the insurance policy was updated
           type: string
+          format: date-time
       type: object
     MasterPerson:
       properties:
@@ -9381,9 +9679,11 @@ components:
         dateCreated:
           description: The date of the creation of the operation
           type: string
+          format: date-time
         dateUpdated:
           description: The date of the update of the operation
           type: string
+          format: date-time
       type: object
     Operationable:
       description: JSON resource representing an billable operation.
@@ -9421,12 +9721,15 @@ components:
         dateExecuted:
           description: The date executed associated with the billable operation.
           type: string
+          format: date
         dateCreated:
           description: The date of creation of the billable operation.
           type: string
+          format: date-time
         dateUpdated:
           description: The date of update of the billable operation.
           type: string
+          format: date-time
       type: object
     OrganizationalUnit:
       properties:
@@ -9562,6 +9865,14 @@ components:
           format: date
         dateEnd:
           description: End date of the organizational unit
+          type: string
+          format: date
+        dateCreated:
+          description: The datetime of when the organizational unit was created
+          type: string
+          format: date
+        dateUpdated:
+          description: The datetime of when the organizational unit was updated
           type: string
           format: date
       type: object

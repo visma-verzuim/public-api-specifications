@@ -3,6 +3,18 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-07-03
+
+### Added
+- New endpoints
+  - `PATCH` method for `EmploymentContract` endpoint. (VV-5264)
+  - `GET` method for `ArboService` endpoint - this is a supporting endpoint for the `POST` and `PATCH` `Employer` endpoint. (VV-5520)
+
+### Changed
+- The `EmployerDivisionResource` now returns datetime strings for `dateCreated` and `dateUpdated` instead of just dates. (VV-5561)
+- The `PublicApiOrganizationalUnitResource` now includes `dateCreated` and `dateUpdated` fields. (VV-5561)
+- Documentation improvements for several Resources regarding their `dateCreated` and `dateUpdated` fields. (VV-5561)
+
 ## Release 2024-06-26
  
 ### Added
