@@ -547,29 +547,53 @@ paths:
             type: string
         - name: filter[dateStartFrom]
           in: query
-          description: Filter Employer Contracts by start date (Employer Contracts that start on or  after this date)
+          description: Filter Employer Contracts by start date (Employer Contracts that start on or after this date)
           schema:
             type: string
-            format: date-time
+            format: date-time-offset
+          example: '2024-01-01T12:34:56+01:00'
         - name: filter[dateStartUntil]
           in: query
-          description: Filter Employer Contracts by start date (Employer Contracts that start on or  before this date)
+          description: Filter Employer Contracts by start date (Employer Contracts that start on or before this date)
           schema:
             type: string
             format: date-time
+          example: '2024-01-01T12:34:56+01:00'
         - name: filter[dateUpdatedFrom]
           in: query
-          description: Filter Employer Contracts by update date (Employer Contracts that have been updated on or  after this date)
+          description: Filter Employer Contracts by update date (Employer Contracts that have been updated on or after this date)
           schema:
             type: string
-            format: date-time
+            format: date-time-offset
+          example: '2024-01-01T12:34:56+01:00'
         - name: filter[dateUpdatedUntil]
           in: query
-          description: Filter Employer Contracts by update date (Employer Contracts that have been updated on or  before this date)
+          description: Filter Employer Contracts by update date (Employer Contracts that have been updated on or before this date)
           schema:
             type: string
-            format: date-time
-        - name: filter[active]
+            format: date-time-offset
+          example: '2024-01-01T12:34:56+01:00'
+        - name: filter[dateEndFrom]
+          in: query
+          description: Filter Employer Contracts by end date (Employer Contracts that end on or after this date)
+          schema:
+            type: string
+            format: date-time-offset
+        - name: filter[dateEndFromOrNull]
+          in: query
+          description: Retrieve Employer Contracts that end after this date or have no end date, i.e. all active contracts on this date.
+          schema:
+            type: string
+            format: date-time-offset
+          example: '2024-01-01T12:34:56+01:00'
+        - name: filter[dateEndUntil]
+          in: query
+          description: Filter Employer Contracts by end date (Employer Contracts that end on or before this date)
+          schema:
+            type: string
+            format: date-time-offset
+          example: '2024-01-01T12:34:56+01:00'
+        - name: filter[status]
           in: query
           description: Filter by status
           schema:
@@ -939,7 +963,7 @@ paths:
   /api/public/absence-course/{id}:
     delete:
       tags:
-        - Absence
+        - AbsenceCourse
       summary: Delete an absence course
       description: Deletes an absence course based on the ID. This operation also updates the status of a dossier.
       operationId: 96de61b08511227bba92eae33e198909
@@ -973,7 +997,7 @@ paths:
   /api/public/absence-course:
     get:
       tags:
-        - Absence
+        - AbsenceCourse
       summary: Get a list of absence courses
       operationId: a4e6d75f2d3f39a2a470d55c3e258a34
       parameters:
@@ -1017,6 +1041,48 @@ paths:
           description: Filter by an employee's employee number
           schema:
             type: string
+        - name: filter[dateStartFrom]
+          in: query
+          description: Filter by dateStart, combine 'dateStartFrom' and 'dateStartUntil' to filter by a range
+          schema:
+            type: string
+            format: date-time-offset
+          example: '2024-01-01T12:34:56+01:00'
+        - name: filter[dateStartUntil]
+          in: query
+          description: Filter by dateStart, combine 'dateStartFrom' and 'dateStartUntil' to filter by a range
+          schema:
+            type: string
+            format: date-time-offset
+          example: '2024-01-01T12:34:56+01:00'
+        - name: filter[dateEndFrom]
+          in: query
+          description: Filter by dateEnd, combine 'dateEndFrom' and 'dateEndUntil' to filter by a range
+          schema:
+            type: string
+            format: date-time-offset
+          example: '2024-01-01T12:34:56+01:00'
+        - name: filter[dateEndUntil]
+          in: query
+          description: Filter by dateEnd, combine 'dateEndFrom' and 'dateEndUntil' to filter by a range
+          schema:
+            type: string
+            format: date-time-offset
+          example: '2024-01-01T12:34:56+01:00'
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by dateUpdated, combine 'dateUpdatedStart' and 'dateUpdatedUntil' to filter by a range
+          schema:
+            type: string
+            format: date-time-offset
+          example: '2024-01-01T12:34:56+01:00'
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter by dateUpdated, combine 'dateUpdatedFrom' and 'dateUpdatedUntil' to filter by a range
+          schema:
+            type: string
+            format: date-time-offset
+          example: '2024-01-01T12:34:56+01:00'
         - name: sort[dateStart]
           in: query
           description: Sort results by start date, use '-dateStart' to sort descending
@@ -1084,7 +1150,7 @@ paths:
                 $ref: '#/components/schemas/BadRequestResponse'
     post:
       tags:
-        - Absence
+        - AbsenceCourse
       summary: Create an absence course
       description: 'An AbsenceCourse is an event within an absence dossier: an employee is reported sick, is reported partially or fully recovered, etc. This endpoint starts a new dossier or automagically adds the absence to an existing dossier'
       operationId: 5a1232c1a483b7bebb4eeb342c0d4031
@@ -1116,7 +1182,7 @@ paths:
                 $ref: '#/components/schemas/ServerErrorResponse'
     patch:
       tags:
-        - Absence
+        - AbsenceCourse
       summary: Update an existing absence course
       description: Update an AbsenceCourse by applying changes to an existing course.
       operationId: a6408eaab6a45519e4ab7a0f67e5bb5e
@@ -1146,150 +1212,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/content/documents:
-    get:
+  /api/public/dossier/{id}:
+    delete:
       tags:
-        - DossierContent
-      summary: Get a list of documents that can be applied to dossier content
-      operationId: a9cee242a702691fd53b80694eb97219
+        - Dossier
+      summary: Delete a dossier
+      description: Deletes a dossier based on the ID.
+      operationId: 7e50eaf4e937f43214a52f2224d4e601
       parameters:
-        - name: filter[id]
-          in: query
-          description: Filter by the document's id
-          required: false
+        - name: id
+          in: path
+          description: Unique identifier of the dossier to delete.
+          required: true
           schema:
             type: string
             format: uuid
-        - name: filter[externalKey]
-          in: query
-          description: Filter by the document's external key
-          required: false
-          schema:
-            type: string
-        - name: filter[title]
-          in: query
-          description: Filter by the document's title
-          required: false
-          schema:
-            type: string
-        - name: filter[forBothParties]
-          in: query
-          description: Filter by the document's forBothParties status
-          required: false
-          schema:
-            type: boolean
-        - name: filter[inReview]
-          in: query
-          description: Filter by the document's inReview status
-          required: false
-          schema:
-            type: boolean
-        - name: filter[isConcept]
-          in: query
-          description: Filter by the document's concept status
-          required: false
-          schema:
-            type: boolean
-        - name: filter[dossierId]
-          in: query
-          description: Filter by the document's belonging to this dossierId
-          required: false
-          schema:
-            type: string
-            format: uuid
-        - name: filter[dateUpdatedFrom]
-          in: query
-          description: Filter by the document's updated date. All records from this date onwards will be returned
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - name: filter[dateUpdatedUntil]
-          in: query
-          description: Filter by the document's updated date. All records up to and including this date will be returned
-          required: false
-          schema:
-            type: string
-            format: date-time
       responses:
         '200':
-          description: A list of documents
+          description: Dossier successfully deleted
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierDocumentResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/document?page[number]=1&page[size]=25
-                      first:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/document?page[size]=25
-                      last:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/document?page[number]=1&page[size]=25
-                      prev:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/document?page[size]=25
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/document?page[number]=2&page[size]=25
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
-          description: Bad Request
+          description: Invalid input
           content:
             application/json:
               schema:
-                properties:
-                  message:
-                    type: string
-                    example: Validation of the request failed
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
-                      type: object
-                type: object
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/configuration/dossier/document-types:
     get:
       tags:
         - DossierContent
       summary: Get a list of document types that can be applied to dossier content
-      operationId: 8f1e96a003ebed5a332efaab3948bdfa
+      operationId: f2a2f0654387ab3afbf2c346127cced0
       parameters:
         - name: filter[id]
           in: query
@@ -1431,156 +1393,12 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
-  /api/public/dossier/content/notes:
-    get:
-      tags:
-        - DossierContent
-      summary: Get a list of notes that can be applied to dossier content
-      operationId: f947bae2f0bdecc7eb842ccb3a21183b
-      parameters:
-        - name: filter[id]
-          in: query
-          description: Filter by the note's id
-          required: false
-          schema:
-            type: string
-            format: uuid
-        - name: filter[externalKey]
-          in: query
-          description: Filter by the note's external key
-          required: false
-          schema:
-            type: string
-        - name: filter[title]
-          in: query
-          description: Filter by the note's title
-          required: false
-          schema:
-            type: string
-        - name: filter[content]
-          in: query
-          description: Filter by the note 's content
-          required: false
-          schema:
-            type: string
-        - name: filter[forBothParties]
-          in: query
-          description: Filter by the note's forBothParties status
-          required: false
-          schema:
-            type: boolean
-        - name: filter[medicalOnly]
-          in: query
-          description: Filter by the note's medicalOnly status
-          required: false
-          schema:
-            type: boolean
-        - name: filter[isConcept]
-          in: query
-          description: Filter by the note's concept status
-          required: false
-          schema:
-            type: boolean
-        - name: filter[dossierId]
-          in: query
-          description: Filter by the note's belonging to this dossierId
-          required: false
-          schema:
-            type: string
-            format: uuid
-        - name: filter[dateUpdatedFrom]
-          in: query
-          description: Filter by the note's updated date. All records from this date onwards will be returned
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - name: filter[dateUpdatedUntil]
-          in: query
-          description: Filter by the note's updated date. All records up to and including this date will be returned
-          required: false
-          schema:
-            type: string
-            format: date-time
-      responses:
-        '200':
-          description: A list of notes
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierNoteResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/note?page[number]=1&page[size]=25
-                      first:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/note?page[size]=25
-                      last:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/note?page[number]=1&page[size]=25
-                      prev:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/note?page[size]=25
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/note?page[number]=2&page[size]=25
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                    example: Validation of the request failed
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
-                      type: object
-                type: object
   /api/public/configuration/dossier/note-types:
     get:
       tags:
         - DossierContent
       summary: Get a list of note types that can be applied to dossier content
-      operationId: eb5ecd991eec105c67adc88421aa5635
+      operationId: df9087f85a5efc49470eabee3e5bc567
       parameters:
         - name: filter[id]
           in: query
@@ -1665,6 +1483,312 @@ paths:
                         type: string
                         format: uri
                         example: https://api.dotweb.test/public/configuration/dossier/note-types?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+  /api/public/configuration/dossier/upload-types:
+    get:
+      tags:
+        - DossierContent
+      summary: Get a list of upload types that can be applied to dossier content
+      operationId: b6c87240c5fa64e09c02711f38930c98
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by the upload type's UUID
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: filter[externalKey]
+          in: query
+          description: Filter by the upload type's external key
+          required: false
+          schema:
+            type: string
+        - name: filter[name]
+          in: query
+          description: Filter by the upload type's name
+          required: false
+          schema:
+            type: string
+        - name: filter[code]
+          in: query
+          description: Filter by the upload type's code
+          required: false
+          schema:
+            type: string
+        - name: filter[communicateWithEmployee]
+          in: query
+          description: Filter by communicateWithEmployee to get upload types
+          required: false
+          schema:
+            type: boolean
+        - name: filter[isMedical]
+          in: query
+          description: Filter by isMedical to get upload types
+          required: false
+          schema:
+            type: boolean
+        - name: filter[isAbsence]
+          in: query
+          description: Filter by isAbsence to get upload types
+          required: false
+          schema:
+            type: boolean
+        - name: filter[isHr]
+          in: query
+          description: Filter by isHr to get upload types
+          required: false
+          schema:
+            type: boolean
+        - name: filter[feedbackToDossier]
+          in: query
+          description: Filter by feedbackToDossier to get upload types
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: A list of upload types
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DossierUploadType'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/upload-types?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/upload-types?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/upload-types?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/upload-types?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/configuration/dossier/upload-types?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+  /api/public/dossier/content/document:
+    post:
+      tags:
+        - DossierContent
+      summary: Create a new document
+      description: Create a new document for a dossier
+      operationId: b607c22f4d20f70ce5ef77db0327b1ec
+      requestBody:
+        description: The document data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDossierDocumentRequestBody'
+      responses:
+        '201':
+          description: The document was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierDocumentResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/content/documents:
+    get:
+      tags:
+        - DossierContent
+      summary: Get a list of documents that can be applied to dossier content
+      operationId: a9cee242a702691fd53b80694eb97219
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by the document's id
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: filter[externalKey]
+          in: query
+          description: Filter by the document's external key
+          required: false
+          schema:
+            type: string
+        - name: filter[title]
+          in: query
+          description: Filter by the document's title
+          required: false
+          schema:
+            type: string
+        - name: filter[forBothParties]
+          in: query
+          description: Filter by the document's forBothParties status
+          required: false
+          schema:
+            type: boolean
+        - name: filter[inReview]
+          in: query
+          description: Filter by the document's inReview status
+          required: false
+          schema:
+            type: boolean
+        - name: filter[isConcept]
+          in: query
+          description: Filter by the document's concept status
+          required: false
+          schema:
+            type: boolean
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the document's belonging to this dossierId
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by the document's updated date. All records from this date onwards will be returned
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter by the document's updated date. All records up to and including this date will be returned
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: A list of documents
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DossierDocumentResource'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/document?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/document?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/document?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/document?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/document?page[number]=2&page[size]=25
                         nullable: true
                     type: object
                   meta:
@@ -1834,7 +1958,7 @@ paths:
         - DossierContent
       summary: Create a new upload
       description: Create a new upload for a dossier
-      operationId: 58ce2e8ea46ddb26a8ab661d33078dff
+      operationId: ee6598a7e181edc92449ff09cadd7a6e
       requestBody:
         description: The upload data
         required: true
@@ -1861,71 +1985,80 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/configuration/dossier/upload-types:
+  /api/public/dossier/content/notes:
     get:
       tags:
         - DossierContent
-      summary: Get a list of upload types that can be applied to dossier content
-      operationId: 96e9c50bdc77f3b6e94dd80014688747
+      summary: Get a list of notes that can be applied to dossier content
+      operationId: 5297f5cfae013a802b5e9b334b417036
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by the upload type's UUID
+          description: Filter by the note's id
           required: false
           schema:
             type: string
             format: uuid
         - name: filter[externalKey]
           in: query
-          description: Filter by the upload type's external key
+          description: Filter by the note's external key
           required: false
           schema:
             type: string
-        - name: filter[name]
+        - name: filter[title]
           in: query
-          description: Filter by the upload type's name
+          description: Filter by the note's title
           required: false
           schema:
             type: string
-        - name: filter[code]
+        - name: filter[content]
           in: query
-          description: Filter by the upload type's code
+          description: Filter by the note 's content
           required: false
           schema:
             type: string
-        - name: filter[communicateWithEmployee]
+        - name: filter[forBothParties]
           in: query
-          description: Filter by communicateWithEmployee to get upload types
+          description: Filter by the note's forBothParties status
           required: false
           schema:
             type: boolean
-        - name: filter[isMedical]
+        - name: filter[medicalOnly]
           in: query
-          description: Filter by isMedical to get upload types
+          description: Filter by the note's medicalOnly status
           required: false
           schema:
             type: boolean
-        - name: filter[isAbsence]
+        - name: filter[isConcept]
           in: query
-          description: Filter by isAbsence to get upload types
+          description: Filter by the note's concept status
           required: false
           schema:
             type: boolean
-        - name: filter[isHr]
+        - name: filter[dossierId]
           in: query
-          description: Filter by isHr to get upload types
+          description: Filter by the note's belonging to this dossierId
           required: false
           schema:
-            type: boolean
-        - name: filter[feedbackToDossier]
+            type: string
+            format: uuid
+        - name: filter[dateUpdatedFrom]
           in: query
-          description: Filter by feedbackToDossier to get upload types
+          description: Filter by the note's updated date. All records from this date onwards will be returned
           required: false
           schema:
-            type: boolean
+            type: string
+            format: date-time
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter by the note's updated date. All records up to and including this date will be returned
+          required: false
+          schema:
+            type: string
+            format: date-time
       responses:
         '200':
-          description: A list of upload types
+          description: A list of notes
           content:
             application/json:
               schema:
@@ -1933,30 +2066,30 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/DossierUploadType'
+                      $ref: '#/components/schemas/DossierNoteResource'
                   links:
                     properties:
                       self:
                         type: string
                         format: uri
-                        example: https://api.dotweb.test/public/configuration/dossier/upload-types?page[number]=1&page[size]=25
+                        example: https://api.dotweb.test/public/dossier/content/note?page[number]=1&page[size]=25
                       first:
                         type: string
                         format: uri
-                        example: https://api.dotweb.test/public/configuration/dossier/upload-types?page[size]=25
+                        example: https://api.dotweb.test/public/dossier/content/note?page[size]=25
                       last:
                         type: string
                         format: uri
-                        example: https://api.dotweb.test/public/configuration/dossier/upload-types?page[number]=1&page[size]=25
+                        example: https://api.dotweb.test/public/dossier/content/note?page[number]=1&page[size]=25
                       prev:
                         type: string
                         format: uri
-                        example: https://api.dotweb.test/public/configuration/dossier/upload-types?page[size]=25
+                        example: https://api.dotweb.test/public/dossier/content/note?page[size]=25
                         nullable: true
                       next:
                         type: string
                         format: uri
-                        example: https://api.dotweb.test/public/configuration/dossier/upload-types?page[number]=2&page[size]=25
+                        example: https://api.dotweb.test/public/dossier/content/note?page[number]=2&page[size]=25
                         nullable: true
                     type: object
                   meta:
@@ -1996,27 +2129,35 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
-  /api/public/dossier/content/document:
-    post:
+  /api/public/dossier/content/note/{uuid}:
+    patch:
       tags:
         - DossierContent
-      summary: Create a new document
-      description: Create a new document for a dossier
-      operationId: fb538e72ee0314840e2400d696524939
+      summary: Update an existing note
+      description: Update an existing belonging to a dossier
+      operationId: f4e7e9cfcc4b40252f4b468e66470273
+      parameters:
+        - name: uuid
+          in: path
+          description: The uuid of the note
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
-        description: The document data
+        description: The note data
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PostDossierDocumentRequestBody'
+              $ref: '#/components/schemas/PatchDossierNoteRequestBody'
       responses:
-        '201':
-          description: The document was successfully created
+        '200':
+          description: The note was successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DossierDocumentResource'
+                $ref: '#/components/schemas/DossierNoteResource'
         '400':
           description: Invalid input
           content:
@@ -2035,7 +2176,7 @@ paths:
         - DossierContent
       summary: Create a new note
       description: Create a new note for a dossier
-      operationId: 1e3dbe50874bd9facd90f97c9f6486e1
+      operationId: 066551a33920cef76b87b60e76b68be3
       requestBody:
         description: The note data
         required: true
@@ -2046,6 +2187,38 @@ paths:
       responses:
         '201':
           description: The note was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierNoteResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - DossierContent
+      summary: Update an existing note
+      description: Update an existing note belonging to a dossier
+      operationId: 86010b1282b57a43d8ce3926ef8826b4
+      requestBody:
+        description: The note data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDossierNoteRequestBody'
+      responses:
+        '200':
+          description: The note was successfully updated
           content:
             application/json:
               schema:
@@ -7168,6 +7341,61 @@ components:
           format: date-time
           example: '2021-12-31 23:59:59'
       type: object
+    PatchDossierNoteRequestBody:
+      properties:
+        id:
+          description: Id for the note
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+        key:
+          description: External identifier for the note
+          type: string
+          example: Note@KeyXY
+        externalKey:
+          description: External identifier for the note
+          type: string
+          example: Note@KeyXY
+        noteTypeId:
+          description: The uuid of the note type
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        dossierSectionId:
+          description: The uuid of the dossier section
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        taskId:
+          description: The id of the task
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        isConcept:
+          description: Whether the note is a concept
+          type: boolean
+          example: 'true'
+        forBothParties:
+          description: Whether the note is for both parties
+          type: boolean
+          example: 'true'
+        medicalOnly:
+          description: Whether the note is medical only
+          type: boolean
+          example: 'false'
+        title:
+          description: The title of the note
+          type: string
+          example: Note title
+        content:
+          description: The content of the note
+          type: string
+          example: Content of this note.
+        dateCreated:
+          description: The date the note was created
+          type: string
+          format: date-time
+          example: '2021-12-31 23:59:59'
+      type: object
     PostDossierNoteRequestBody:
       required:
         - dossierId
@@ -7676,7 +7904,7 @@ components:
     BirthLeave:
       properties:
         id:
-          description: The ID of the Dossier.
+          description: The ID of the Birth Leave.
           type: string
           format: uuid
         externalKey:
@@ -8160,7 +8388,7 @@ components:
     PaidParentalLeave:
       properties:
         id:
-          description: The ID of the Dossier.
+          description: The ID of the Paid Parental Leave.
           type: string
           format: uuid
         externalKey:

@@ -3,6 +3,17 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-07-10
+
+### Added
+- New endpoints
+  - `PATCH` method for `DossierContent` endpoint for `Notes`. (VV-5477)
+  - `DELETE` method for `Dossier` endpoint. (VV-5539)
+
+### Changed
+- Date filters for `GET` `AbsenceCourse` and `EmployerContract` now support ISO8601 date formats (VV-5231)
+- `BirthLeave` and `PaidParentalLeave` dossier resources now correctly return UUIDs for `id` fields. (VV-4045 + VV-4046)
+
 ## Release 2024-07-03
 
 ### Added
