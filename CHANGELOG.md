@@ -3,6 +3,19 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-07-17
+
+### Added
+- New endpoints
+  - `DELETE` method for `DossierExternalResource` endpoint. (VV-5649)
+  - `PATCH` method for `DossierExternalResource` endpoint. (VV-5510)
+  - `DELETE` method for `Employment` endpoint. (VV-5635)
+  - `DELETE` method for `EmploymentContract` endpoint. (VV-5630)
+
+### Changed
+- `PATCH` `Employer` now allows updating 'externalKey' (VV-5644).
+
+
 ## Release 2024-07-10
 
 ### Added

@@ -1690,6 +1690,262 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/external-resource/{id}:
+    delete:
+      tags:
+        - Dossier External Resource
+      summary: Delete a dossier external resource
+      operationId: 90b76bf6096cd0762a64122aaeacd497
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the external resource to be deleted
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Dossier external resource successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier External Resource
+      summary: Update an external resource with ID
+      description: Update an external resource associated with a dossier using its ID
+      operationId: 60c11360c1f9793b3fe54bb5a7ca4d56
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the external resource
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Dossier external resource data for updating a dossier external resource
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDossierExternalResourceRequestBody'
+      responses:
+        '200':
+          description: Dossier external resource updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierExternalResourceResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/external-resource:
+    get:
+      tags:
+        - Dossier External Resource
+      summary: Get a list of external resources
+      operationId: a7e150f10abaf5652fa6c1ddc870dc7d
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific external resource
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by the external key of the external resource
+          schema:
+            type: string
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the UUID of a specific dossier
+          schema:
+            type: string
+        - name: sort[name]
+          in: query
+          description: Sort by name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A List of Dossier external resources that match the given filters
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DossierExternalResourceResource'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: http://localhost/api/public/external-resource?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: http://localhost/api/public/external-resource?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: http://localhost/api/public/external-resource?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: http://localhost/api/public/external-resource?page[size]=25
+                      next:
+                        type: string
+                        format: uri
+                        example: http://localhost/api/public/external-resource?page[number]=1&page[size]=25
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 100
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 4
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+    post:
+      tags:
+        - Dossier External Resource
+      summary: Create an external resource
+      description: Create an external resource associated with a dossier
+      operationId: 6013b83aff372a6d2aa5e03bea5e5165
+      requestBody:
+        description: Dossier external resource data for creating a new dossier external resource
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDossierExternalResourceRequestBody'
+      responses:
+        '201':
+          description: Dossier external resource created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierExternalResourceResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier External Resource
+      summary: Update an external resource
+      description: Update an external resource associated with a dossier by providing either its 'id' or 'key' through the request body
+      operationId: d2013dfdef986f2eb2a7566d439f2b03
+      requestBody:
+        description: Dossier external resource data for updating a dossier external resource
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDossierExternalResourceRequestBody'
+      responses:
+        '200':
+          description: Dossier external resource updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierExternalResourceResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/{dossierId}/external-resource:
+    post:
+      tags:
+        - Dossier External Resource
+      summary: Create an external resource
+      description: Create an external resource associated with a dossier
+      operationId: 1a4665b8e70c11215f96417854e69501
+      parameters:
+        - name: dossierId
+          in: path
+          description: Unique identifier of the dossier the external resource belongs to.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Dossier external resource data for creating a new dossier external resource
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDossierExternalResourceRequestBody'
+      responses:
+        '201':
+          description: Dossier external resource created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierExternalResourceResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier/content/documents:
     get:
       tags:
@@ -2231,118 +2487,6 @@ paths:
                 $ref: '#/components/schemas/BadRequestResponse'
         '500':
           description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/external-resource:
-    get:
-      tags:
-        - Dossier
-      summary: Get a list of external resources
-      operationId: 11a1ff9a9d1ead6e700a9239e06fa8c7
-      parameters:
-        - name: filter[id]
-          in: query
-          description: Filter by UUID to get a specific external resource
-          schema:
-            type: string
-        - name: filter[externalKey]
-          in: query
-          description: Filter by the external key of the external resource
-          schema:
-            type: string
-        - name: filter[dossierId]
-          in: query
-          description: Filter by the UUID of a specific dossier
-          schema:
-            type: string
-        - name: sort[name]
-          in: query
-          description: Sort by name
-          schema:
-            type: string
-      responses:
-        '201':
-          description: A List of Dossier external resources that match the given filters
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierExternalResourceResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: http://localhost/api/public/external-resource?page[number]=1&page[size]=25
-                      first:
-                        type: string
-                        format: uri
-                        example: http://localhost/api/public/external-resource?page[size]=25
-                      last:
-                        type: string
-                        format: uri
-                        example: http://localhost/api/public/external-resource?page[number]=1&page[size]=25
-                      prev:
-                        type: string
-                        format: uri
-                        example: http://localhost/api/public/external-resource?page[size]=25
-                      next:
-                        type: string
-                        format: uri
-                        example: http://localhost/api/public/external-resource?page[number]=1&page[size]=25
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 100
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 4
-                    type: object
-                type: object
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-    post:
-      tags:
-        - Dossier
-      summary: Create an external resource
-      description: Create an external resource associated with a dossier
-      operationId: 00f14acca5e614656b18414926ea8a4a
-      requestBody:
-        description: Dossier external resource data for creating a new dossier external resource
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostDossierExternalResourceRequestBody'
-      responses:
-        '201':
-          description: Dossier external resource created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DossierExternalResourceResource'
-        '400':
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        '500':
-          description: Server Error
           content:
             application/json:
               schema:
@@ -4257,6 +4401,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Employer
+      summary: Update an employer while referencing the employer by its id
+      operationId: dad90ec1006d4835727c52277dae3f36
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the employer to be updated.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Employer data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchEmployerRequestBody'
+      responses:
+        '200':
+          description: Employer successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employer'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/configuration/employer/arbo-service:
     get:
       tags:
@@ -4739,6 +4922,74 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
+  /api/public/employment/contract/{id}:
+    delete:
+      tags:
+        - Employments
+      summary: Delete an employment contract
+      description: Deletes an employment contract based on the ID.
+      operationId: 83308e5fedb0bb9751d9cf98246bcc0b
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the employment contract to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Employment Contract successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/employment/{id}:
+    delete:
+      tags:
+        - Employments
+      summary: Delete an employment and all employment-contracts that belong to it
+      description: Deletes an employment based on the ID.
+      operationId: 466eff97f8e81c7d8e839d1e11b0fb4e
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the employment to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Employment successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/employment/contract:
     get:
       tags:
@@ -7341,6 +7592,53 @@ components:
           format: date-time
           example: '2021-12-31 23:59:59'
       type: object
+    PatchDossierExternalResourceRequestBody:
+      properties:
+        id:
+          description: The ID of the external resource to be updated. Required if 'key' is not provided. Mutually exclusive with 'key'.
+          type: string
+          format: uuid
+        key:
+          description: The external key of the external resource to be updated. Required if 'id' is not provided. Mutually exclusive with 'id'.
+          type: string
+        externalKey:
+          description: Update the external key of the external resource
+          type: string
+        priority:
+          description: Priority position of the external resource, ordering is low to high
+          type: integer
+        name:
+          description: Name of the external resource
+          type: string
+        url:
+          description: URL of the external resource
+          type: string
+        icon:
+          description: Icon of the external resource
+          type: string
+          nullable: true
+      type: object
+    PostDossierExternalResourceRequestBody:
+      properties:
+        priority:
+          description: Priority position of the external resource
+          type: integer
+        externalKey:
+          description: external key of the external resource
+          type: string
+        name:
+          description: Name of the external resource
+          type: string
+        url:
+          description: URL of the external resource
+          type: string
+        icon:
+          description: Icon of the external resource
+          type: string
+        dossierId:
+          description: Dossier associated with the external resource
+          type: string
+      type: object
     PatchDossierNoteRequestBody:
       properties:
         id:
@@ -7505,27 +7803,6 @@ components:
           type: string
           format: date-time
           example: '2021-12-31 23:59:59'
-      type: object
-    PostDossierExternalResourceRequestBody:
-      properties:
-        priority:
-          description: Priority position of the external resource
-          type: integer
-        externalKey:
-          description: external key of the external resource
-          type: string
-        name:
-          description: Name of the external resource
-          type: string
-        url:
-          description: URL of the external resource
-          type: string
-        icon:
-          description: Icon of the external resource
-          type: string
-        dossierId:
-          description: Dossier associated with the external resource
-          type: string
       type: object
     PostBirthLeaveRequestBody:
       required:
@@ -9059,42 +9336,56 @@ components:
       type: object
     PatchEmployerRequestBody:
       description: Employer data
-      required:
-        - id
       properties:
         id:
+          description: The id of the employer to be updated, mutually exclusive with 'key'
           type: string
-          example: uuid
+          format: uuid
+          example: 4453e0e4-1d5d-4c1e-ac42-c541c50a34a3
+        key:
+          description: The external key of the employer to be updated, mutually exclusive with 'id'
+          type: string
+          example: 1234@external-key|test
         name:
+          description: The (legal) name of the employer
           type: string
-          example: Employer name
+          example: Employer B.V.
         externalKey:
+          description: Sets a new external key for the employer
           type: string
-          example: External key
+          example: 1234@external-key|test
         relationNumber:
           type: string
           example: Relation number
+          nullable: true
         policyNumber:
           type: string
           example: Policy number
+          nullable: true
         email:
           type: string
           example: email@email.com
+          nullable: true
         phone:
           type: string
           example: '0612345678'
+          nullable: true
         employerDivisionId:
           type: string
           format: uuid
+          nullable: true
         companyDoctorId:
           type: string
           format: uuid
+          nullable: true
         dossierOfficerId:
           type: string
           format: uuid
+          nullable: true
         arboServiceId:
           type: string
           format: uuid
+          nullable: true
         visitAddress:
           $ref: '#/components/schemas/Address'
         postalAddress:
