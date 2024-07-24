@@ -3,6 +3,16 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-07-23
+
+### Added
+- New endpoints
+  - `PATCH` method for `DossierContent` Document (VV-5603)
+  - `PATCH` method for `Employment` (VV-5401)
+
+### Changed
+- `GET` `OrganizationalUnitResource` now supports dateCreated/dateUpdated filters (VV-5670)
+
 ## Release 2024-07-17
 
 ### Added
