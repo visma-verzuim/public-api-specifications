@@ -2157,6 +2157,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/content/note/{id}:
+    delete:
+      tags:
+        - DossierContent
+      summary: Delete a note
+      description: Deletes a note based on the ID.
+      operationId: e2f1f302b6fa29a24f04a15319b1bfcf
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the note to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Note successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier/content/notes:
     get:
       tags:
@@ -2896,12 +2930,12 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific dossier
+          description: Filter by ID to get a specific dossier
           schema:
             type: string
         - name: filter[dossierId]
           in: query
-          description: Filter by the UUID of a specific dossier
+          description: Filter by the ID of a specific dossier
           schema:
             type: string
         - name: filter[externalKey]
@@ -2916,7 +2950,7 @@ paths:
             type: string
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of a specific employment
+          description: Filter by the ID of a specific employment
           schema:
             type: string
         - name: filter[employmentNumber]
@@ -3023,12 +3057,12 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific dossier
+          description: Filter by ID to get a specific dossier
           schema:
             type: string
         - name: filter[dossierId]
           in: query
-          description: Filter by the UUID of a specific dossier
+          description: Filter by the ID of a specific dossier
           schema:
             type: string
         - name: filter[externalKey]
@@ -3038,7 +3072,7 @@ paths:
             type: string
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of a specific employment
+          description: Filter by the ID of a specific employment
           schema:
             type: string
         - name: filter[employmentNumber]
@@ -3177,12 +3211,12 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific dossier
+          description: Filter by ID to get a specific dossier
           schema:
             type: string
         - name: filter[dossierId]
           in: query
-          description: Filter by the UUID of a specific dossier
+          description: Filter by the ID of a specific dossier
           schema:
             type: string
         - name: filter[externalKey]
@@ -3192,7 +3226,7 @@ paths:
             type: string
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of a specific employment
+          description: Filter by the ID of a specific employment
           schema:
             type: string
         - name: filter[employmentNumber]
@@ -4277,7 +4311,7 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific employee
+          description: Filter by ID to get a specific employee
           schema:
             type: string
         - name: filter[externalKey]
@@ -4287,7 +4321,7 @@ paths:
             type: string
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of a specific employment
+          description: Filter by the ID of a specific employment
           schema:
             type: string
         - name: filter[employeeNumber]
@@ -6400,7 +6434,7 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID
+          description: Filter by ID
           schema:
             type: string
         - name: filter[externalKey]
@@ -6430,12 +6464,12 @@ paths:
             type: boolean
         - name: filter[employerId]
           in: query
-          description: Filter by employer UUID
+          description: Filter by employer ID
           schema:
             type: string
         - name: filter[parentOrganizationalUnitId]
           in: query
-          description: Filter by parent organizational unit UUID
+          description: Filter by parent organizational unit ID
           schema:
             type: string
         - name: sort
@@ -8726,10 +8760,10 @@ components:
           description: The external key associated with the Dossier.
           type: string
         dateStart:
-          description: The start date in YYYY-MM-DD format.
+          description: The start date in ISO8601 format.
           type: string
         dateEnd:
-          description: The end date in YYYY-MM-DD format.
+          description: The end date in ISO8601 format.
           type: string
         dossierStatus:
           description: The current status of the Dossier.
@@ -10555,11 +10589,11 @@ components:
         company:
           $ref: '#/components/schemas/OrganizationalUnitCompany'
         dateStart:
-          description: Start date of the organizational unit
+          description: Start date of the organizational unit in ISO8601 format
           type: string
           format: date
         dateEnd:
-          description: End date of the organizational unit
+          description: End date of the organizational unit in ISO8601 format
           type: string
           format: date
         dateCreated:
