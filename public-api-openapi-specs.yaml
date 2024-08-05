@@ -1657,6 +1657,40 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
+  /api/public/dossier/content/document/{id}:
+    delete:
+      tags:
+        - DossierContent
+      summary: Delete a document
+      description: Deletes a document based on the ID.
+      operationId: d3daeadd190687cfc2be594d6377efab
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the document to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Document successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier/content/documents:
     get:
       tags:

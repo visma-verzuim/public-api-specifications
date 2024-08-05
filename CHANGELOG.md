@@ -2,6 +2,12 @@
 
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
+## Release 2024-08-05
+- New endpoints
+  - `DELETE` method for `DossierContent` endpoint for `Documents`. (VV-5733)
+
+### Changed
+- PublicAPI XSS protection is causing server errors on Azure (VV-5766)
 
 ## Release 2024-08-02
 - New endpoints
