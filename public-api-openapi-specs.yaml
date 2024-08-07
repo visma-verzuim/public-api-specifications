@@ -2475,6 +2475,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/content/upload/{id}:
+    delete:
+      tags:
+        - DossierContent
+      summary: Delete a dossier upload
+      description: Deletes a dossier upload based on the ID.
+      operationId: b03cdb05b886a76836632906258272f7
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the dossier upload to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Dossier upload successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier/content/upload:
     get:
       tags:
@@ -2616,6 +2650,79 @@ paths:
       responses:
         '201':
           description: The upload was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierUploadResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - DossierContent
+      summary: Update an existing upload
+      description: Update an existing upload belonging to a dossier
+      operationId: a33e6c204b2d7032eebece466784a185
+      requestBody:
+        description: The upload data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDossierUploadRequestBody'
+      responses:
+        '200':
+          description: The upload was successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierUploadResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/content/upload/{uuid}:
+    patch:
+      tags:
+        - DossierContent
+      summary: Update an existing upload
+      description: Update an existing upload belonging to a dossier
+      operationId: bfb2a3909024e6a83afea67bad7d4bfc
+      parameters:
+        - name: uuid
+          in: path
+          description: The uuid of the upload
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: The upload data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDossierUploadRequestBody'
+      responses:
+        '200':
+          description: The upload was successfully updated
           content:
             application/json:
               schema:
@@ -8016,6 +8123,49 @@ components:
           example: Content of this note.
         dateCreated:
           description: The date the note was created
+          type: string
+          format: date-time
+          example: '2021-12-31 23:59:59'
+      type: object
+    PatchDossierUploadRequestBody:
+      properties:
+        id:
+          description: The id of the upload
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        key:
+          description: Current external identifier for the upload
+          type: string
+          example: exKey123
+        externalKey:
+          description: New external identifier for the upload
+          type: string
+          example: exKey123
+        uploadTypeId:
+          description: The uuid of the upload type
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        dossierSectionId:
+          description: The uuid of the dossier section
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        forBothParties:
+          description: Whether the upload is for both parties
+          type: boolean
+          example: 'true'
+        title:
+          description: The title of the upload
+          type: string
+          example: upload title
+        note:
+          description: The content of the upload
+          type: string
+          example: Content of this upload.
+        dateCreated:
+          description: The date the upload was created
           type: string
           format: date-time
           example: '2021-12-31 23:59:59'

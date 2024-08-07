@@ -2,6 +2,11 @@
 
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
+## Release 2024-08-07
+- New endpoints
+  - `DELETE` method for `DossierContent` endpoint for `Uploads`. (VV-5732)
+  - `PATCH` method for `DossierContent` endpoint for `Uploads`. (VV-5481)
+
 ## Release 2024-08-05
 - New endpoints
   - `DELETE` method for `DossierContent` endpoint for `Documents`. (VV-5733)
@@ -21,15 +26,6 @@ The changelog has been tracked since March 15, 2024. Changes prior to this date 
 - `POST` `Dossier` no longer allows the creation of dossier types that are not enabled for that partner (VV-5576)
 - `GET` `Dossier` no longer allows incorrect includes (VV-5392)
 - `OrganizationalUnit` dateStart/dateEnd are now returned in ISO8601 date formats (VV-5726) 
-
-### Added
-- New endpoints
-  - `PATCH` method for `DossierContent` endpoint for `Document` (VV-5603)
-  - `PATCH` method for `Employment` (VV-5401)
-
-### Changed
-- `GET` `OrganizationalUnitResource` now supports dateCreated/dateUpdated filters (VV-5670)
-
 
 ## Release 2024-07-23
 
