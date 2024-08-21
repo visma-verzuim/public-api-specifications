@@ -2,6 +2,19 @@
 
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
+
+## Release 2024-08-21
+
+### Added
+- New endpoints
+  - `PATCH` method for `Dossier` `Zwerd` endpoint. (VV-5450)
+  - `PATCH` method for `Dossier` `Spoor2` endpoint. (VV-5450)
+  - `PATCH` method for `Dossier` `Preventive` endpoint. (VV-5450)
+  - `PATCH` method for `Dossier` `Medical Preventive` endpoint. (VV-5450)
+
+### Changed
+- Changes to `EmploymentResource` to return correct `employmentEndReason` data (VV-5676)
+
 ## Release 2024-08-07
 - New endpoints
   - `DELETE` method for `DossierContent` endpoint for `Uploads`. (VV-5732)

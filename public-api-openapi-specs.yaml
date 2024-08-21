@@ -3343,6 +3343,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Update a preventive dossier
+      description: This endpoint is used to update a preventive dossier.
+      operationId: ea8608fca2395d2f5ec6b8ae55b3188d
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchPreventiveDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier/medical-preventive:
     get:
       tags:
@@ -3478,6 +3510,38 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PostMedicalPreventiveDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Update a medical preventive dossier
+      description: This endpoint is used to update a medical preventive dossier.
+      operationId: 7cef874f4b7d832ae2a21a1d6a5d9b99
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchMedicalPreventiveDossierRequestBody'
       responses:
         '201':
           description: Dossier successfully created
@@ -4157,6 +4221,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Update a spoor 2 dossier
+      description: This endpoint is used to update a new spoor 2 dossier.
+      operationId: 4eaef3d4ce6d052de7e09824e7c3d6ea
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PatchDossierRequestBody'
+                - $ref: '#/components/schemas/PatchSpoor2RequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier/zwerd:
     get:
       tags:
@@ -4292,6 +4390,38 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PostZwerdDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Update a ZW ERD dossier
+      description: This endpoint is used to update a ZW ERD dossier.
+      operationId: da5219fa39232715871dccbd271d488f
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchZwerdDossierRequestBody'
       responses:
         '201':
           description: Dossier successfully created
@@ -5857,8 +5987,23 @@ paths:
                   example: '2'
                   nullable: true
                 employmentEndReason:
-                  description: The reason for the end of employment - e.g. 'end-employment'
+                  description: The reason for the end of employment
                   type: string
+                  enum:
+                    - end-employment
+                    - sick-during-end-of-employment
+                    - reach-aow
+                    - death
+                    - dismissal
+                    - retirement
+                    - temporary-old-age-pension
+                    - wia
+                    - termination-of-temporary-employment
+                    - unknown
+                    - within-probationary-period
+                    - dismissal-own-request
+                    - immediate-dismissal
+                    - mutual-termination-of-employment
                   example: end-employment
                 internalSupervisorId:
                   description: UUID identifier for the employee set as a supervisor to the employment
@@ -8220,6 +8365,156 @@ components:
           format: date-time
           example: '2021-12-31 23:59:59'
       type: object
+    PatchDossierRequestBody:
+      required:
+        - id
+      properties:
+        id:
+          description: Id of the dossier to be updated
+          type: string
+          format: uuid
+        externalKey:
+          description: External identifier for the dossier
+          type: string
+        dossierStatus:
+          description: The status of the dossier, if omitted defaults to 'open', unless 'dateCompleted' is set  in the past, then it defaults to 'closed'
+          type: string
+          enum:
+            - open
+            - closed
+        dateReported:
+          description: Date the dossier was reported, if omitted defaults to 'now'
+          type: string
+          format: date
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment, required if 'employmentKey' is omitted
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment, required if 'employmentId' is omitted
+          type: string
+        protocol:
+          description: The protocol of the dossier
+          type: string
+        dossierNumber:
+          description: The dossier number, defaults to 0
+          type: string
+        dossierOfficerId:
+          description: The id of the dossier officer, required if 'dossierOfficerKey' is omitted
+          type: string
+          format: uuid
+        dossierOfficerKey:
+          description: The key of the dossier officer, required if 'dossierOfficerId' is omitted
+          type: string
+        safetyNet:
+          description: If applicable, the type of safety net (vangnet) that applies to this dossier
+          type: string
+        dossierClosureReason:
+          description: The reason the dossier was closed
+          type: string
+        contractId:
+          description: The id of the contract
+          type: string
+          format: uuid
+        expectedDurationDays:
+          description: The expected duration of the dossier in days
+          type: integer
+        dateCompleted:
+          description: The date the dossier was completed
+          type: string
+          format: date
+      type: object
+    PatchMedicalPreventiveDossierRequestBody:
+      properties:
+        externalKey:
+          description: External identifier for the dossier
+          type: string
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment
+          type: string
+      type: object
+    PatchPreventiveDossierRequestBody:
+      properties:
+        externalKey:
+          description: External identifier for the dossier
+          type: string
+        dateReported:
+          description: The date the dossier was reported
+          type: string
+          format: date
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment
+          type: string
+        dateCompleted:
+          description: The date the dossier was completed
+          type: string
+          format: date
+      type: object
+    PatchSpoor2RequestBody:
+      properties:
+        traject:
+          description: What type of parental leave is being taken
+          type: string
+          enum:
+            - haalbaarheidsonderzoek
+            - spoor-2
+            - spoor-2-orienterend
+            - spoor-3
+            - outplacement
+            - jobcoaching
+            - loopbaancoaching
+            - loopbaancoaching-orientatie
+            - talentenanalyse-act-meting
+            - ontwikkeltraject
+      type: object
+    PatchZwerdDossierRequestBody:
+      properties:
+        externalKey:
+          description: External identifier for the dossier
+          type: string
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment
+          type: string
+        payrollNumber:
+          description: The payroll number of the employee
+          type: string
+        daySalary:
+          description: The daily salary of the employee
+          type: number
+          format: float
+        dateEmploymentEnd:
+          description: The date the employee's employment was completed
+          type: string
+          format: date
+      type: object
     PostBirthLeaveRequestBody:
       required:
         - beneficiary
@@ -9632,10 +9927,20 @@ components:
               description: The reason for the end of employment of the Employee
               type: string
               enum:
-                - end_employment
-                - sick_during_end_of_employment
+                - end-employment
+                - sick-during-end-of-employment
+                - reach-aow
                 - death
-                - dismissal_own_request
+                - dismissal
+                - retirement
+                - temporary-old-age-pension
+                - wia
+                - termination-of-temporary-employment
+                - unknown
+                - within-probationary-period
+                - dismissal-own-request
+                - immediate-dismissal
+                - mutual-termination-of-employment
             normHoursPerWeek:
               description: Standard hours per week the Employee works.
               type: number
@@ -10355,8 +10660,23 @@ components:
           example: '2'
           nullable: true
         employmentEndReason:
-          description: The new employment end reason wording for the employment. Options include end-employment, sick-during-end-of-employment, death, dismissal-own-request
+          description: The new employment end reason wording for the employment
           type: string
+          enum:
+            - end-employment
+            - sick-during-end-of-employment
+            - reach-aow
+            - death
+            - dismissal
+            - retirement
+            - temporary-old-age-pension
+            - wia
+            - termination-of-temporary-employment
+            - unknown
+            - within-probationary-period
+            - dismissal-own-request
+            - immediate-dismissal
+            - mutual-termination-of-employment
           example: end-employment
           nullable: true
         internalSupervisorId:
@@ -10917,3 +11237,48 @@ components:
           description: Number of tasks associated with the user
           type: integer
       type: object
+tags:
+  - name: Absence Reasons
+    description: Absence Reasons
+  - name: Authentication
+    description: Authentication
+  - name: Health
+    description: Health
+  - name: User Roles
+    description: User Roles
+  - name: Company Doctors
+    description: Company Doctors
+  - name: EmployerContracts
+    description: EmployerContracts
+  - name: Contracts
+    description: Contracts
+  - name: AbsenceCourse
+    description: AbsenceCourse
+  - name: Dossier
+    description: Dossier
+  - name: DossierContent
+    description: DossierContent
+  - name: Dossier External Resource
+    description: Dossier External Resource
+  - name: Return to work advice
+    description: Return to work advice
+  - name: Dossier Officers
+    description: Dossier Officers
+  - name: Employee
+    description: Employee
+  - name: Employer
+    description: Employer
+  - name: Employer Divisions
+    description: Employer Divisions
+  - name: Employments
+    description: Employments
+  - name: External Supervisor
+    description: External Supervisor
+  - name: Operation
+    description: Operation
+  - name: Billable Operation
+    description: Billable Operation
+  - name: Organizational Units
+    description: Organizational Units
+  - name: PublicAPI
+    description: PublicAPI
