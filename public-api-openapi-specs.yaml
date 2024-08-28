@@ -3062,6 +3062,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Update a Birth Leave dossier
+      description: This endpoint is used to update a Birth Leave dossier.
+      operationId: a5ba9f51b624767d26de9e1d9c4ed04f
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PatchDossierRequestBody'
+                - $ref: '#/components/schemas/PatchBirthLeaveDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier:
     get:
       tags:
@@ -3858,6 +3892,40 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/PostDossierRequestBody'
                 - $ref: '#/components/schemas/PostPaidParentalLeaveRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Update a Paid Parental Leave dossier
+      description: This endpoint is used to update a Paid Parental Leave dossier.
+      operationId: e1d6e83a9e45b74e03645e20a5c4a885
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PatchDossierRequestBody'
+                - $ref: '#/components/schemas/PatchPaidParentalLeaveDossierRequestBody'
       responses:
         '201':
           description: Dossier successfully created
@@ -7577,12 +7645,12 @@ components:
         dateStart:
           description: YYYY-MM-DD
           type: string
-          format: date-time
+          format: date
           example: '2024-01-01'
         dateEnd:
           description: YYYY-MM-DD
           type: string
-          format: date-time
+          format: date
           example: '2024-03-01'
           nullable: true
         contractStatus:
@@ -7642,13 +7710,13 @@ components:
           description: Whether the contract is active
           type: boolean
         dateStart:
-          description: The start date in YYYY-MM-DD HH:MM:SS format
+          description: The start date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateEnd:
-          description: The end date in YYYY-MM-DD HH:MM:SS format
+          description: The end date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateCreated:
           description: The date the contract was created
           type: string
@@ -7688,13 +7756,13 @@ components:
           description: The billing type of the contract type
           type: string
         dateStart:
-          description: The start date in YYYY-MM-DD HH:MM:SS format
+          description: The start date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateEnd:
-          description: The end date in YYYY-MM-DD HH:MM:SS format
+          description: The end date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateCreated:
           description: The date the contract type was created
           type: string
@@ -7747,13 +7815,13 @@ components:
           format: float
           nullable: true
         dateStart:
-          description: The start date in YYYY-MM-DD HH:MM:SS format
+          description: The start date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateEnd:
-          description: The end date in YYYY-MM-DD HH:MM:SS format
+          description: The end date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
           nullable: true
         dateCreated:
           description: The date the contract was created
@@ -7793,13 +7861,13 @@ components:
             - ended
             - blocked
         dateStart:
-          description: The start date in YYYY-MM-DD HH:MM:SS format
+          description: The start date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateEnd:
-          description: The end date in YYYY-MM-DD HH:MM:SS format
+          description: The end date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
           nullable: true
         dateCreated:
           description: The date the contract was created
@@ -8365,6 +8433,26 @@ components:
           format: date-time
           example: '2021-12-31 23:59:59'
       type: object
+    PatchBirthLeaveDossierRequestBody:
+      properties:
+        beneficiary:
+          description: Who the beneficiary of the leave is
+          type: string
+          enum:
+            - employee
+            - employer
+        dateOfBirthExpected:
+          description: The expected birthdate of the child
+          type: string
+          format: date
+        dateStartActual:
+          description: The actual start date of the requested leave
+          type: string
+          format: date
+        weeks:
+          description: The number of weeks of leave
+          type: integer
+      type: object
     PatchDossierRequestBody:
       required:
         - id
@@ -8444,6 +8532,28 @@ components:
         employmentKey:
           description: The key of the employment
           type: string
+      type: object
+    PatchPaidParentalLeaveDossierRequestBody:
+      properties:
+        paidParentalLeaveType:
+          description: What type of parental leave is being taken
+          type: string
+          enum:
+            - birth
+            - adoption
+            - foster-care
+            - cohabiting
+        dateOfBirth:
+          description: The birthdate of the child
+          type: string
+          format: date
+        children:
+          description: The number of children
+          type: integer
+        dateAdmission:
+          description: The date of admission
+          type: string
+          format: date
       type: object
     PatchPreventiveDossierRequestBody:
       properties:
@@ -9340,11 +9450,11 @@ components:
         dateStart:
           description: date start of the task
           type: string
-          format: date-time
+          format: date
         dateEnd:
           description: date end of the task
           type: string
-          format: date-time
+          format: date
         dateCompleted:
           description: date of completion of the task
           type: string
@@ -10918,13 +11028,13 @@ components:
           description: The policy number of the insurance policy
           type: string
         dateStart:
-          description: The start date in YYYY-MM-DD HH:MM:SS format
+          description: The start date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateEnd:
-          description: The end date in YYYY-MM-DD HH:MM:SS format
+          description: The end date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateCreated:
           description: The date the insurance policy was created
           type: string

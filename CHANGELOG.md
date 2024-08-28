@@ -3,6 +3,13 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-08-28
+
+### Added
+- New endpoints
+  - `PATCH` method for `Dossier` `Birth Leave` endpoint. (VV-5824)
+  - `PATCH` method for `Dossier` `Paid Parental Leave` endpoint. (VV-5722)
+
 ## Release 2024-08-21
 
 ### Added
