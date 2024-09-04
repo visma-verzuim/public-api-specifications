@@ -3,6 +3,19 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-09-04
+
+### Changed
+- `GET` `Employee` now has an 'employments.employmentContracts' include to retrieve full employment details (VV-5889)
+- `GET` `Employee` - The `EmployerPersonAddress` resource now includes the address type (VV-5472)
+- `GET` `Employer` - The `ContactPerson` resource now includes a `fullSalutation` property (VV-5472)
+- `POST` `Employer` allows specifying the `contract.status` (VV-5472)
+- `PATCH` `OrganizationalUnit` now supports updating 'externalKey' (VV-5911)
+- `PATCH` `Employer` has had its documentation updated, it previously (incorrectly) included a `contract` property (VV-5472)
+- Date filters that accept a 'date-time-offset' can now parse the 'Z' time zone offset notation (VV-5856)
+- Various occurrences of the UWV `riskCode` have had their documentation updated to reflect the correct type (string) (VV-5742)
+
+
 ## Release 2024-08-28
 
 ### Added

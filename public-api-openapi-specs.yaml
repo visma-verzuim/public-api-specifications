@@ -404,7 +404,7 @@ paths:
   /api/public/configuration/contract/contract-type:
     get:
       tags:
-        - Contracts
+        - EmployerContracts
       summary: Get a list of contract types that can be applied to employer contracts
       operationId: 9d6231ab25b87de5d323c3c5e7328c43
       parameters:
@@ -760,7 +760,7 @@ paths:
   /api/public/configuration/contract/partnership:
     get:
       tags:
-        - Contracts
+        - EmployerContracts
       summary: Get a list of partnerships that can be applied to employer contracts
       operationId: 5b3391c9260f317b21be24a9aef713ee
       parameters:
@@ -873,7 +873,7 @@ paths:
   /api/public/configuration/contract/service-type:
     get:
       tags:
-        - Contracts
+        - EmployerContracts
       summary: Get a list of service types that can be applied to employer contracts
       operationId: 6e79071185d7184079fecfd59284097b
       parameters:
@@ -4678,6 +4678,16 @@ paths:
           description: Include the employee's employments in the output
           schema:
             type: string
+        - name: include[employments.employmentContracts]
+          in: query
+          description: Include the employment contracts associated with the employee's employments in the output
+          schema:
+            type: string
+        - name: include[currentOrLastEmploymentContract.organizationalUnit.employer]
+          in: query
+          description: Include the employer the employee belongs to through their organizational unit in the output
+          schema:
+            type: string
         - name: include[addresses]
           in: query
           description: Include the employee's addresses in the output
@@ -4835,6 +4845,10 @@ paths:
       responses:
         '200':
           description: Employer successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
           description: Invalid input
           content:
@@ -5927,6 +5941,16 @@ paths:
           schema:
             type: string
           example: employmentEndReason,employee,supervisor,externalSupervisor,uwvSector
+        - name: include[employmentContracts]
+          in: query
+          description: Include the employment contracts associated with the employment in the output
+          schema:
+            type: string
+        - name: include[currentOrLastEmploymentContract.organizationalUnit.employer]
+          in: query
+          description: Include the employer (and the organizational unit) the employment belongs to in the output
+          schema:
+            type: string
         - name: sort
           in: query
           description: Sort results by field, use '-keyName' to sort in descending order (externalKey, dateUpdated)
@@ -6634,6 +6658,10 @@ paths:
       responses:
         '200':
           description: Organizational unit successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
           description: Invalid input
           content:
@@ -7451,12 +7479,6 @@ components:
           example: sample-uuid-string
       type: object
     ArboRole:
-      required:
-        - id
-        - name
-        - externalKey
-        - migrationKey
-        - active
       properties:
         id:
           description: Unique identifier for the arbo role
@@ -7529,6 +7551,15 @@ components:
         isUwvContactPerson:
           description: Whether the contact person is a UWV contact person
           type: boolean
+        fullSalutation:
+          description: The fullSalutation of the contact person. Combination of short/full and gender
+          type: string
+          enum:
+            - mr
+            - mister
+            - mrs
+            - miss
+            - unknown
         dateCreated:
           description: The date the contact person was created
           type: string
@@ -8988,16 +9019,9 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/Dossier'
-        - $ref: '#/components/schemas/BirthLeaveDossierExtension'
-    BirthLeaveDossierExtension:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Dossier'
         - properties:
             birthLeave:
-              type: array
-              items:
-                $ref: '#/components/schemas/BirthLeave'
+              $ref: '#/components/schemas/BirthLeave'
           type: object
     BirthLeave:
       properties:
@@ -9472,16 +9496,9 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/Dossier'
-        - $ref: '#/components/schemas/PaidParentalLeaveDossierExtension'
-    PaidParentalLeaveDossierExtension:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Dossier'
         - properties:
             paidParentalLeave:
-              type: array
-              items:
-                $ref: '#/components/schemas/PaidParentalLeave'
+              $ref: '#/components/schemas/PaidParentalLeave'
           type: object
     PaidParentalLeave:
       properties:
@@ -9526,16 +9543,9 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/Dossier'
-        - $ref: '#/components/schemas/PregnancyDossierExtension'
-    PregnancyDossierExtension:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Dossier'
         - properties:
-            Pregnancy:
-              type: array
-              items:
-                $ref: '#/components/schemas/Pregnancy'
+            pregnancy:
+              $ref: '#/components/schemas/Pregnancy'
           type: object
     Pregnancy:
       properties:
@@ -9632,23 +9642,12 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/Dossier'
-        - $ref: '#/components/schemas/Spoor2DossierExtension'
-    Spoor2DossierExtension:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Dossier'
         - properties:
-            id:
-              description: The ID of the Dossier.
-              type: string
-              format: uuid
             safetyNet:
-              description: The type of the Dossier.
+              description: The safetynet associated with the Dossier.
               type: string
             spoor2:
-              type: array
-              items:
-                $ref: '#/components/schemas/Spoor2'
+              $ref: '#/components/schemas/Spoor2'
           type: object
     Spoor2:
       properties:
@@ -9667,19 +9666,12 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/Dossier'
-        - $ref: '#/components/schemas/ZwerdDossierExtension'
-    ZwerdDossierExtension:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Dossier'
         - properties:
             safetyNet:
               description: The type of safety net (vangnet) that applies to this absence
               type: string
             zwerd:
-              type: array
-              items:
-                $ref: '#/components/schemas/Zwerd'
+              $ref: '#/components/schemas/Zwerd'
           type: object
     Zwerd:
       properties:
@@ -10093,7 +10085,7 @@ components:
               type: integer
             riskCode:
               description: The UWV risk code of the Employee
-              type: integer
+              type: string
             waitingPeriod:
               description: The waiting period (related to UWV) of the Employee
               type: integer
@@ -10221,37 +10213,6 @@ components:
           $ref: '#/components/schemas/Address'
         postalAddress:
           $ref: '#/components/schemas/Address'
-        contract:
-          required:
-            - contractType
-            - partnershipId
-            - dateStart
-          properties:
-            contractTypeId:
-              type: string
-              example: uuid
-            partnershipId:
-              type: string
-              example: uuid
-            contractnumber:
-              type: string
-              example: abc123
-            serviceTypeId:
-              type: string
-              example: uuid
-            accountnumber:
-              type: string
-              example: abc123
-            dateStart:
-              description: YYYY-MM-DD
-              type: string
-              format: date-time
-            dateEnd:
-              description: YYYY-MM-DD, defaults to NULL
-              type: string
-              format: date-time
-              nullable: true
-          type: object
       type: object
     PostEmployerRequestBody:
       description: Employer data
@@ -10323,6 +10284,14 @@ components:
               type: string
               format: date-time
               nullable: true
+            status:
+              description: The status of contract
+              type: string
+              default: active
+              enum:
+                - active
+                - ended
+                - blocked
           type: object
       type: object
     Address:
@@ -10554,8 +10523,8 @@ components:
       type: object
     EmployerPersonAddressResource:
       properties:
-        uuid:
-          description: UUID of the employer person address
+        id:
+          description: ID of the employer person address
           type: string
         externalKey:
           description: The external key associated with the employer person address
@@ -10563,6 +10532,10 @@ components:
         migration_key:
           description: The migration key associated with the employer person address
           type: string
+        personId:
+          description: The person ID associated with the employer person address
+          type: string
+          format: uuid
         street:
           description: The street of the address associated with the employer person address.
           type: string
@@ -10590,10 +10563,49 @@ components:
           type: string
           format: date-time
       type: object
-    EmployerPersonResource:
+    EmployerPersonCommunicationsResource:
       properties:
         uuid:
-          description: UUID of the employer person
+          description: UUID of the current communication method
+          type: string
+        externalKey:
+          description: The external key associated with the current communication method
+          type: string
+        migrationKey:
+          description: The migration key associated with the current communication method
+          type: string
+        value:
+          description: The value associated with the current communication method
+          type: string
+        primary:
+          description: Indication if the communication method is flagged as primary or not.
+          type: boolean
+        type:
+          description: The type of communication
+          type: string
+          enum:
+            - email
+            - phone
+            - mobile
+        purpose:
+          description: The purpose of the communication
+          type: string
+          enum:
+            - personal
+            - business
+        dateCreated:
+          description: The date and time the employer person communication was created in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date and time the employer person communication was last updated in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+      type: object
+    EmployerPersonResource:
+      properties:
+        id:
+          description: ID of the employer person
           type: string
         externalKey:
           description: The external key associated with the employer person
@@ -10678,45 +10690,6 @@ components:
           format: date-time
         dateUpdated:
           description: The date and time the employer person was last updated in YYYY-MM-DD HH:MM:SS format
-          type: string
-          format: date-time
-      type: object
-    EmployerPersonCommunicationsResource:
-      properties:
-        uuid:
-          description: UUID of the current communication method
-          type: string
-        externalKey:
-          description: The external key associated with the current communication method
-          type: string
-        migrationKey:
-          description: The migration key associated with the current communication method
-          type: string
-        value:
-          description: The value associated with the current communication method
-          type: string
-        primary:
-          description: Indication if the communication method is flagged as primary or not.
-          type: boolean
-        type:
-          description: The type of communication
-          type: string
-          enum:
-            - email
-            - phone
-            - mobile
-        purpose:
-          description: The purpose of the communication
-          type: string
-          enum:
-            - personal
-            - business
-        dateCreated:
-          description: The date and time the employer person communication was created in YYYY-MM-DD HH:MM:SS format
-          type: string
-          format: date-time
-        dateUpdated:
-          description: The date and time the employer person communication was last updated in YYYY-MM-DD HH:MM:SS format
           type: string
           format: date-time
       type: object
@@ -10915,6 +10888,10 @@ components:
         employmentNumber:
           description: The the total sum of employments of the employee
           type: string
+        employmentContracts:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmploymentContractResource'
         primary:
           description: Indication if the employment is flagged as primary or not.
           type: boolean
@@ -10945,7 +10922,8 @@ components:
           nullable: true
         uwvRiskCode:
           description: The UWV risk code of the Employee associated with this employment.
-          type: integer
+          type: string
+          nullable: true
         waitingPeriod:
           description: The waiting period (related to UWV) of the Employee associated with this employment.
           type: integer
@@ -11360,8 +11338,6 @@ tags:
     description: Company Doctors
   - name: EmployerContracts
     description: EmployerContracts
-  - name: Contracts
-    description: Contracts
   - name: AbsenceCourse
     description: AbsenceCourse
   - name: Dossier
