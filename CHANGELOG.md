@@ -3,6 +3,13 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are not documented here.
 
+## Release 2024-09-18
+
+### Changed
+
+- `GET` `BillableOperation` now returns (soft-)deleted records when the 'withDeleted' filter is applied or if one of the new 'dateDeleted' filters is used (VV-4995)
+- OpenAPI documentation improvement: many Resources now correctly indicate that the string 'id' property is of format "uuid" (VV-5700)
+
 ## Release 2024-09-04
 
 ### Changed
