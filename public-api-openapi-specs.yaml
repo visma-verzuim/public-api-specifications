@@ -12,9 +12,10 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by absence reason UUID
+          description: Filter by absence reason ID
           schema:
             type: string
+            format: uuid
         - name: filter[externalKey]
           in: query
           description: Filter by absence reason external key
@@ -404,15 +405,16 @@ paths:
   /api/public/configuration/contract/contract-type:
     get:
       tags:
-        - Contracts
+        - EmployerContracts
       summary: Get a list of contract types that can be applied to employer contracts
       operationId: 9d6231ab25b87de5d323c3c5e7328c43
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by uuid
+          description: Filter by ID
           schema:
             type: string
+            format: uuid
         - name: filter[active]
           in: query
           description: Filter by active status
@@ -527,14 +529,16 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by uuid
+          description: Filter by ID
           schema:
             type: string
+            format: uuid
         - name: filter[employerId]
           in: query
-          description: Filter by employer uuid
+          description: Filter by employer ID
           schema:
             type: string
+            format: uuid
         - name: filter[employerKey]
           in: query
           description: Filter by employer external key
@@ -760,15 +764,16 @@ paths:
   /api/public/configuration/contract/partnership:
     get:
       tags:
-        - Contracts
+        - EmployerContracts
       summary: Get a list of partnerships that can be applied to employer contracts
       operationId: 5b3391c9260f317b21be24a9aef713ee
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by uuid
+          description: Filter by ID
           schema:
             type: string
+            format: uuid
         - name: filter[active]
           in: query
           description: Filter by active status
@@ -873,15 +878,16 @@ paths:
   /api/public/configuration/contract/service-type:
     get:
       tags:
-        - Contracts
+        - EmployerContracts
       summary: Get a list of service types that can be applied to employer contracts
       operationId: 6e79071185d7184079fecfd59284097b
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by uuid
+          description: Filter by ID
           schema:
             type: string
+            format: uuid
         - name: filter[active]
           in: query
           description: Filter by status
@@ -1003,14 +1009,16 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific absence course
+          description: Filter by ID to get a specific absence course
           schema:
             type: string
+            format: uuid
         - name: filter[dossierId]
           in: query
-          description: Filter by the UUID of a specific dossier
+          description: Filter by the ID of a specific dossier
           schema:
             type: string
+            format: uuid
         - name: filter[dossierKey]
           in: query
           description: Filter by the external key of a specific dossier
@@ -1023,19 +1031,22 @@ paths:
             type: string
         - name: filter[employeeId]
           in: query
-          description: Filter by the UUID of a specific employee
+          description: Filter by the ID of a specific employee
           schema:
             type: string
+            format: uuid
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of a specific employment
+          description: Filter by the ID of a specific employment
           schema:
             type: string
+            format: uuid
         - name: filter[absenceReasonId]
           in: query
-          description: Filter by the UUID of a specific absence reason
+          description: Filter by the ID of a specific absence reason
           schema:
             type: string
+            format: uuid
         - name: filter[employeeNumber]
           in: query
           description: Filter by an employee's employee number
@@ -1657,6 +1668,219 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
+  /api/public/dossier/content/document/{id}:
+    delete:
+      tags:
+        - DossierContent
+      summary: Delete a document
+      description: Deletes a document based on the ID.
+      operationId: d3daeadd190687cfc2be594d6377efab
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the document to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Document successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/content/documents:
+    get:
+      tags:
+        - DossierContent
+      summary: Get a list of documents that can be applied to dossier content
+      operationId: a1c67fe8683a5cca5e58a720482f231a
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by the document's id
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: filter[externalKey]
+          in: query
+          description: Filter by the document's external key
+          required: false
+          schema:
+            type: string
+        - name: filter[title]
+          in: query
+          description: Filter by the document's title
+          required: false
+          schema:
+            type: string
+        - name: filter[forBothParties]
+          in: query
+          description: Filter by the document's forBothParties status
+          required: false
+          schema:
+            type: boolean
+        - name: filter[inReview]
+          in: query
+          description: Filter by the document's inReview status
+          required: false
+          schema:
+            type: boolean
+        - name: filter[isConcept]
+          in: query
+          description: Filter by the document's concept status
+          required: false
+          schema:
+            type: boolean
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the document's belonging to this dossierId
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by the document's updated date. All records from this date onwards will be returned
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter by the document's updated date. All records up to and including this date will be returned
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: A list of documents
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DossierDocumentResource'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/document?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/document?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/document?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/document?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/document?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+  /api/public/dossier/content/document/{uuid}:
+    patch:
+      tags:
+        - DossierContent
+      summary: Update an existing document
+      description: Update an existing document belonging to a dossier
+      operationId: d100bf69eba0821956bad0d1310ad1cb
+      parameters:
+        - name: uuid
+          in: path
+          description: The uuid of the document
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: The document data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDossierDocumentRequestBody'
+      responses:
+        '200':
+          description: The document was successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierDocumentResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier/content/document:
     post:
       tags:
@@ -1674,6 +1898,38 @@ paths:
       responses:
         '201':
           description: The document was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierDocumentResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - DossierContent
+      summary: Update an existing document
+      description: Update an existing document belonging to a dossier
+      operationId: 874a67d94527dab510748f86a7fbe666
+      requestBody:
+        description: The document data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDossierDocumentRequestBody'
+      responses:
+        '200':
+          description: The document was successfully updated
           content:
             application/json:
               schema:
@@ -1946,289 +2202,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/content/documents:
-    get:
+  /api/public/dossier/content/note/{id}:
+    delete:
       tags:
         - DossierContent
-      summary: Get a list of documents that can be applied to dossier content
-      operationId: a9cee242a702691fd53b80694eb97219
+      summary: Delete a note
+      description: Deletes a note based on the ID.
+      operationId: e2f1f302b6fa29a24f04a15319b1bfcf
       parameters:
-        - name: filter[id]
-          in: query
-          description: Filter by the document's id
-          required: false
+        - name: id
+          in: path
+          description: Unique identifier of the note to delete.
+          required: true
           schema:
             type: string
             format: uuid
-        - name: filter[externalKey]
-          in: query
-          description: Filter by the document's external key
-          required: false
-          schema:
-            type: string
-        - name: filter[title]
-          in: query
-          description: Filter by the document's title
-          required: false
-          schema:
-            type: string
-        - name: filter[forBothParties]
-          in: query
-          description: Filter by the document's forBothParties status
-          required: false
-          schema:
-            type: boolean
-        - name: filter[inReview]
-          in: query
-          description: Filter by the document's inReview status
-          required: false
-          schema:
-            type: boolean
-        - name: filter[isConcept]
-          in: query
-          description: Filter by the document's concept status
-          required: false
-          schema:
-            type: boolean
-        - name: filter[dossierId]
-          in: query
-          description: Filter by the document's belonging to this dossierId
-          required: false
-          schema:
-            type: string
-            format: uuid
-        - name: filter[dateUpdatedFrom]
-          in: query
-          description: Filter by the document's updated date. All records from this date onwards will be returned
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - name: filter[dateUpdatedUntil]
-          in: query
-          description: Filter by the document's updated date. All records up to and including this date will be returned
-          required: false
-          schema:
-            type: string
-            format: date-time
       responses:
         '200':
-          description: A list of documents
+          description: Note successfully deleted
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierDocumentResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/document?page[number]=1&page[size]=25
-                      first:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/document?page[size]=25
-                      last:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/document?page[number]=1&page[size]=25
-                      prev:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/document?page[size]=25
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/document?page[number]=2&page[size]=25
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                    example: Validation of the request failed
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
-                      type: object
-                type: object
-  /api/public/dossier/content/upload:
-    get:
-      tags:
-        - DossierContent
-      summary: Get a list of dossier uploads
-      operationId: 511f984b5bbc74b2b90289f9e1ed9a99
-      parameters:
-        - name: filter[id]
-          in: query
-          description: Filter by the dossier upload's id
-          required: false
-          schema:
-            type: string
-            format: uuid
-        - name: filter[externalKey]
-          in: query
-          description: Filter by the dossier upload's external key
-          required: false
-          schema:
-            type: string
-        - name: filter[title]
-          in: query
-          description: Filter by the dossier upload's title
-          required: false
-          schema:
-            type: string
-        - name: filter[forBothParties]
-          in: query
-          description: Filter by the dossier upload's forBothParties status
-          required: false
-          schema:
-            type: boolean
-        - name: filter[dossierId]
-          in: query
-          description: Filter by the dossier upload's belonging to this dossierId
-          required: false
-          schema:
-            type: boolean
-        - name: filter[dateUpdatedFrom]
-          in: query
-          description: Filter by the dossier upload's updated date. All records from this date onwards will be returned
-          required: false
-          schema:
-            type: string
-            format: date-time
-        - name: filter[dateUpdatedUntil]
-          in: query
-          description: Filter by the dossier upload's updated date. All records up to and including this date will be returned
-          required: false
-          schema:
-            type: string
-            format: date-time
-      responses:
-        '200':
-          description: A list of uploads
-          content:
-            application/json:
-              schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierUploadResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/upload?page[number]=1&page[size]=25
-                      first:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/upload?page[size]=25
-                      last:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/upload?page[number]=1&page[size]=25
-                      prev:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/upload?page[size]=25
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: https://api.dotweb.test/public/dossier/content/upload?page[number]=2&page[size]=25
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                    example: Validation of the request failed
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
-                      type: object
-                type: object
-    post:
-      tags:
-        - DossierContent
-      summary: Create a new upload
-      description: Create a new upload for a dossier
-      operationId: ee6598a7e181edc92449ff09cadd7a6e
-      requestBody:
-        description: The upload data
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostDossierUploadRequestBody'
-      responses:
-        '201':
-          description: The upload was successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DossierUploadResource'
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
           description: Invalid input
           content:
@@ -2479,6 +2474,270 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DossierNoteResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/content/upload/{id}:
+    delete:
+      tags:
+        - DossierContent
+      summary: Delete a dossier upload
+      description: Deletes a dossier upload based on the ID.
+      operationId: b03cdb05b886a76836632906258272f7
+      parameters:
+        - name: id
+          in: path
+          description: Unique identifier of the dossier upload to delete.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Dossier upload successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/content/upload:
+    get:
+      tags:
+        - DossierContent
+      summary: Get a list of dossier uploads
+      operationId: d750ca66813f83ac9a31d4780db6d8eb
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by the dossier upload's id
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: filter[externalKey]
+          in: query
+          description: Filter by the dossier upload's external key
+          required: false
+          schema:
+            type: string
+        - name: filter[title]
+          in: query
+          description: Filter by the dossier upload's title
+          required: false
+          schema:
+            type: string
+        - name: filter[forBothParties]
+          in: query
+          description: Filter by the dossier upload's forBothParties status
+          required: false
+          schema:
+            type: boolean
+        - name: filter[dossierId]
+          in: query
+          description: Filter by the dossier upload's belonging to this dossierId
+          required: false
+          schema:
+            type: boolean
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by the dossier upload's updated date. All records from this date onwards will be returned
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter by the dossier upload's updated date. All records up to and including this date will be returned
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: A list of uploads
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DossierUploadResource'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/upload?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/upload?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/upload?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/upload?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/dossier/content/upload?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
+    post:
+      tags:
+        - DossierContent
+      summary: Create a new upload
+      description: Create a new upload for a dossier
+      operationId: ee6598a7e181edc92449ff09cadd7a6e
+      requestBody:
+        description: The upload data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDossierUploadRequestBody'
+      responses:
+        '201':
+          description: The upload was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierUploadResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - DossierContent
+      summary: Update an existing upload
+      description: Update an existing upload belonging to a dossier
+      operationId: a33e6c204b2d7032eebece466784a185
+      requestBody:
+        description: The upload data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDossierUploadRequestBody'
+      responses:
+        '200':
+          description: The upload was successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierUploadResource'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/content/upload/{uuid}:
+    patch:
+      tags:
+        - DossierContent
+      summary: Update an existing upload
+      description: Update an existing upload belonging to a dossier
+      operationId: bfb2a3909024e6a83afea67bad7d4bfc
+      parameters:
+        - name: uuid
+          in: path
+          description: The uuid of the upload
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: The upload data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDossierUploadRequestBody'
+      responses:
+        '200':
+          description: The upload was successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierUploadResource'
         '400':
           description: Invalid input
           content:
@@ -2814,6 +3073,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Update a Birth Leave dossier
+      description: This endpoint is used to update a Birth Leave dossier.
+      operationId: a5ba9f51b624767d26de9e1d9c4ed04f
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PatchDossierRequestBody'
+                - $ref: '#/components/schemas/PatchBirthLeaveDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier:
     get:
       tags:
@@ -2823,12 +3116,12 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific dossier
+          description: Filter by ID to get a specific dossier
           schema:
             type: string
         - name: filter[dossierId]
           in: query
-          description: Filter by the UUID of a specific dossier
+          description: Filter by the ID of a specific dossier
           schema:
             type: string
         - name: filter[externalKey]
@@ -2843,7 +3136,7 @@ paths:
             type: string
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of a specific employment
+          description: Filter by the ID of a specific employment
           schema:
             type: string
         - name: filter[employmentNumber]
@@ -2950,12 +3243,12 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific dossier
+          description: Filter by ID to get a specific dossier
           schema:
             type: string
         - name: filter[dossierId]
           in: query
-          description: Filter by the UUID of a specific dossier
+          description: Filter by the ID of a specific dossier
           schema:
             type: string
         - name: filter[externalKey]
@@ -2965,7 +3258,7 @@ paths:
             type: string
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of a specific employment
+          description: Filter by the ID of a specific employment
           schema:
             type: string
         - name: filter[employmentNumber]
@@ -3095,6 +3388,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Update a preventive dossier
+      description: This endpoint is used to update a preventive dossier.
+      operationId: ea8608fca2395d2f5ec6b8ae55b3188d
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchPreventiveDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier/medical-preventive:
     get:
       tags:
@@ -3104,12 +3429,12 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific dossier
+          description: Filter by ID to get a specific dossier
           schema:
             type: string
         - name: filter[dossierId]
           in: query
-          description: Filter by the UUID of a specific dossier
+          description: Filter by the ID of a specific dossier
           schema:
             type: string
         - name: filter[externalKey]
@@ -3119,7 +3444,7 @@ paths:
             type: string
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of a specific employment
+          description: Filter by the ID of a specific employment
           schema:
             type: string
         - name: filter[employmentNumber]
@@ -3230,6 +3555,38 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PostMedicalPreventiveDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Update a medical preventive dossier
+      description: This endpoint is used to update a medical preventive dossier.
+      operationId: 7cef874f4b7d832ae2a21a1d6a5d9b99
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchMedicalPreventiveDossierRequestBody'
       responses:
         '201':
           description: Dossier successfully created
@@ -3565,6 +3922,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Update a Paid Parental Leave dossier
+      description: This endpoint is used to update a Paid Parental Leave dossier.
+      operationId: e1d6e83a9e45b74e03645e20a5c4a885
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PatchDossierRequestBody'
+                - $ref: '#/components/schemas/PatchPaidParentalLeaveDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier/pregnancy:
     get:
       tags:
@@ -3762,14 +4153,16 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific dossier
+          description: Filter by ID to get a specific dossier
           schema:
             type: string
+            format: uuid
         - name: filter[dossierId]
           in: query
-          description: Filter by the UUID of a specific dossier
+          description: Filter by the ID of a specific dossier
           schema:
             type: string
+            format: uuid
         - name: filter[externalKey]
           in: query
           description: Filter by external key
@@ -3777,9 +4170,10 @@ paths:
             type: string
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of a specific employment
+          description: Filter by the ID of a specific employment
           schema:
             type: string
+            format: uuid
         - name: filter[employmentNumber]
           in: query
           description: Filter by the employment number
@@ -3909,6 +4303,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Update a spoor 2 dossier
+      description: This endpoint is used to update a new spoor 2 dossier.
+      operationId: 4eaef3d4ce6d052de7e09824e7c3d6ea
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PatchDossierRequestBody'
+                - $ref: '#/components/schemas/PatchSpoor2RequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier/zwerd:
     get:
       tags:
@@ -3918,14 +4346,16 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific dossier
+          description: Filter by ID to get a specific dossier
           schema:
             type: string
+            format: uuid
         - name: filter[dossierId]
           in: query
-          description: Filter by the UUID of a specific dossier
+          description: Filter by the ID of a specific dossier
           schema:
             type: string
+            format: uuid
         - name: filter[externalKey]
           in: query
           description: Filter by external key
@@ -3933,9 +4363,10 @@ paths:
             type: string
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of a specific employment
+          description: Filter by the ID of a specific employment
           schema:
             type: string
+            format: uuid
         - name: filter[employmentNumber]
           in: query
           description: Filter by the employment number
@@ -4063,6 +4494,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Update a ZW ERD dossier
+      description: This endpoint is used to update a ZW ERD dossier.
+      operationId: da5219fa39232715871dccbd271d488f
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchZwerdDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier-officer:
     get:
       tags:
@@ -4072,7 +4535,7 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID
+          description: Filter by ID
           required: false
           schema:
             type: string
@@ -4204,7 +4667,7 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific employee
+          description: Filter by ID to get a specific employee
           schema:
             type: string
         - name: filter[externalKey]
@@ -4214,7 +4677,7 @@ paths:
             type: string
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of a specific employment
+          description: Filter by the ID of a specific employment
           schema:
             type: string
         - name: filter[employeeNumber]
@@ -4230,6 +4693,16 @@ paths:
         - name: include[employments]
           in: query
           description: Include the employee's employments in the output
+          schema:
+            type: string
+        - name: include[employments.employmentContracts]
+          in: query
+          description: Include the employment contracts associated with the employee's employments in the output
+          schema:
+            type: string
+        - name: include[currentOrLastEmploymentContract.organizationalUnit.employer]
+          in: query
+          description: Include the employer the employee belongs to through their organizational unit in the output
           schema:
             type: string
         - name: include[addresses]
@@ -4389,6 +4862,10 @@ paths:
       responses:
         '200':
           description: Employer successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
           description: Invalid input
           content:
@@ -4550,6 +5027,7 @@ paths:
           description: Filter by id
           schema:
             type: string
+            format: uuid
         - name: filter[externalKey]
           in: query
           description: Filter by external key
@@ -4732,9 +5210,10 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID
+          description: Filter by ID
           schema:
             type: string
+            format: uuid
         - name: filter[externalKey]
           in: query
           description: Filter by external key
@@ -4742,9 +5221,10 @@ paths:
             type: string
         - name: filter[parentEmployerDivisionId]
           in: query
-          description: Filter by parent employer division UUID
+          description: Filter by parent employer division ID
           schema:
             type: string
+            format: uuid
         - name: filter[parentEmployerDivisionExternalKey]
           in: query
           description: Filter by parent employer division's external key
@@ -4999,9 +5479,10 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Find by UUID of employment contract
+          description: Find by ID of employment contract
           schema:
             type: string
+            format: uuid
         - name: filter[externalKey]
           in: query
           description: Filter by external key of employment contract
@@ -5009,9 +5490,10 @@ paths:
             type: string
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of employment
+          description: Filter by the ID of employment
           schema:
             type: string
+            format: uuid
         - name: filter[employmentKey]
           in: query
           description: Filter by the external key of employment
@@ -5019,9 +5501,10 @@ paths:
             type: string
         - name: filter[organizationalUnitId]
           in: query
-          description: Filter by the UUID of organizational unit
+          description: Filter by the ID of organizational unit
           schema:
             type: string
+            format: uuid
         - name: filter[organizationalUnitKey]
           in: query
           description: Filter by the external key of organizational unit
@@ -5276,7 +5759,7 @@ paths:
                 - key
               properties:
                 id:
-                  description: Employment Contract UUID, mutually exclusive with 'key'
+                  description: Employment Contract ID, mutually exclusive with 'key'
                   type: string
                   format: uuid
                   example: b4b1ae1a-8683-4f6b-a3f6-3fff05c90d50
@@ -5392,7 +5875,7 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Find by UUID of employment
+          description: Find by ID of employment
           schema:
             type: string
             format: uuid
@@ -5405,7 +5888,7 @@ paths:
           example: c84563d5-2fd8-4c02-b329-f2f9142e7c23
         - name: filter[employeeId]
           in: query
-          description: Filter by the UUID of employee
+          description: Filter by the ID of employee
           schema:
             type: string
             format: uuid
@@ -5418,7 +5901,7 @@ paths:
           example: 8b242b19-c11a-4d9e-b9ed-1117ab0ac6e0
         - name: filter[currentOrLastEmploymentContract]
           in: query
-          description: Filter by the UUID of the current or last employment contract
+          description: Filter by the ID of the current or last employment contract
           schema:
             type: string
             format: uuid
@@ -5437,7 +5920,7 @@ paths:
           example: 'false'
         - name: filter[internalSupervisorId]
           in: query
-          description: Filter by the UUID of internal supervisor
+          description: Filter by the ID of internal supervisor
           schema:
             type: string
             format: uuid
@@ -5450,7 +5933,7 @@ paths:
           example: 9c77ba70-fc65-4715-9158-17d65f55c373
         - name: filter[externalSupervisorId]
           in: query
-          description: Filter by the UUID of external supervisor
+          description: Filter by the ID of external supervisor
           schema:
             type: string
             format: uuid
@@ -5481,6 +5964,16 @@ paths:
           schema:
             type: string
           example: employmentEndReason,employee,supervisor,externalSupervisor,uwvSector
+        - name: include[employmentContracts]
+          in: query
+          description: Include the employment contracts associated with the employment in the output
+          schema:
+            type: string
+        - name: include[currentOrLastEmploymentContract.organizationalUnit.employer]
+          in: query
+          description: Include the employer (and the organizational unit) the employment belongs to in the output
+          schema:
+            type: string
         - name: sort
           in: query
           description: Sort results by field, use '-keyName' to sort in descending order (externalKey, dateUpdated)
@@ -5609,16 +6102,31 @@ paths:
                   example: '2'
                   nullable: true
                 employmentEndReason:
-                  description: The reason for the end of employment - e.g. 'end-employment'
+                  description: The reason for the end of employment
                   type: string
+                  enum:
+                    - end-employment
+                    - sick-during-end-of-employment
+                    - reach-aow
+                    - death
+                    - dismissal
+                    - retirement
+                    - temporary-old-age-pension
+                    - wia
+                    - termination-of-temporary-employment
+                    - unknown
+                    - within-probationary-period
+                    - dismissal-own-request
+                    - immediate-dismissal
+                    - mutual-termination-of-employment
                   example: end-employment
                 internalSupervisorId:
-                  description: UUID identifier for the employee set as a supervisor to the employment
+                  description: ID identifier for the employee set as a supervisor to the employment
                   type: string
                   format: uuid
                   example: 42a384fb-de7e-421c-ba81-2598fb510016
                 externalSupervisorId:
-                  description: UUID identifier for the external supervisor set as a supervisor to the employment
+                  description: ID identifier for the external supervisor set as a supervisor to the employment
                   type: string
                   format: uuid
                   example: 42a384fb-de7e-421c-ba81-2598fb510016
@@ -5682,6 +6190,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Employments
+      summary: Update an existing employment
+      description: Update an existing employment
+      operationId: 06303c11bc78024da09d625d3b0441ae
+      requestBody:
+        description: Employment data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchEmploymentRequestBody'
+      responses:
+        '200':
+          description: Employment successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employment'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/configuration/employment/employment-type:
     get:
       tags:
@@ -5691,9 +6231,10 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific employment type
+          description: Filter by ID to get a specific employment type
           schema:
             type: string
+            format: uuid
         - name: filter[externalKey]
           in: query
           description: Filter by external key
@@ -5764,6 +6305,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+  /api/public/employment/{uuid}:
+    patch:
+      tags:
+        - Employments
+      summary: Update an existing employment
+      description: Update an existing employment
+      operationId: 59a5a86ee0307da242a6f7c1973b9092
+      parameters:
+        - name: uuid
+          in: path
+          description: The  id of the employment to be updated
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Employment data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchEmploymentRequestBody'
+      responses:
+        '200':
+          description: Employment successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employment'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/external-supervisor:
     get:
       tags:
@@ -5975,9 +6557,10 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID to get a specific billable operation
+          description: Filter by ID to get a specific billable operation
           schema:
             type: string
+            format: uuid
         - name: filter[externalKey]
           in: query
           description: Filter by the external key of a specific billable operation
@@ -5985,36 +6568,57 @@ paths:
             type: string
         - name: filter[operationId]
           in: query
-          description: Filter by the UUID of a specific operation
+          description: Filter by the ID of a specific operation
           schema:
             type: string
+            format: uuid
         - name: filter[dossierId]
           in: query
-          description: Filter by the UUID of a specific dossier
+          description: Filter by the ID of a specific dossier
           schema:
             type: string
+            format: uuid
         - name: filter[dossierTaskId]
           in: query
           description: Filter by dossierTaskId associated with the billable operation
           schema:
             type: integer
+            format: uuid
         - name: filter[employmentId]
           in: query
-          description: Filter by the UUID of a specific employment
+          description: Filter by the ID of a specific employment
           schema:
             type: string
+            format: uuid
         - name: filter[dateUpdatedFrom]
           in: query
           description: Filter by date updated from
           schema:
             type: string
-            format: date-time
+            format: date-time-offset
         - name: filter[dateUpdatedUntil]
           in: query
           description: Filter by date updated until
           schema:
             type: string
-            format: date-time
+            format: date-time-offset
+        - name: filter[withDeleted]
+          in: query
+          description: Include deleted operations in the results, not needed if filtering by date deleted 'from' or 'until'
+          schema:
+            type: boolean
+        - name: filter[dateDeletedFrom]
+          in: query
+          description: Filter by date deleted from
+          schema:
+            type: string
+            format: date-time-offset
+        - name: filter[dateDeletedUntil]
+          in: query
+          description: Filter by date deleted until
+          schema:
+            type: string
+            format: date-time-offset
         - name: sort
           in: query
           description: Sort results by a specific column, use - before the field name to sort descending
@@ -6025,6 +6629,8 @@ paths:
               - '-dateExecuted'
               - dateUpdated
               - '-dateUpdated'
+              - dateDeleted
+              - '-dateDeleted'
               - externalKey
               - '-externalKey'
       responses:
@@ -6100,6 +6706,10 @@ paths:
       responses:
         '200':
           description: Organizational unit successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
         '400':
           description: Invalid input
           content:
@@ -6254,7 +6864,7 @@ paths:
       parameters:
         - name: filter[id]
           in: query
-          description: Filter by UUID
+          description: Filter by ID
           schema:
             type: string
         - name: filter[externalKey]
@@ -6284,12 +6894,12 @@ paths:
             type: boolean
         - name: filter[employerId]
           in: query
-          description: Filter by employer UUID
+          description: Filter by employer ID
           schema:
             type: string
         - name: filter[parentOrganizationalUnitId]
           in: query
-          description: Filter by parent organizational unit UUID
+          description: Filter by parent organizational unit ID
           schema:
             type: string
         - name: sort
@@ -6508,9 +7118,10 @@ paths:
       parameters:
         - name: filter[employerId]
           in: query
-          description: Filter by employer UUID
+          description: Filter by employer ID
           schema:
             type: string
+            format: uuid
         - name: include
           in: query
           description: Include related resources (employer)
@@ -6917,12 +7528,6 @@ components:
           example: sample-uuid-string
       type: object
     ArboRole:
-      required:
-        - id
-        - name
-        - externalKey
-        - migrationKey
-        - active
       properties:
         id:
           description: Unique identifier for the arbo role
@@ -6945,7 +7550,7 @@ components:
     CompanyDoctor:
       properties:
         id:
-          description: The UUID of the company doctor.
+          description: The ID of the company doctor.
           type: string
           format: uuid
         externalKey:
@@ -6962,6 +7567,10 @@ components:
       type: object
     ContactPerson:
       properties:
+        id:
+          description: ID of the contact person
+          type: string
+          format: uuid
         externalKey:
           description: External key associated with the contact person
           type: string
@@ -6995,6 +7604,15 @@ components:
         isUwvContactPerson:
           description: Whether the contact person is a UWV contact person
           type: boolean
+        fullSalutation:
+          description: The fullSalutation of the contact person. Combination of short/full and gender
+          type: string
+          enum:
+            - mr
+            - mister
+            - mrs
+            - miss
+            - unknown
         dateCreated:
           description: The date the contact person was created
           type: string
@@ -7088,8 +7706,9 @@ components:
         - contractStatus
       properties:
         employerId:
-          description: The UUID of the Employer.
+          description: The ID of the Employer.
           type: string
+          format: uuid
           example: bc1a50da-1093-4809-8efc-e3553b2f49b0
         externalKey:
           description: The external Key for the Employer Contract to be created.
@@ -7097,26 +7716,29 @@ components:
           example: External-Key-Test
           nullable: true
         contractTypeId:
-          description: The UUID of the Contract type.
+          description: The ID of the Contract type.
           type: string
+          format: uuid
           example: bc1a50da-1093-4809-8efc-e3553b2f49b0
         partnershipId:
-          description: The UUID of the Partnership.
+          description: The ID of the Partnership.
           type: string
+          format: uuid
           example: bc1a50da-1093-4809-8efc-e3553b2f49b0
         serviceTypeId:
-          description: The UUID of the service type. REQUIRED if the partner uses service contracts
+          description: The ID of the service type. REQUIRED if the partner uses service contracts
           type: string
+          format: uuid
           example: bc1a50da-1093-4809-8efc-e3553b2f49b0
         dateStart:
           description: YYYY-MM-DD
           type: string
-          format: date-time
+          format: date
           example: '2024-01-01'
         dateEnd:
           description: YYYY-MM-DD
           type: string
-          format: date-time
+          format: date
           example: '2024-03-01'
           nullable: true
         contractStatus:
@@ -7157,8 +7779,9 @@ components:
     Contract:
       properties:
         id:
-          description: UUID of the contract
+          description: ID of the contract
           type: string
+          format: uuid
         externalKey:
           description: External key associated with the contract
           type: string
@@ -7176,13 +7799,13 @@ components:
           description: Whether the contract is active
           type: boolean
         dateStart:
-          description: The start date in YYYY-MM-DD HH:MM:SS format
+          description: The start date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateEnd:
-          description: The end date in YYYY-MM-DD HH:MM:SS format
+          description: The end date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateCreated:
           description: The date the contract was created
           type: string
@@ -7195,8 +7818,9 @@ components:
     ContractType:
       properties:
         id:
-          description: UUID of the contract type
+          description: ID of the contract type
           type: string
+          format: uuid
         externalKey:
           description: External key associated with the contract type
           type: string
@@ -7222,13 +7846,13 @@ components:
           description: The billing type of the contract type
           type: string
         dateStart:
-          description: The start date in YYYY-MM-DD HH:MM:SS format
+          description: The start date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateEnd:
-          description: The end date in YYYY-MM-DD HH:MM:SS format
+          description: The end date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateCreated:
           description: The date the contract type was created
           type: string
@@ -7241,8 +7865,9 @@ components:
     EmployerContract:
       properties:
         id:
-          description: Id of the contract
+          description: ID of the contract
           type: string
+          format: uuid
         externalKey:
           description: External key associated with the contract
           type: string
@@ -7281,13 +7906,13 @@ components:
           format: float
           nullable: true
         dateStart:
-          description: The start date in YYYY-MM-DD HH:MM:SS format
+          description: The start date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateEnd:
-          description: The end date in YYYY-MM-DD HH:MM:SS format
+          description: The end date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
           nullable: true
         dateCreated:
           description: The date the contract was created
@@ -7301,8 +7926,9 @@ components:
     EmployerServiceContract:
       properties:
         id:
-          description: Id of the service contract
+          description: ID of the service contract
           type: string
+          format: uuid
         externalKey:
           description: External key associated with the contract
           type: string
@@ -7327,13 +7953,13 @@ components:
             - ended
             - blocked
         dateStart:
-          description: The start date in YYYY-MM-DD HH:MM:SS format
+          description: The start date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateEnd:
-          description: The end date in YYYY-MM-DD HH:MM:SS format
+          description: The end date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
           nullable: true
         dateCreated:
           description: The date the contract was created
@@ -7347,23 +7973,27 @@ components:
     OwnRiskContract:
       properties:
         id:
-          description: UUID of the own risk contract
+          description: ID of the own risk contract
           type: string
+          format: uuid
         type:
           description: The type of the own risk contract
           type: string
         dateCreated:
           description: The date the own risk contract was created
           type: string
+          format: date-time
         dateUpdated:
           description: The date the own risk contract was updated
           type: string
+          format: date-time
       type: object
     Partnership:
       properties:
         id:
-          description: UUID of the partnership
+          description: ID of the partnership
           type: string
+          format: uuid
         name:
           description: The name of the partnership
           type: string
@@ -7388,8 +8018,9 @@ components:
     ServiceType:
       properties:
         id:
-          description: UUID of the service type
+          description: ID of the service type
           type: string
+          format: uuid
         name:
           description: The name of the service type
           type: string
@@ -7411,11 +8042,11 @@ components:
         - employmentId|employmentKey
       properties:
         id:
-          description: UUID of the absence course
+          description: ID of the absence course
           type: string
           format: uuid
         employmentId:
-          description: UUID of the employment
+          description: ID of the employment
           type: string
           format: uuid
         employmentKey:
@@ -7440,7 +8071,7 @@ components:
             - unknown
             - sick-due-to-organ-donation
         absenceReasonId:
-          description: Set absence reason based on the UUID of the absence reason
+          description: Set absence reason based on the ID of the absence reason
           type: string
           format: uuid
         absenceReasonCode:
@@ -7489,15 +8120,16 @@ components:
           description: If applicable, the type of accident that applies to this absence
           type: string
         absenceReasonId:
-          description: Set absence reason based on the UUID of the absence reason
+          description: Set absence reason based on the ID of the absence reason
           type: string
           format: uuid
         absenceReasonCode:
           description: Set absence reason based on the 'code' of the absence reason (code is user-configurable)
           type: string
         employmentId:
-          description: Identifier (UUID) for the employment the absence is related to, exclusive with 'employmentKey'
+          description: Identifier (ID) for the employment the absence is related to, exclusive with 'employmentKey'
           type: string
+          format: uuid
         employmentKey:
           description: Identifier (external key) for the employment the absence is related to, exclusive with 'employmentId'
           type: string
@@ -7541,6 +8173,57 @@ components:
           description: Percentage of recovery, 0 being fully absent, 100 being fully recovered, required
           type: integer
           format: int32
+      type: object
+    PatchDossierDocumentRequestBody:
+      properties:
+        id:
+          description: External identifier for the document
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        key:
+          description: External identifier for the document
+          type: string
+          example: exKey123
+        externalKey:
+          description: New external identifier for the document
+          type: string
+          example: exKey123
+        documentTypeId:
+          description: The uuid of the document type
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        dossierSectionId:
+          description: The uuid of the dossier section
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        forBothParties:
+          description: Whether the document is for both parties
+          type: boolean
+          example: 'true'
+        inReview:
+          description: Whether the document is in review
+          type: boolean
+          example: 'false'
+        title:
+          description: The title of the document
+          type: string
+          example: document title
+        content:
+          description: The content of the document
+          type: string
+          example: Content of this document.
+        reviewByCompanyDoctor:
+          description: Whether the document is reviewed by the company doctor. Required if inReview is true
+          type: boolean
+          example: 'true'
+        dateCreated:
+          description: The date the document was created
+          type: string
+          format: date-time
+          example: '2021-12-31 23:59:59'
       type: object
     PostDossierDocumentRequestBody:
       required:
@@ -7642,8 +8325,9 @@ components:
     PatchDossierNoteRequestBody:
       properties:
         id:
-          description: Id for the note
+          description: ID for the note
           type: string
+          format: uuid
           example: 123e4567-e89b-12d3-a456-426614174000
         key:
           description: External identifier for the note
@@ -7754,6 +8438,49 @@ components:
           format: date-time
           example: '2021-12-31 23:59:59'
       type: object
+    PatchDossierUploadRequestBody:
+      properties:
+        id:
+          description: The ID of the upload
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        key:
+          description: Current external identifier for the upload
+          type: string
+          example: exKey123
+        externalKey:
+          description: New external identifier for the upload
+          type: string
+          example: exKey123
+        uploadTypeId:
+          description: The uuid of the upload type
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        dossierSectionId:
+          description: The uuid of the dossier section
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        forBothParties:
+          description: Whether the upload is for both parties
+          type: boolean
+          example: 'true'
+        title:
+          description: The title of the upload
+          type: string
+          example: upload title
+        note:
+          description: The content of the upload
+          type: string
+          example: Content of this upload.
+        dateCreated:
+          description: The date the upload was created
+          type: string
+          format: date-time
+          example: '2021-12-31 23:59:59'
+      type: object
     PostDossierUploadRequestBody:
       required:
         - dossierId
@@ -7803,6 +8530,198 @@ components:
           type: string
           format: date-time
           example: '2021-12-31 23:59:59'
+      type: object
+    PatchBirthLeaveDossierRequestBody:
+      properties:
+        beneficiary:
+          description: Who the beneficiary of the leave is
+          type: string
+          enum:
+            - employee
+            - employer
+        dateOfBirthExpected:
+          description: The expected birthdate of the child
+          type: string
+          format: date
+        dateStartActual:
+          description: The actual start date of the requested leave
+          type: string
+          format: date
+        weeks:
+          description: The number of weeks of leave
+          type: integer
+      type: object
+    PatchDossierRequestBody:
+      required:
+        - id
+      properties:
+        id:
+          description: ID of the dossier to be updated
+          type: string
+          format: uuid
+        externalKey:
+          description: External identifier for the dossier
+          type: string
+        dossierStatus:
+          description: The status of the dossier, if omitted defaults to 'open', unless 'dateCompleted' is set  in the past, then it defaults to 'closed'
+          type: string
+          enum:
+            - open
+            - closed
+        dateReported:
+          description: Date the dossier was reported, if omitted defaults to 'now'
+          type: string
+          format: date
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment, required if 'employmentKey' is omitted
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment, required if 'employmentId' is omitted
+          type: string
+        protocol:
+          description: The protocol of the dossier
+          type: string
+        dossierNumber:
+          description: The dossier number, defaults to 0
+          type: string
+        dossierOfficerId:
+          description: The id of the dossier officer, required if 'dossierOfficerKey' is omitted
+          type: string
+          format: uuid
+        dossierOfficerKey:
+          description: The key of the dossier officer, required if 'dossierOfficerId' is omitted
+          type: string
+        safetyNet:
+          description: If applicable, the type of safety net (vangnet) that applies to this dossier
+          type: string
+        dossierClosureReason:
+          description: The reason the dossier was closed
+          type: string
+        contractId:
+          description: The id of the contract
+          type: string
+          format: uuid
+        expectedDurationDays:
+          description: The expected duration of the dossier in days
+          type: integer
+        dateCompleted:
+          description: The date the dossier was completed
+          type: string
+          format: date
+      type: object
+    PatchMedicalPreventiveDossierRequestBody:
+      properties:
+        externalKey:
+          description: External identifier for the dossier
+          type: string
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment
+          type: string
+      type: object
+    PatchPaidParentalLeaveDossierRequestBody:
+      properties:
+        paidParentalLeaveType:
+          description: What type of parental leave is being taken
+          type: string
+          enum:
+            - birth
+            - adoption
+            - foster-care
+            - cohabiting
+        dateOfBirth:
+          description: The birthdate of the child
+          type: string
+          format: date
+        children:
+          description: The number of children
+          type: integer
+        dateAdmission:
+          description: The date of admission
+          type: string
+          format: date
+      type: object
+    PatchPreventiveDossierRequestBody:
+      properties:
+        externalKey:
+          description: External identifier for the dossier
+          type: string
+        dateReported:
+          description: The date the dossier was reported
+          type: string
+          format: date
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment
+          type: string
+        dateCompleted:
+          description: The date the dossier was completed
+          type: string
+          format: date
+      type: object
+    PatchSpoor2RequestBody:
+      properties:
+        traject:
+          description: What type of parental leave is being taken
+          type: string
+          enum:
+            - haalbaarheidsonderzoek
+            - spoor-2
+            - spoor-2-orienterend
+            - spoor-3
+            - outplacement
+            - jobcoaching
+            - loopbaancoaching
+            - loopbaancoaching-orientatie
+            - talentenanalyse-act-meting
+            - ontwikkeltraject
+      type: object
+    PatchZwerdDossierRequestBody:
+      properties:
+        externalKey:
+          description: External identifier for the dossier
+          type: string
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment
+          type: string
+        payrollNumber:
+          description: The payroll number of the employee
+          type: string
+        daySalary:
+          description: The daily salary of the employee
+          type: number
+          format: float
+        dateEmploymentEnd:
+          description: The date the employee's employment was completed
+          type: string
+          format: date
       type: object
     PostBirthLeaveRequestBody:
       required:
@@ -8089,8 +9008,9 @@ components:
     AbsenceCourse:
       properties:
         id:
-          description: UUID of the absence course
+          description: ID of the absence course
           type: string
+          format: uuid
         externalKey:
           description: External key associated with the absence course
           type: string
@@ -8103,8 +9023,9 @@ components:
           type: string
           nullable: true
         employmentId:
-          description: UUID of the associated employment
+          description: ID of the associated employment
           type: string
+          format: uuid
           nullable: true
         dateReported:
           description: The report date in YYYY-MM-DD format
@@ -8167,16 +9088,9 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/Dossier'
-        - $ref: '#/components/schemas/BirthLeaveDossierExtension'
-    BirthLeaveDossierExtension:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Dossier'
         - properties:
             birthLeave:
-              type: array
-              items:
-                $ref: '#/components/schemas/BirthLeave'
+              $ref: '#/components/schemas/BirthLeave'
           type: object
     BirthLeave:
       properties:
@@ -8208,8 +9122,9 @@ components:
     DossierDocumentResource:
       properties:
         id:
-          description: The UUID of the Dossier.
+          description: The ID of the Dossier.
           type: string
+          format: uuid
         externalKey:
           description: The external key associated with the Dossier Document.
           type: string
@@ -8256,7 +9171,7 @@ components:
     DossierDocumentType:
       properties:
         id:
-          description: UUID of the document type
+          description: ID of the document type
           type: string
           format: uuid
         externalKey:
@@ -8357,7 +9272,7 @@ components:
     DossierNoteType:
       properties:
         id:
-          description: UUID of the Note type
+          description: ID of the Note type
           type: string
           format: uuid
         externalKey:
@@ -8398,8 +9313,9 @@ components:
     DossierUploadResource:
       properties:
         id:
-          description: The id of the Dossier.
+          description: The ID of the Dossier.
           type: string
+          format: uuid
         externalKey:
           description: The external key associated with the Dossier Upload.
           type: string
@@ -8442,7 +9358,7 @@ components:
     DossierUploadType:
       properties:
         id:
-          description: UUID of the upload type
+          description: ID of the upload type
           type: string
           format: uuid
           example: cc0b44dd-9270-44ca-bff6-837cb23cbfcb
@@ -8528,10 +9444,10 @@ components:
           description: The external key associated with the Dossier.
           type: string
         dateStart:
-          description: The start date in YYYY-MM-DD format.
+          description: The start date in ISO8601 format.
           type: string
         dateEnd:
-          description: The end date in YYYY-MM-DD format.
+          description: The end date in ISO8601 format.
           type: string
         dossierStatus:
           description: The current status of the Dossier.
@@ -8553,7 +9469,7 @@ components:
     DossierSection:
       properties:
         id:
-          description: UUID of the DossierSection
+          description: ID of the DossierSection
           type: string
           format: uuid
         externalKey:
@@ -8593,8 +9509,9 @@ components:
     DossierTask:
       properties:
         id:
-          description: UUID of the DossierTask
+          description: ID of the DossierTask
           type: string
+          format: uuid
         externalKey:
           description: External key associated with the dossier task
           type: string
@@ -8607,8 +9524,9 @@ components:
           nullable: true
           description: The dossier associated with the dossier task, available if the relation is included in the query
         baseTaskId:
-          description: UUID of the base task
+          description: ID of the base task
           type: string
+          format: uuid
         baseTask:
           oneOf:
             - $ref: '#/components/schemas/Task'
@@ -8629,11 +9547,11 @@ components:
         dateStart:
           description: date start of the task
           type: string
-          format: date-time
+          format: date
         dateEnd:
           description: date end of the task
           type: string
-          format: date-time
+          format: date
         dateCompleted:
           description: date of completion of the task
           type: string
@@ -8651,16 +9569,9 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/Dossier'
-        - $ref: '#/components/schemas/PaidParentalLeaveDossierExtension'
-    PaidParentalLeaveDossierExtension:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Dossier'
         - properties:
             paidParentalLeave:
-              type: array
-              items:
-                $ref: '#/components/schemas/PaidParentalLeave'
+              $ref: '#/components/schemas/PaidParentalLeave'
           type: object
     PaidParentalLeave:
       properties:
@@ -8705,16 +9616,9 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/Dossier'
-        - $ref: '#/components/schemas/PregnancyDossierExtension'
-    PregnancyDossierExtension:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Dossier'
         - properties:
-            Pregnancy:
-              type: array
-              items:
-                $ref: '#/components/schemas/Pregnancy'
+            pregnancy:
+              $ref: '#/components/schemas/Pregnancy'
           type: object
     Pregnancy:
       properties:
@@ -8811,23 +9715,12 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/Dossier'
-        - $ref: '#/components/schemas/Spoor2DossierExtension'
-    Spoor2DossierExtension:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Dossier'
         - properties:
-            id:
-              description: The ID of the Dossier.
-              type: string
-              format: uuid
             safetyNet:
-              description: The type of the Dossier.
+              description: The safetynet associated with the Dossier.
               type: string
             spoor2:
-              type: array
-              items:
-                $ref: '#/components/schemas/Spoor2'
+              $ref: '#/components/schemas/Spoor2'
           type: object
     Spoor2:
       properties:
@@ -8846,19 +9739,12 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/Dossier'
-        - $ref: '#/components/schemas/ZwerdDossierExtension'
-    ZwerdDossierExtension:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Dossier'
         - properties:
             safetyNet:
               description: The type of safety net (vangnet) that applies to this absence
               type: string
             zwerd:
-              type: array
-              items:
-                $ref: '#/components/schemas/Zwerd'
+              $ref: '#/components/schemas/Zwerd'
           type: object
     Zwerd:
       properties:
@@ -8873,7 +9759,7 @@ components:
     DossierOfficer:
       properties:
         id:
-          description: The UUID of the Dossier officer.
+          description: The ID of the Dossier officer.
           type: string
           format: uuid
         externalKey:
@@ -9165,7 +10051,7 @@ components:
         employment:
           properties:
             organizationalUnitId:
-              description: The UUID of the Organisational Unit the Employee belongs to. Mutually exclusive with organizationalUnitKey
+              description: The ID of the Organisational Unit the Employee belongs to. Mutually exclusive with organizationalUnitKey
               type: string
               format: uuid
             organizationalUnitKey:
@@ -9216,10 +10102,20 @@ components:
               description: The reason for the end of employment of the Employee
               type: string
               enum:
-                - end_employment
-                - sick_during_end_of_employment
+                - end-employment
+                - sick-during-end-of-employment
+                - reach-aow
                 - death
-                - dismissal_own_request
+                - dismissal
+                - retirement
+                - temporary-old-age-pension
+                - wia
+                - termination-of-temporary-employment
+                - unknown
+                - within-probationary-period
+                - dismissal-own-request
+                - immediate-dismissal
+                - mutual-termination-of-employment
             normHoursPerWeek:
               description: Standard hours per week the Employee works.
               type: number
@@ -9262,7 +10158,7 @@ components:
               type: integer
             riskCode:
               description: The UWV risk code of the Employee
-              type: integer
+              type: string
             waitingPeriod:
               description: The waiting period (related to UWV) of the Employee
               type: integer
@@ -9274,7 +10170,7 @@ components:
     EmployeeResource:
       properties:
         id:
-          description: UUID of the employee
+          description: ID of the employee
           type: string
           format: uuid
         externalKey:
@@ -9338,7 +10234,7 @@ components:
       description: Employer data
       properties:
         id:
-          description: The id of the employer to be updated, mutually exclusive with 'key'
+          description: The ID of the employer to be updated, mutually exclusive with 'key'
           type: string
           format: uuid
           example: 4453e0e4-1d5d-4c1e-ac42-c541c50a34a3
@@ -9390,37 +10286,6 @@ components:
           $ref: '#/components/schemas/Address'
         postalAddress:
           $ref: '#/components/schemas/Address'
-        contract:
-          required:
-            - contractType
-            - partnershipId
-            - dateStart
-          properties:
-            contractTypeId:
-              type: string
-              example: uuid
-            partnershipId:
-              type: string
-              example: uuid
-            contractnumber:
-              type: string
-              example: abc123
-            serviceTypeId:
-              type: string
-              example: uuid
-            accountnumber:
-              type: string
-              example: abc123
-            dateStart:
-              description: YYYY-MM-DD
-              type: string
-              format: date-time
-            dateEnd:
-              description: YYYY-MM-DD, defaults to NULL
-              type: string
-              format: date-time
-              nullable: true
-          type: object
       type: object
     PostEmployerRequestBody:
       description: Employer data
@@ -9447,13 +10312,19 @@ components:
           type: string
           example: '0612345678'
         employerDivisionId:
+          description: The ID of employer division
           type: string
+          format: uuid
           example: uuid
         companyDoctorId:
+          description: The ID of company doctor
           type: string
+          format: uuid
           example: uuid
         dossierOfficerId:
+          description: The ID of dossier officer
           type: string
+          format: uuid
           example: uuid
         arboServiceId:
           type: integer
@@ -9470,15 +10341,18 @@ components:
           properties:
             contractTypeId:
               type: string
+              format: uuid
               example: uuid
             partnershipId:
               type: string
+              format: uuid
               example: uuid
             contractnumber:
               type: string
               example: abc123
             serviceTypeId:
               type: string
+              format: uuid
               example: uuid
             accountnumber:
               type: string
@@ -9492,6 +10366,14 @@ components:
               type: string
               format: date-time
               nullable: true
+            status:
+              description: The status of contract
+              type: string
+              default: active
+              enum:
+                - active
+                - ended
+                - blocked
           type: object
       type: object
     Address:
@@ -9526,8 +10408,9 @@ components:
     ArboService:
       properties:
         id:
-          description: UUID of the arbo service
+          description: ID of the arbo service
           type: string
+          format: uuid
         externalKey:
           description: The external key associated with the arbo service
           type: string
@@ -9551,6 +10434,7 @@ components:
         uuid:
           description: UUID of the employer  address
           type: string
+          format: uuid
         externalKey:
           description: The external key associated with the employer  address
           type: string
@@ -9590,8 +10474,9 @@ components:
           description: The migration key associated with the employer communication
           type: string
         employerId:
-          description: The employer id associated with the employer communication
+          description: The employer ID associated with the employer communication
           type: string
+          format: uuid
         type:
           description: The type of the employer communication, e.g. 'email' or 'phone', etc.
           type: string
@@ -9613,8 +10498,9 @@ components:
     Employer:
       properties:
         id:
-          description: UUID of the employer
+          description: ID of the employer
           type: string
+          format: uuid
         externalKey:
           description: The external key associated with the employer
           type: string
@@ -9703,7 +10589,7 @@ components:
           description: Migration key of the Employer Division
           type: string
         parentId:
-          description: UUID of the parent division, if any
+          description: ID of the parent division, if any
           type: string
           format: uuid
         name:
@@ -9723,15 +10609,20 @@ components:
       type: object
     EmployerPersonAddressResource:
       properties:
-        uuid:
-          description: UUID of the employer person address
+        id:
+          description: ID of the employer person address
           type: string
+          format: uuid
         externalKey:
           description: The external key associated with the employer person address
           type: string
         migration_key:
           description: The migration key associated with the employer person address
           type: string
+        personId:
+          description: The person ID associated with the employer person address
+          type: string
+          format: uuid
         street:
           description: The street of the address associated with the employer person address.
           type: string
@@ -9759,11 +10650,51 @@ components:
           type: string
           format: date-time
       type: object
-    EmployerPersonResource:
+    EmployerPersonCommunicationsResource:
       properties:
         uuid:
-          description: UUID of the employer person
+          description: UUID of the current communication method
           type: string
+        externalKey:
+          description: The external key associated with the current communication method
+          type: string
+        migrationKey:
+          description: The migration key associated with the current communication method
+          type: string
+        value:
+          description: The value associated with the current communication method
+          type: string
+        primary:
+          description: Indication if the communication method is flagged as primary or not.
+          type: boolean
+        type:
+          description: The type of communication
+          type: string
+          enum:
+            - email
+            - phone
+            - mobile
+        purpose:
+          description: The purpose of the communication
+          type: string
+          enum:
+            - personal
+            - business
+        dateCreated:
+          description: The date and time the employer person communication was created in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date and time the employer person communication was last updated in YYYY-MM-DD HH:MM:SS format
+          type: string
+          format: date-time
+      type: object
+    EmployerPersonResource:
+      properties:
+        id:
+          description: ID of the employer person
+          type: string
+          format: uuid
         externalKey:
           description: The external key associated with the employer person
           type: string
@@ -9850,49 +10781,12 @@ components:
           type: string
           format: date-time
       type: object
-    EmployerPersonCommunicationsResource:
-      properties:
-        uuid:
-          description: UUID of the current communication method
-          type: string
-        externalKey:
-          description: The external key associated with the current communication method
-          type: string
-        migrationKey:
-          description: The migration key associated with the current communication method
-          type: string
-        value:
-          description: The value associated with the current communication method
-          type: string
-        primary:
-          description: Indication if the communication method is flagged as primary or not.
-          type: boolean
-        type:
-          description: The type of communication
-          type: string
-          enum:
-            - email
-            - phone
-            - mobile
-        purpose:
-          description: The purpose of the communication
-          type: string
-          enum:
-            - personal
-            - business
-        dateCreated:
-          description: The date and time the employer person communication was created in YYYY-MM-DD HH:MM:SS format
-          type: string
-          format: date-time
-        dateUpdated:
-          description: The date and time the employer person communication was last updated in YYYY-MM-DD HH:MM:SS format
-          type: string
-          format: date-time
-      type: object
     EmployerRole:
       properties:
         id:
+          description: ID of the EmployerRole
           type: string
+          format: uuid
         name:
           type: string
         employerId:
@@ -9910,6 +10804,74 @@ components:
         arboRole:
           oneOf:
             - $ref: '#/components/schemas/ArboRole'
+          nullable: true
+      type: object
+    PatchEmploymentRequestBody:
+      properties:
+        id:
+          description: Employment ID, mutually exclusive with 'key'
+          type: string
+          format: uuid
+          example: b4b1ae1a-8683-4f6b-a3f6-3fff05c90d50
+        key:
+          description: Employment external key, mutually exclusive with 'id'
+          type: string
+          example: Employment@Key
+        externalKey:
+          description: The new external key by which to identify the Employment
+          type: string
+          example: Employment@Key@New
+          nullable: true
+        waitingDays:
+          description: The waiting period for the employment
+          type: integer
+          example: '3'
+          nullable: true
+        uwvSector:
+          description: The UWV sector for the Employment
+          type: integer
+          example: '2'
+          nullable: true
+        employmentEndReason:
+          description: The new employment end reason wording for the employment
+          type: string
+          enum:
+            - end-employment
+            - sick-during-end-of-employment
+            - reach-aow
+            - death
+            - dismissal
+            - retirement
+            - temporary-old-age-pension
+            - wia
+            - termination-of-temporary-employment
+            - unknown
+            - within-probationary-period
+            - dismissal-own-request
+            - immediate-dismissal
+            - mutual-termination-of-employment
+          example: end-employment
+          nullable: true
+        internalSupervisorId:
+          description: The UUID of the new internal supervisor for the employment. Mutually exclusive with 'externalSupervisorId'.
+          type: string
+          format: uuid
+          example: b4b1ae1a-8683-4f6b-a3f6-3fff05c90d50
+          nullable: true
+        externalSupervisorId:
+          description: The key of the new external supervisor for the employment. Mutually exclusive with 'internalSupervisorId'.
+          type: string
+          example: external@supervisor@key
+          nullable: true
+        uwvRiskCode:
+          description: The new uwv risk code of the employment
+          type: string
+          example: testRiskCode
+          nullable: true
+        employeeNumber:
+          description: The new employee number on the employment
+          type: string
+          example: testEmployeeNumber
           nullable: true
       type: object
     EmploymentContractResource:
@@ -9945,8 +10907,9 @@ components:
           example: Chief Executive Officer
           nullable: true
         employmentType:
-          description: UUID of the employment type of the employment contract
+          description: ID of the employment type of the employment contract
           type: string
+          format: uuid
           example: b4b1ae1a-8683-4f6b-a3f6-3fff05c90d50
         station:
           description: The station associated with the employment contract
@@ -10016,6 +10979,10 @@ components:
         employmentNumber:
           description: The the total sum of employments of the employee
           type: string
+        employmentContracts:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmploymentContractResource'
         primary:
           description: Indication if the employment is flagged as primary or not.
           type: boolean
@@ -10030,12 +10997,12 @@ components:
           description: The type of supervisor associated with this employment
           type: string
         internalSupervisorId:
-          description: The UUID of the internal supervisor associated with this employment
+          description: The ID of the internal supervisor associated with this employment
           type: string
           format: uuid
           nullable: true
         externalSupervisorId:
-          description: The UUID of the external supervisor associated with this employment
+          description: The ID of the external supervisor associated with this employment
           type: string
           format: uuid
           nullable: true
@@ -10046,7 +11013,8 @@ components:
           nullable: true
         uwvRiskCode:
           description: The UWV risk code of the Employee associated with this employment.
-          type: integer
+          type: string
+          nullable: true
         waitingPeriod:
           description: The waiting period (related to UWV) of the Employee associated with this employment.
           type: integer
@@ -10062,8 +11030,9 @@ components:
     EmploymentType:
       properties:
         id:
-          description: UUID of the employment type
+          description: ID of the employment type
           type: string
+          format: uuid
         externalKey:
           description: The external key of the employment type
           type: string
@@ -10086,7 +11055,7 @@ components:
     ExternalSupervisor:
       properties:
         id:
-          description: The UUID of the external supervisor.
+          description: The ID of the external supervisor.
           type: string
           format: uuid
         externalKey:
@@ -10098,12 +11067,12 @@ components:
           type: string
           nullable: true
         employerId:
-          description: The UUID for the employer associated with the external supervisor. Null if the external supervisor is not authorized for the employer, in this scenario they are probably authorized on an OU underneath of the employer
+          description: The ID for the employer associated with the external supervisor. Null if the external supervisor is not authorized for the employer, in this scenario they are probably authorized on an OU underneath of the employer
           type: string
           format: uuid
           nullable: true
         organizationalUnitId:
-          description: The UUID for the OU associated with the external supervisor. Could be null if the external supervisor is authorized on the employer or the employer division the employer is part of.
+          description: The ID for the OU associated with the external supervisor. Could be null if the external supervisor is authorized on the employer or the employer division the employer is part of.
           type: string
           format: uuid
           nullable: true
@@ -10117,8 +11086,9 @@ components:
     InsurancePolicy:
       properties:
         id:
-          description: UUID of the insurance policy
+          description: ID of the insurance policy
           type: string
+          format: uuid
         externalKey:
           description: External key associated with the insurance policy
           type: string
@@ -10129,13 +11099,13 @@ components:
           description: The policy number of the insurance policy
           type: string
         dateStart:
-          description: The start date in YYYY-MM-DD HH:MM:SS format
+          description: The start date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateEnd:
-          description: The end date in YYYY-MM-DD HH:MM:SS format
+          description: The end date in YYYY-MM-DD format
           type: string
-          format: date-time
+          format: date
         dateCreated:
           description: The date the insurance policy was created
           type: string
@@ -10148,8 +11118,9 @@ components:
     MasterPerson:
       properties:
         id:
-          description: UUID of the master person
+          description: ID of the master person
           type: string
+          format: uuid
         name:
           description: Name of the master person
           type: string
@@ -10166,8 +11137,9 @@ components:
     Operation:
       properties:
         id:
-          description: UUID of the operation
+          description: ID of the operation
           type: string
+          format: uuid
         name:
           description: The name of the operation
           type: string
@@ -10208,8 +11180,9 @@ components:
       description: JSON resource representing an billable operation.
       properties:
         id:
-          description: UUID of the billable operation.
+          description: ID of the billable operation.
           type: string
+          format: uuid
         externalKey:
           description: The external key of the billable operation.
           type: string
@@ -10222,6 +11195,7 @@ components:
         employmentId:
           description: The ID of the employment associated with the billable operation.
           type: string
+          format: uuid
         time:
           description: The time associated with the billable operation.
           type: integer
@@ -10247,6 +11221,10 @@ components:
           format: date-time
         dateUpdated:
           description: The date of update of the billable operation.
+          type: string
+          format: date-time
+        dateDeleted:
+          description: The date of deletion of the billable operation.
           type: string
           format: date-time
       type: object
@@ -10281,8 +11259,9 @@ components:
     OrganizationalUnit:
       properties:
         id:
-          description: UUID of the organizational unit
+          description: ID of the organizational unit
           type: string
+          format: uuid
         externalKey:
           description: External key of the organizational unit
           type: string
@@ -10304,11 +11283,11 @@ components:
         company:
           $ref: '#/components/schemas/OrganizationalUnitCompany'
         dateStart:
-          description: Start date of the organizational unit
+          description: Start date of the organizational unit in ISO8601 format
           type: string
           format: date
         dateEnd:
-          description: End date of the organizational unit
+          description: End date of the organizational unit in ISO8601 format
           type: string
           format: date
         dateCreated:
@@ -10323,8 +11302,9 @@ components:
     OrganizationalUnitType:
       properties:
         id:
-          description: UUID of the Organizational Unit Type
+          description: ID of the Organizational Unit Type
           type: string
+          format: uuid
         externalKey:
           description: External key of the Organizational Unit Type
           type: string
@@ -10391,8 +11371,9 @@ components:
     Task:
       properties:
         id:
-          description: UUID of the Task
+          description: ID of the Task
           type: string
+          format: uuid
         externalKey:
           description: External key associated with the  task
           type: string
@@ -10411,17 +11392,18 @@ components:
         dateCreated:
           description: date created associated with the  task
           type: string
-          format: date
+          format: date-time
         dateUpdated:
           description: date updated associated with the  task
           type: string
-          format: date
+          format: date-time
       type: object
     User:
       properties:
         id:
-          description: UUID of the user
+          description: ID of the user
           type: string
+          format: uuid
         username:
           description: Username of the user
           type: string
@@ -10448,3 +11430,46 @@ components:
           description: Number of tasks associated with the user
           type: integer
       type: object
+tags:
+  - name: Absence Reasons
+    description: Absence Reasons
+  - name: Authentication
+    description: Authentication
+  - name: Health
+    description: Health
+  - name: User Roles
+    description: User Roles
+  - name: Company Doctors
+    description: Company Doctors
+  - name: EmployerContracts
+    description: EmployerContracts
+  - name: AbsenceCourse
+    description: AbsenceCourse
+  - name: Dossier
+    description: Dossier
+  - name: DossierContent
+    description: DossierContent
+  - name: Dossier External Resource
+    description: Dossier External Resource
+  - name: Return to work advice
+    description: Return to work advice
+  - name: Dossier Officers
+    description: Dossier Officers
+  - name: Employee
+    description: Employee
+  - name: Employer
+    description: Employer
+  - name: Employer Divisions
+    description: Employer Divisions
+  - name: Employments
+    description: Employments
+  - name: External Supervisor
+    description: External Supervisor
+  - name: Operation
+    description: Operation
+  - name: Billable Operation
+    description: Billable Operation
+  - name: Organizational Units
+    description: Organizational Units
+  - name: PublicAPI
+    description: PublicAPI
