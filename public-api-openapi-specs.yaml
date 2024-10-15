@@ -2754,7 +2754,7 @@ paths:
     get:
       tags:
         - Dossier
-      summary: Get a list of contract types that can be applied to employer contracts
+      summary: Get a list of dossier tasks
       operationId: 919532ae9ae96208191aeae669fff57c
       parameters:
         - name: filter[id]
@@ -5969,9 +5969,19 @@ paths:
           description: Include the employment contracts associated with the employment in the output
           schema:
             type: string
+        - name: include[employmentContracts.employmentType]
+          in: query
+          description: Include the employment contracts and their employment types associated with the employment
+          schema:
+            type: string
         - name: include[currentOrLastEmploymentContract.organizationalUnit.employer]
           in: query
           description: Include the employer (and the organizational unit) the employment belongs to in the output
+          schema:
+            type: string
+        - name: include[currentOrLastEmploymentContract.employmentType]
+          in: query
+          description: Include the current or last employment contract and its employment type in the output
           schema:
             type: string
         - name: sort
@@ -7188,6 +7198,145 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/task:
+    get:
+      tags:
+        - Task
+      summary: Get a list of tasks
+      operationId: 2f43f2d3bf32ef8c24aeffc493d772da
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by UUID to get a specific task
+          schema:
+            type: string
+        - name: filter[externalKey]
+          in: query
+          description: Filter by the external key of a specific task
+          schema:
+            type: string
+        - name: filter[search]
+          in: query
+          description: Performs a 'LIKE %value%' search on the 'title' field
+          schema:
+            type: string
+        - name: filter[taskTypeId]
+          in: query
+          description: Filter by the task type ID of a specific task
+          schema:
+            type: string
+        - name: filter[protocolId]
+          in: query
+          description: Filter by the protocol ID of a specific task
+          schema:
+            type: string
+        - name: filter[onlyProtocolTask]
+          in: query
+          description: Filter to include only protocol tasks
+          schema:
+            type: boolean
+        - name: filter[onlyDeletedTasks]
+          in: query
+          description: Filter to include only deleted tasks
+          schema:
+            type: boolean
+        - name: filter[dateUpdatedFrom]
+          in: query
+          description: Filter by date updated from
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateUpdatedUntil]
+          in: query
+          description: Filter by date updated until
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateCreatedFrom]
+          in: query
+          description: Filter by date created from
+          schema:
+            type: string
+            format: date-time
+        - name: filter[dateCreatedUntil]
+          in: query
+          description: Filter by date created until
+          schema:
+            type: string
+            format: date-time
+        - name: sort
+          in: query
+          description: Sort results by a specific column, use - before the field name to sort descending
+          schema:
+            type: string
+            enum:
+              - externalKey
+              - '-externalKey'
+              - protocolId
+              - '-protocolId'
+              - dateCreated
+              - '-dateCreated'
+              - dateUpdated
+              - '-dateUpdated'
+              - taskTypeId
+              - '-taskTypeId'
+              - title
+              - '-title'
+      responses:
+        '200':
+          description: A list of Task entities
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/task?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/task?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/task?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/task?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/task?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
   /api/public/user/event:
     post:
       tags:
@@ -10063,9 +10212,11 @@ components:
             employeeNumber:
               description: The employee number of the Employee
               type: string
+              nullable: true
             station:
               description: The station (post) of the Employee
               type: string
+              nullable: true
             externalSupervisorId:
               description: The id of the external supervisor of the Employee
               type: string
@@ -10212,7 +10363,7 @@ components:
           oneOf:
             - $ref: '#/components/schemas/EmploymentContractResource'
           nullable: true
-          description: The employment contract associated with the employee, available if the relation is included in the query
+          description: The current or last employment contract associated with the employee, available if the relation is included in the query
         dateCreated:
           description: The date and time the employee was created in YYYY-MM-DD HH:MM:SS format
           type: string
@@ -10226,6 +10377,7 @@ components:
           items:
             $ref: '#/components/schemas/Dossier'
         employments:
+          description: The employments associated with the employee, available if the relation is included in the query
           type: array
           items:
             $ref: '#/components/schemas/Employment'
@@ -10876,7 +11028,7 @@ components:
       type: object
     EmploymentContractResource:
       properties:
-        uuid:
+        id:
           description: UUID of the employment contract
           type: string
           format: uuid
@@ -10907,10 +11059,7 @@ components:
           example: Chief Executive Officer
           nullable: true
         employmentType:
-          description: ID of the employment type of the employment contract
-          type: string
-          format: uuid
-          example: b4b1ae1a-8683-4f6b-a3f6-3fff05c90d50
+          $ref: '#/components/schemas/EmploymentType'
         station:
           description: The station associated with the employment contract
           type: string
@@ -10979,6 +11128,8 @@ components:
         employmentNumber:
           description: The the total sum of employments of the employee
           type: string
+        employee:
+          $ref: '#/components/schemas/EmployeeResource'
         employmentContracts:
           type: array
           items:
@@ -10992,7 +11143,8 @@ components:
           format: date
         employeeNumber:
           description: The employee number of the employee associated with this employment
-          type: integer
+          type: string
+          nullable: true
         supervisorType:
           description: The type of supervisor associated with this employment
           type: string
@@ -11132,6 +11284,9 @@ components:
           type: string
         nickname:
           description: Nickname of the master person
+          type: string
+        primaryEmail:
+          description: Primary Email of the master person
           type: string
       type: object
     Operation:
@@ -11371,30 +11526,118 @@ components:
     Task:
       properties:
         id:
-          description: ID of the Task
+          description: id of the task.
           type: string
           format: uuid
         externalKey:
-          description: External key associated with the  task
+          description: The external key of the task.
           type: string
         migrationKey:
-          description: Migration key associated with the  task
+          description: The migration key of the task.
           type: string
         title:
-          description: title associated with the  task
-          type: string
-        code:
-          description: code associated with the  task
+          description: The title of the task.
           type: string
         description:
-          description: description associated with the  task
+          description: The description of the task.
           type: string
+        protocolId:
+          description: The protocol ID associated with the task.
+          type: string
+        code:
+          description: The code of the task.
+          type: string
+        invoiceDescription:
+          description: The invoice description of the task.
+          type: string
+        templateId:
+          description: The template ID associated with the task.
+          type: string
+        taskTypeId:
+          description: The task type ID associated with the task.
+          type: string
+        taskTriggerId:
+          description: The task trigger ID associated with the task.
+          type: string
+        parentTaskId:
+          description: The parent task ID associated with the task.
+          type: string
+        extraTaskTriggerValue:
+          description: The extra task trigger value associated with the task.
+          type: string
+        taskStartday:
+          description: Number of days before or after the Task should be triggered. Negative number means before, positive number means after.
+          type: integer
+        duration:
+          description: The duration of the task.
+          type: integer
+        requestAtAbsence:
+          description: Indicates if the task is requested at absence.
+          type: boolean
+        completedDirectly:
+          description: Indicates if the task is completed immediately.
+          type: boolean
+        removeOnClosingDossier:
+          description: Indicates if the task is removed on closing the dossier.
+          type: boolean
+        taskNameForNote:
+          description: Indicates if the task name is used for note.
+          type: boolean
+        active:
+          description: Indicates if the task is active.
+          type: boolean
+        changeable:
+          description: Indicates if the task is changeable.
+          type: boolean
+        cannotDelay:
+          description: Indicates if the task cannot be delayed.
+          type: boolean
+        extendEmployment:
+          description: Indicates if the task extends employment.
+          type: boolean
+        automaticTask:
+          description: Indicates if the task is automatic.
+          type: boolean
+        triggerAtMainDossier:
+          description: Indicates if the task is triggered at main dossier.
+          type: boolean
+        triggerAtEmployeeDossier:
+          description: Indicates if the task is triggered at employee dossier.
+          type: boolean
+        triggerAtPartialRecovery:
+          description: Indicates if the task is triggered at partial recovery.
+          type: boolean
+        triggerWhenCompiled:
+          description: (re)trigger task for compiled dossiers.
+          type: boolean
+        triggerAtFullRecovery:
+          description: Indicates if the task is triggered at full recovery.
+          type: boolean
+        price:
+          description: The price of the task.
+          type: number
+        normTime:
+          description: The norm time of the task.
+          type: integer
+        rate:
+          description: The rate of the task.
+          type: number
+        vatId:
+          description: The VAT ID associated with the task.
+          type: integer
+        uwvMessageId:
+          description: The UWV message ID associated with the task.
+          type: string
+        dateDeleted:
+          description: The date the task was deleted.
+          type: string
+          format: date-time
         dateCreated:
-          description: date created associated with the  task
+          description: The date the task was created.
           type: string
           format: date-time
         dateUpdated:
-          description: date updated associated with the  task
+          description: The date the task was updated.
           type: string
           format: date-time
       type: object
@@ -11471,5 +11714,7 @@ tags:
     description: Billable Operation
   - name: Organizational Units
     description: Organizational Units
+  - name: Task
+    description: Task
   - name: PublicAPI
     description: PublicAPI
