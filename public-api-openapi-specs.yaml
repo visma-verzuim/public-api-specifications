@@ -3,6 +3,10 @@ info:
   title: Public API Documentation
   version: 1.0.0
 paths:
+  /api/public/user/post/external:
+    $ref: '#/paths/~1api~1public~1user~1post~1internal'
+  /api/public/user/post/employer:
+    $ref: '#/paths/~1api~1public~1user~1post~1internal'
   /api/public/absence-reason:
     get:
       tags:
@@ -761,6 +765,107 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/configuration/contract/modules:
+    get:
+      tags:
+        - EmployerContracts
+      summary: Get a list of modules that can be applied to employer contracts (uses the employercontracts scope)
+      operationId: 8b38afe5c866713c840bdfa673d4d881
+      parameters:
+        - name: filter[id]
+          in: query
+          description: Filter by ID
+          schema:
+            type: string
+            format: uuid
+        - name: filter[name]
+          in: query
+          description: Filter by module name
+          schema:
+            type: string
+        - name: filter[code]
+          in: query
+          description: Filter by module code
+          schema:
+            type: string
+        - name: filter[description]
+          in: query
+          description: Filter by module description
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of modules that can be applied to employer contracts
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Module'
+                  links:
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      first:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                      last:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25
+                      prev:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[size]=25
+                        nullable: true
+                      next:
+                        type: string
+                        format: uri
+                        example: https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25
+                        nullable: true
+                    type: object
+                  meta:
+                    properties:
+                      total:
+                        type: integer
+                        example: 123
+                      perPage:
+                        type: integer
+                        example: 25
+                      totalPages:
+                        type: integer
+                        example: 5
+                    type: object
+                type: object
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Validation of the request failed
+                  timestamp:
+                    type: integer
+                    example: 1682685774
+                  status:
+                    type: integer
+                    example: 400
+                  errors:
+                    type: array
+                    items:
+                      properties:
+                        errors:
+                          type: string
+                          example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
+                      type: object
+                type: object
   /api/public/configuration/contract/partnership:
     get:
       tags:
@@ -2911,6 +3016,37 @@ paths:
                           example: Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.
                       type: object
                 type: object
+    post:
+      tags:
+        - Dossier Task
+      summary: Create a new dossier task
+      operationId: b7c7f56a260482457baf063c240e9662
+      requestBody:
+        description: Dossier Task data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostDossierTaskRequestBody'
+      responses:
+        '201':
+          description: Dossier Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDossierTaskRequestBody'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /api/public/dossier/birth-leave:
     get:
       tags:
@@ -4507,6 +4643,71 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PatchZwerdDossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/wga:
+    post:
+      tags:
+        - Dossier
+      summary: Create a wga dossier
+      description: This endpoint is used to create a new wga dossier.
+      operationId: 9d8089bba505cad01118df59c94f3d52
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostWGADossierRequestBody'
+      responses:
+        '201':
+          description: Dossier successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: Create a wga dossier
+      description: This endpoint is used to update a wga dossier.
+      operationId: a671248c2a5a9f76dc7486b98bdddae4
+      requestBody:
+        description: Dossier data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchWGADossierRequestBody'
       responses:
         '201':
           description: Dossier successfully created
@@ -7524,6 +7725,39 @@ paths:
                     type: string
                     example: Valid role missing
                 type: object
+  /api/public/user/post/internal:
+    post:
+      tags:
+        - User
+      summary: Create Users post Endpoint
+      description: Post endpoint to create users
+      operationId: UserPost
+      requestBody:
+        description: User data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUserRequestBody'
+      responses:
+        '201':
+          description: User successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
 components:
   schemas:
     AbsenceReason:
@@ -8119,6 +8353,33 @@ components:
           type: string
           format: date-time
       type: object
+    Module:
+      properties:
+        id:
+          description: ID of the module
+          type: string
+          format: uuid
+        name:
+          description: The name of the module
+          type: string
+        description:
+          description: The description of the module
+          type: string
+        subscription fee:
+          description: The subscription fee of the module
+          type: number
+        code:
+          description: The code of the module
+          type: string
+        dateCreated:
+          description: The date the module was created
+          type: string
+          format: date-time
+        dateUpdated:
+          description: The date the module was updated
+          type: string
+          format: date-time
+      type: object
     OwnRiskContract:
       properties:
         id:
@@ -8265,9 +8526,22 @@ components:
         safetyNet:
           description: If applicable, the type of safety net (vangnet) that applies to this absence
           type: string
+          enum:
+            - disposal
+            - special-employment
+            - sick-due-to-pregnancy
+            - not-specified
+            - sick-due-to-childbirth
+            - sick-due-to-organ-donation
+            - unknown
         accidentType:
           description: If applicable, the type of accident that applies to this absence
           type: string
+          enum:
+            - private
+            - private-with-liable
+            - work-related-accident
+            - work-related-accident-with-liable
         absenceReasonId:
           description: Set absence reason based on the ID of the absence reason
           type: string
@@ -8680,6 +8954,82 @@ components:
           format: date-time
           example: '2021-12-31 23:59:59'
       type: object
+    PostDossierTaskRequestBody:
+      description: Dossier Task data
+      required:
+        - dossierId
+        - taskId
+        - taskStatusId
+        - title
+        - isPostponed
+      properties:
+        externalKey:
+          description: External key associated with the dossier task
+          type: string
+          nullable: true
+        migrationKey:
+          description: Migration key associated with the dossier task
+          type: string
+          nullable: true
+        dossierId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+          nullable: false
+        absenceCourseId:
+          description: Absence course ID associated with the dossier task
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          nullable: true
+        taskId:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+          nullable: false
+        taskStatus:
+          description: Status of the task
+          type: string
+          enum:
+            - open
+            - finished
+            - canceled
+            - overdue
+          example: open
+          nullable: false
+        title:
+          description: Title of the task
+          type: string
+          nullable: false
+        content:
+          description: Content of the task
+          type: string
+          nullable: true
+        isPostponed:
+          description: Declares whether the task is postponed
+          type: boolean
+          nullable: false
+        dateCompleted:
+          description: Date of completion
+          type: string
+          format: date
+          nullable: true
+        dateStart:
+          description: Start date of the task
+          type: string
+          format: date
+          nullable: true
+        dateEnd:
+          description: End date of the task
+          type: string
+          format: date
+          nullable: true
+        userId:
+          description: The user ID
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+          nullable: true
+      type: object
     PatchBirthLeaveDossierRequestBody:
       properties:
         beneficiary:
@@ -8716,7 +9066,7 @@ components:
           type: string
           enum:
             - open
-            - closed
+            - completed
         dateReported:
           description: Date the dossier was reported, if omitted defaults to 'now'
           type: string
@@ -8735,6 +9085,44 @@ components:
         protocol:
           description: The protocol of the dossier
           type: string
+          enum:
+            - wvp
+            - zwangerschap
+            - adoptie
+            - orgaandonatie
+            - zwerd
+            - wga
+            - bezwaar-en-beroep
+            - reintegratie
+            - preventief
+            - medisch
+            - medisch-preventief
+            - frequent-verzuim
+            - arbeidsdeskundig-onderzoek
+            - afwezigheid
+            - budgetcoaching
+            - rie
+            - pago
+            - pmo
+            - werkplekonderzoek
+            - training
+            - vitaliteit
+            - zorgcoaching
+            - consultancy
+            - jobcoaching
+            - act-meting
+            - loopbaan-begeleiding
+            - assessment
+            - outplacement
+            - overname-dienstverband
+            - spoor-3
+            - ontwikkeladvies
+            - spoor-2
+            - werknemer
+            - geboorteverlof
+            - verzuim-zwerd
+            - bedrijfsdossier
+            - betaald-ouderschapsverlof
         dossierNumber:
           description: The dossier number, defaults to 0
           type: string
@@ -8748,9 +9136,21 @@ components:
         safetyNet:
           description: If applicable, the type of safety net (vangnet) that applies to this dossier
           type: string
+          enum:
+            - disposal
+            - special-employment
+            - sick-due-to-pregnancy
+            - not-specified
+            - sick-due-to-childbirth
+            - sick-due-to-organ-donation
+            - unknown
         dossierClosureReason:
           description: The reason the dossier was closed
           type: string
+          enum:
+            - completed
+            - cancelled
+            - outdated
         contractId:
           description: The id of the contract
           type: string
@@ -8844,6 +9244,78 @@ components:
             - talentenanalyse-act-meting
             - ontwikkeltraject
       type: object
+    PatchWGADossierRequestBody:
+      required:
+        - id|externalKey
+      properties:
+        id:
+          description: The id for the dossier
+          type: string
+          format: uuid
+        externalKey:
+          description: External identifier for the dossier
+          type: string
+        dossierStatus:
+          description: The status of the dossier, if omitted defaults to 'open', unless 'dateCompleted' is set  in the past, then it defaults to 'closed'
+          type: string
+          enum:
+            - open
+            - completed
+        dateReported:
+          description: Date the absence was reported, if omitted defaults to 'now'
+          type: string
+          format: date
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment, required if 'employmentKey' is omitted
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment, required if 'employmentId' is omitted
+          type: string
+        dossierNumber:
+          description: The dossier number, defaults to 0
+          type: string
+        dossierOfficerId:
+          description: The id of the dossier officer, required if 'dossierOfficerKey' is omitted
+          type: string
+          format: uuid
+        dossierOfficerKey:
+          description: The key of the dossier officer, required if 'dossierOfficerId' is omitted
+          type: string
+        safetyNet:
+          description: If applicable, the type of safety net (vangnet) that applies to this absence
+          type: string
+          enum:
+            - disposal
+            - special-employment
+            - sick-due-to-pregnancy
+            - not-specified
+            - sick-due-to-childbirth
+            - sick-due-to-organ-donation
+            - unknown
+        dossierClosureReason:
+          description: The reason the dossier was closed
+          type: string
+          enum:
+            - completed
+            - cancelled
+            - outdated
+        contractId:
+          description: The id of the contract
+          type: string
+          format: uuid
+        expectedDurationDays:
+          description: The expected duration of the absence in days
+          type: integer
+        dateCompleted:
+          description: The date the dossier was completed
+          type: string
+          format: date
+      type: object
     PatchZwerdDossierRequestBody:
       properties:
         externalKey:
@@ -8909,7 +9381,7 @@ components:
           type: string
           enum:
             - open
-            - closed
+            - completed
         dateReported:
           description: Date the absence was reported, if omitted defaults to 'now'
           type: string
@@ -8928,6 +9400,44 @@ components:
         protocol:
           description: The protocol of the dossier
           type: string
+          enum:
+            - wvp
+            - zwangerschap
+            - adoptie
+            - orgaandonatie
+            - zwerd
+            - wga
+            - bezwaar-en-beroep
+            - reintegratie
+            - preventief
+            - medisch
+            - medisch-preventief
+            - frequent-verzuim
+            - arbeidsdeskundig-onderzoek
+            - afwezigheid
+            - budgetcoaching
+            - rie
+            - pago
+            - pmo
+            - werkplekonderzoek
+            - training
+            - vitaliteit
+            - zorgcoaching
+            - consultancy
+            - jobcoaching
+            - act-meting
+            - loopbaan-begeleiding
+            - assessment
+            - outplacement
+            - overname-dienstverband
+            - spoor-3
+            - ontwikkeladvies
+            - spoor-2
+            - werknemer
+            - geboorteverlof
+            - verzuim-zwerd
+            - bedrijfsdossier
+            - betaald-ouderschapsverlof
         dossierNumber:
           description: The dossier number, defaults to 0
           type: string
@@ -8941,9 +9451,21 @@ components:
         safetyNet:
           description: If applicable, the type of safety net (vangnet) that applies to this absence
           type: string
+          enum:
+            - disposal
+            - special-employment
+            - sick-due-to-pregnancy
+            - not-specified
+            - sick-due-to-childbirth
+            - sick-due-to-organ-donation
+            - unknown
         dossierClosureReason:
           description: The reason the dossier was closed
           type: string
+          enum:
+            - completed
+            - cancelled
+            - outdated
         contractId:
           description: The id of the contract
           type: string
@@ -9122,6 +9644,75 @@ components:
             - talentenanalyse-act-meting
             - ontwikkeltraject
       type: object
+    PostWGADossierRequestBody:
+      required:
+        - dateStart
+        - employmentId|employmentKey
+      properties:
+        externalKey:
+          description: External identifier for the dossier
+          type: string
+        dossierStatus:
+          description: The status of the dossier, if omitted defaults to 'open', unless 'dateCompleted' is set  in the past, then it defaults to 'closed'
+          type: string
+          enum:
+            - open
+            - completed
+        dateReported:
+          description: Date the absence was reported, if omitted defaults to 'now'
+          type: string
+          format: date
+        dateStart:
+          description: The date the dossier started
+          type: string
+          format: date
+        employmentId:
+          description: The id of the employment, required if 'employmentKey' is omitted
+          type: string
+          format: uuid
+        employmentKey:
+          description: The key of the employment, required if 'employmentId' is omitted
+          type: string
+        dossierNumber:
+          description: The dossier number, defaults to 0
+          type: string
+        dossierOfficerId:
+          description: The id of the dossier officer, required if 'dossierOfficerKey' is omitted
+          type: string
+          format: uuid
+        dossierOfficerKey:
+          description: The key of the dossier officer, required if 'dossierOfficerId' is omitted
+          type: string
+        safetyNet:
+          description: If applicable, the type of safety net (vangnet) that applies to this absence
+          type: string
+          enum:
+            - disposal
+            - special-employment
+            - sick-due-to-pregnancy
+            - not-specified
+            - sick-due-to-childbirth
+            - sick-due-to-organ-donation
+            - unknown
+        dossierClosureReason:
+          description: The reason the dossier was closed
+          type: string
+          enum:
+            - completed
+            - cancelled
+            - outdated
+        contractId:
+          description: The id of the contract
+          type: string
+          format: uuid
+        expectedDurationDays:
+          description: The expected duration of the absence in days
+          type: integer
+        dateCompleted:
+          description: The date the dossier was completed
+          type: string
+          format: date
+      type: object
     PostZwerdDossierRequestBody:
       required:
         - dateStart
@@ -9218,6 +9809,14 @@ components:
         safetyNet:
           description: The safety net name
           type: string
+          enum:
+            - disposal
+            - special-employment
+            - sick-due-to-pregnancy
+            - not-specified
+            - sick-due-to-childbirth
+            - sick-due-to-organ-donation
+            - unknown
           nullable: true
         dossier:
           oneOf:
@@ -9267,6 +9866,30 @@ components:
         weeks:
           description: The number of weeks of leave
           type: integer
+      type: object
+    DossierAddress:
+      properties:
+        id:
+          description: The DossierAddress ID.
+          type: string
+          format: uuid
+        street:
+          description: The street part of the address
+          type: string
+        number:
+          description: The house number part of the address
+          type: string
+        city:
+          description: The city the address is in.
+          type: string
+        postalCode:
+          description: The postal code of the address.
+          type: string
+        country:
+          description: The country code of the address.
+          type: string
+          format: iso3166-a2
+          example: NL
       type: object
     DossierDocumentResource:
       properties:
@@ -9598,14 +10221,74 @@ components:
         dateEnd:
           description: The end date in ISO8601 format.
           type: string
+        protocol:
+          description: The current protocol of the Dossier.
+          type: string
+          enum:
+            - wvp
+            - zwangerschap
+            - adoptie
+            - orgaandonatie
+            - zwerd
+            - wga
+            - bezwaar-en-beroep
+            - reintegratie
+            - preventief
+            - medisch
+            - medisch-preventief
+            - frequent-verzuim
+            - arbeidsdeskundig-onderzoek
+            - afwezigheid
+            - budgetcoaching
+            - rie
+            - pago
+            - pmo
+            - werkplekonderzoek
+            - training
+            - vitaliteit
+            - zorgcoaching
+            - consultancy
+            - jobcoaching
+            - act-meting
+            - loopbaan-begeleiding
+            - assessment
+            - outplacement
+            - overname-dienstverband
+            - spoor-3
+            - ontwikkeladvies
+            - spoor-2
+            - werknemer
+            - geboorteverlof
+            - verzuim-zwerd
+            - bedrijfsdossier
+            - betaald-ouderschapsverlof
         dossierStatus:
           description: The current status of the Dossier.
           type: string
-        accidentType:
+          enum:
+            - open
+            - completed
+        safetyNet:
           description: The accident type of the Dossier.
           type: string
+          enum:
+            - disposal
+            - special-employment
+            - sick-due-to-pregnancy
+            - not-specified
+            - sick-due-to-childbirth
+            - sick-due-to-organ-donation
+            - unknown
+        accidentType:
+          description: The accident type associated with the dossier.
+          type: string
+          enum:
+            - private
+            - private-with-liable
+            - work-related-accident
+            - work-related-accident-with-liable
         nursingAddress:
-          type: object
+          $ref: '#/components/schemas/DossierAddress'
         dateCreated:
           description: Date the note type was created
           type: string
@@ -9661,58 +10344,65 @@ components:
           description: ID of the DossierTask
           type: string
           format: uuid
+          nullable: false
         externalKey:
           description: External key associated with the dossier task
           type: string
+          nullable: true
         migrationKey:
           description: Migration key associated with the dossier task
           type: string
+          nullable: true
         dossier:
-          oneOf:
-            - $ref: '#/components/schemas/Dossier'
-          nullable: true
-          description: The dossier associated with the dossier task, available if the relation is included in the query
-        baseTaskId:
-          description: ID of the base task
-          type: string
-          format: uuid
+          $ref: '#/components/schemas/Dossier'
         baseTask:
-          oneOf:
-            - $ref: '#/components/schemas/Task'
-          nullable: true
-          description: The base task associated with the dossier task
+          $ref: '#/components/schemas/Task'
         taskStatus:
           description: status of the task
           type: string
+          enum:
+            - open
+            - finished
+            - cancelled
+            - overdue
+          nullable: false
         title:
           description: title of the task
           type: string
+          nullable: false
         content:
           description: content of the task
           type: string
-        isPostoponed:
+          nullable: true
+        isPostponed:
           description: declares whether task is postponed
           type: boolean
+          nullable: false
         dateStart:
           description: date start of the task
           type: string
           format: date
+          nullable: true
         dateEnd:
-          description: date end of the task
+          description: end date of the task
           type: string
           format: date
+          nullable: true
         dateCompleted:
-          description: date of completion of the task
+          description: Completion date of the task
           type: string
           format: date-time
+          nullable: true
         dateCreated:
-          description: date created of the task
+          description: creation date of the task
           type: string
           format: date-time
+          nullable: true
         dateUpdated:
-          description: date upddated of the task
+          description: update date of the task
           type: string
           format: date-time
+          nullable: true
       type: object
     PaidParentalLeaveDossier:
       type: object
@@ -9868,6 +10558,14 @@ components:
             safetyNet:
               description: The safetynet associated with the Dossier.
               type: string
+              enum:
+                - disposal
+                - special-employment
+                - sick-due-to-pregnancy
+                - not-specified
+                - sick-due-to-childbirth
+                - sick-due-to-organ-donation
+                - unknown
             spoor2:
               $ref: '#/components/schemas/Spoor2'
           type: object
@@ -9892,6 +10590,14 @@ components:
             safetyNet:
               description: The type of safety net (vangnet) that applies to this absence
               type: string
+              enum:
+                - disposal
+                - special-employment
+                - sick-due-to-pregnancy
+                - not-specified
+                - sick-due-to-childbirth
+                - sick-due-to-organ-donation
+                - unknown
             zwerd:
               $ref: '#/components/schemas/Zwerd'
           type: object
@@ -9998,11 +10704,11 @@ components:
                 - married
                 - partnership
                 - widowed
-                - widowed_after_marriage
-                - widowed_after_partnership
+                - widowed-after-marriage
+                - widowed-after-partnership
                 - divorced
-                - divorced_after_marriage
-                - divorced_after_partnership
+                - divorced-after-marriage
+                - divorced-after-partnership
                 - unknown
             noRisk:
               description: No risk indication for the Employee.
@@ -10139,11 +10845,11 @@ components:
                 - married
                 - partnership
                 - widowed
-                - widowed_after_marriage
-                - widowed_after_partnership
+                - widowed-after-marriage
+                - widowed-after-partnership
                 - divorced
-                - divorced_after_marriage
-                - divorced_after_partnership
+                - divorced-after-marriage
+                - divorced-after-partnership
                 - unkown
             noRisk:
               description: No risk indication for the Employee.
@@ -10284,7 +10990,7 @@ components:
                 - hour
                 - day
                 - week
-                - four_weeks
+                - four-weeks
                 - month
                 - year
               nullable: true
@@ -10526,6 +11232,10 @@ components:
                 - active
                 - ended
                 - blocked
+            incomingDossiers:
+              description: Indicates if there are incoming dossiers
+              type: boolean
+              nullable: true
           type: object
       type: object
     Address:
@@ -10789,10 +11499,7 @@ components:
           type: string
         primary:
           description: Indication if the address is flagged as primary or not.
-          type: string
-          enum:
-            - '0'
-            - '1'
+          type: boolean
         dateCreated:
           description: The date and time the employer person address was created in YYYY-MM-DD HH:MM:SS format
           type: string
@@ -10892,9 +11599,9 @@ components:
           description: The gender associated with the employer person.
           type: string
           enum:
-            - M
-            - F
-            - X
+            - m
+            - f
+            - x
         dateOfBirth:
           description: The date of birth associated with the employer person.
           type: string
@@ -10908,16 +11615,16 @@ components:
           description: The marital status associated with the employer person
           type: string
           enum:
-            - SINGLE
-            - MARRIED
-            - PARTNERSHIP
-            - WIDOWED
-            - WIDOWED_AFTER_MARRIAGE
-            - WIDOWED_AFTER_PARTNERSHIP
-            - DIVORCED
-            - DIVORCED_AFTER_MARRIAGE
-            - DIVORCED_AFTER_PARTNERSHIP
-            - UNKNOWN
+            - single
+            - married
+            - partnership
+            - widowed
+            - widowed-after-marriage
+            - widowed-after-partnership
+            - divorced
+            - divorced-after-marriage
+            - divorced-after-partnership
+            - unknown
         salutation:
           description: The salutation associated with the employer person
           type: string
@@ -11086,7 +11793,7 @@ components:
             - hour
             - day
             - week
-            - four_weeks
+            - four-weeks
             - month
             - year
           example: month
@@ -11301,6 +12008,10 @@ components:
         description:
           description: The description of the operation
           type: string
+        code:
+          description: The code of the operation
+          type: string
+          nullable: true
         normTime:
           description: The time used to perform the operation in minutes
           type: integer
@@ -11363,9 +12074,6 @@ components:
         pricePerQuantity:
           description: The price per quantity associated with the billable operation.
           type: number
-        invoiceDescription:
-          description: The invoice description associated with the billable operation.
-          type: string
         dateExecuted:
           description: The date executed associated with the billable operation.
           type: string
@@ -11641,6 +12349,122 @@ components:
           type: string
           format: date-time
       type: object
+    PostUserRequestBody:
+      properties:
+        externalkey:
+          type: string
+          example: 98798779@12
+        roleId:
+          type: string
+          format: uuid
+        username:
+          type: string
+          example: dotweb-user
+        active:
+          type: boolean
+          example: 'true'
+        hasSystemAccess:
+          type: boolean
+          example: 'false'
+        dateStart:
+          description: YYYY-MM-DD Defaults to NOW()
+          type: string
+          format: date-time
+        dateEnd:
+          description: YYYY-MM-DD Defaults to NULL
+          type: string
+          format: date-time
+          nullable: true
+        employerId:
+          description: Id for assigning the user to a specific employer
+          type: string
+          format: uuid
+        belongsToEmployeeId:
+          description: This will prevent the user from being able to see themselves as an employee
+          type: string
+          format: uuid
+        belongsToEmployeeKey:
+          description: This will prevent the user from being able to see themselves as an employee
+          type: string
+          example: externalEmployeeKey
+        employeeId:
+          description: Key for generating personalia from employee data
+          type: string
+          format: uuid
+        employeeKey:
+          description: Key for generating personalia from employee data
+          type: string
+          example: employee-unique-identifier
+        ssoKey:
+          description: SSO key unique in scope for partner/employer sso solution, not globally unique
+          type: string
+          example: nfr5ffg8jdnksDf3
+        person:
+          required:
+            - initials
+            - surname
+            - gender
+          properties:
+            mail:
+              type: string
+              format: email
+              example: user1@mail.com
+            phone:
+              type: string
+              example: '06123456789'
+            initials:
+              type: string
+              example: J.K.
+            surname:
+              type: string
+              example: Doe
+            nickname:
+              type: string
+              example: Jan
+            prefix:
+              type: string
+              example: Van
+            gender:
+              type: string
+              enum:
+                - m
+                - f
+                - x
+              example: m
+          type: object
+      type: object
+    InternalUserResource:
+      properties:
+        id:
+          description: ID of the user
+          type: string
+          format: uuid
+        username:
+          description: Username of the user
+          type: string
+        user_type_id:
+          description: User type id of the user
+          type: integer
+        arboRole:
+          $ref: '#/components/schemas/ArboRole'
+        teamRole:
+          type: object
+        teams:
+          description: The teams the user is associated with
+          type: array
+          items:
+            type: object
+        person:
+          $ref: '#/components/schemas/MasterPerson'
+        masterPerson:
+          $ref: '#/components/schemas/MasterPerson'
+        dossiersCount:
+          description: Number of dossiers associated with the user
+          type: integer
+        tasksCount:
+          description: Number of tasks associated with the user
+          type: integer
+      type: object
     User:
       properties:
         id:
@@ -11673,6 +12497,45 @@ components:
           description: Number of tasks associated with the user
           type: integer
       type: object
+    UserResource:
+      properties:
+        id:
+          description: ID of the user
+          type: string
+          format: uuid
+        externalKey:
+          description: External key of the user
+          type: string
+        username:
+          description: Username of the user
+          type: string
+        type:
+          description: User type of the user
+          type: string
+          enum:
+            - internal
+            - external
+            - employer
+        arboRole:
+          $ref: '#/components/schemas/ArboRole'
+        employerRole:
+          $ref: '#/components/schemas/EmployerRole'
+        teamRole:
+          type: object
+        teams:
+          description: The teams the user is associated with
+          type: array
+          items:
+            type: object
+        person:
+          $ref: '#/components/schemas/MasterPerson'
+        dossiersCount:
+          description: Number of dossiers associated with the user
+          type: integer
+        tasksCount:
+          description: Number of tasks associated with the user
+          type: integer
+      type: object
 tags:
   - name: Absence Reasons
     description: Absence Reasons
@@ -11694,6 +12557,8 @@ tags:
     description: DossierContent
   - name: Dossier External Resource
     description: Dossier External Resource
+  - name: Dossier Task
+    description: Dossier Task
   - name: Return to work advice
     description: Return to work advice
   - name: Dossier Officers
@@ -11718,3 +12583,5 @@ tags:
     description: Task
   - name: PublicAPI
     description: PublicAPI
+  - name: User
+    description: User
