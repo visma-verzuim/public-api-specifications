@@ -2,21 +2,15 @@
 
 ## Retrieve Bearer Token
 
-- **URL:** `/api/auth/partner/token`
-  
-- **Method:** POST
-  
-- **Description:** Obtain a Bearer token using the client's credentials. This token is required for authenticating further API requests.
-  
+- 
 
 ### Request Details
 
 - To retrieve the token, provide the client ID and client secret as part of the request headers or body as specified by the API.
-  
 
-### Request Example
+### Sample Request
 
-``` json
+```json
 POST /api/auth/partner/token
 Authorization: Basic
 Body:
@@ -37,16 +31,14 @@ Body:
         "absencereason": ["read"]
     }
 }
-
 ```
 
-### Response Example
+### Sample Response
 
-``` json
+```json
 {
     "token_type": "Bearer",
     "expires_in": 10800,
     "access_token": "eyJ0**********WarqQ"
 }
-
 ```

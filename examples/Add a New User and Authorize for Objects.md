@@ -15,7 +15,7 @@ This example demonstrates how to create a new user in the system and authorize t
 3. **Determine Objects for Authorization:**
    - Identify the specific objects (e.g., Organizational Units) that the new user should be authorized for.
 4. **Add Authorization to the Created User:**
-    - Assign the necessary authorizations for the identified objects to the new user.
+   - Assign the necessary authorizations for the identified objects to the new user.
 
 ---
 
@@ -23,15 +23,15 @@ This example demonstrates how to create a new user in the system and authorize t
 
 ### 1. Retrieve the User role
 
-**Request Example**
+**Sample Request**
 
-``` json
+```json
 GET /api/public/arbo-role?filter[active]=true
 Authorization: Bearer [Your Access Token]
 Body: [empty]
 ```
 
-**Response Example**
+**Sample Response**
 
 ```json
 {
@@ -63,7 +63,7 @@ Body: [empty]
 
 ### 2. Create the user
 
-**Request Example**
+**Sample Request**
 
 ```json
 POST /api/pubic/user/internal
@@ -87,7 +87,7 @@ Body:
 }
 ```
 
-**Response Example**
+**Sample Response**
 
 ```json
 {
@@ -127,7 +127,7 @@ Body:
 
 ### 3. Determine Objects for Authorization
 
-**Request example**
+**Sample Request**
 
 ```json
 GET /api/public/organizational-unit
@@ -135,7 +135,7 @@ Authorization: Bearer [Your Access Token]
 Body: [empty]
 ```
 
-**Response example**
+**Sample Response**
 
 ```json
 {
@@ -271,4 +271,3 @@ Body:
     "traceId": "6445b8e6-a3bc-48b6-ab40-1ea7a0bbac19"
 }
 ```
-
