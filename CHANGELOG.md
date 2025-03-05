@@ -3,6 +3,43 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Release February 2025
+
+### Added
+
+- Implemented `GET` method for `Users` endpoint (VV-2623)
+- Added employer relation to `GET BillableOperation` endpoint (VV-6496)
+
+### Changed
+
+- Improved `POST/PATCH` methods for `OrganizationalUnit` (VV-7082)
+- OpenAPI docs: Added field requirements for `Employer` (VV-7012)
+- Documentation improvements for APIM + OpenAPI (VV-6809)
+
+### Fixed
+
+- Fixed incorrect scope on `GET DossierContent` requests (VV-7083)
+
+
+
+## Release January 2025
+
+### Added
+
+- Added `Communications`, `ContactPerson`, and `Addresses` to `GET/POST/PATCH OrganizationalUnit` endpoints (VV-4212)
+- Implemented `POST` method for `User` to send a welcome email (VV-6782)
+
+### Changed
+
+- Updated `GET/POST/PATCH OrganizationalUnit` endpoints to include supervisors (VV-4858)
+- Public API documentation fixes (VV-6443)
+
+### Fixed
+
+- Fixed `Patch Dossier Uploads` issue where `forBothParties` property caused an error after validation (VV-6155)
+
+
+
 ## Release December 2024
 
 ### Added
@@ -18,8 +55,6 @@ The changelog has been tracked since March 15, 2024. Changes prior to this date 
 - Improvements on `POST` and `PATCH` methods for `EmployerContracts` endpoint (VV-5898)
 
 - Fixed `POST AbsenceCourse` only accepts 1 AbsenceCourse per day, per dossier (VV-6450)
-
-
 
 ## Release November 2024
 
@@ -39,8 +74,6 @@ The changelog has been tracked since March 15, 2024. Changes prior to this date 
 
 - Improvements on filtering `employerId` and `parent` on `GET OrganizationalUnit` (VV-6145)
 
-
-
 ## Release October 2024
 
 ### Added
@@ -54,8 +87,6 @@ The changelog has been tracked since March 15, 2024. Changes prior to this date 
 - Specify formats in OpenAPI Specifications (VV-5700)
 
 - Add UUID to `ContactPerson` (VV-5928)
-
-
 
 ## Release 2024-09-18
 
