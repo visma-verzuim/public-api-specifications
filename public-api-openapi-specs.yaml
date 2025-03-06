@@ -9366,7 +9366,7 @@ components:
           type: string
           format: uuid
         serviceTypeId:
-          description: 'The unique identifier of the service type'
+          description: "The unique identifier of the service type. ('dienstverlening soorten', only applicable when 'dienstverlening' is enabled)"
           type: string
           format: uuid
         organizationalUnitId:
@@ -9374,11 +9374,11 @@ components:
           type: string
           format: uuid
         contractTypeId:
-          description: 'The unique identifier of the contract type'
+          description: 'The unique identifier of the contract type. (contractsoorten)'
           type: string
           format: uuid
         partnershipId:
-          description: 'The unique identifier of the partnership'
+          description: 'The unique identifier of the partnership (samenwerkingsverbanden)'
           type: string
           format: uuid
         dateStart:
@@ -9440,17 +9440,17 @@ components:
           example: External-Key-Test
           nullable: true
         contractTypeId:
-          description: 'The unique identifier of the Contract type.'
+          description: 'The unique identifier of the Contract type. (contractsoorten)'
           type: string
           format: uuid
           example: bc1a50da-1093-4809-8efc-e3553b2f49b0
         partnershipId:
-          description: 'The unique identifier of the Partnership.'
+          description: 'The unique identifier of the Partnership. (samenwerkingsverbanden)'
           type: string
           format: uuid
           example: bc1a50da-1093-4809-8efc-e3553b2f49b0
         serviceTypeId:
-          description: 'The unique identifier of the service type. REQUIRED if the partner uses service contracts'
+          description: "The unique identifier of the service type. REQUIRED if the partner uses service contracts ('dienstverlening soorten', only applicable when 'dienstverlening' is enabled)"
           type: string
           format: uuid
           example: bc1a50da-1093-4809-8efc-e3553b2f49b0
