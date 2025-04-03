@@ -40,39 +40,18 @@ paths:
             type: boolean
           example: 'false'
         -
-          name: 'sort[code]'
+          name: sort
           in: query
-          description: "Sorts results by absence reason code ascending. For descending, prefix with '-'"
+          description: "Sorts results ascending by the given option, options prefixed with '-' sort descending"
           schema:
-            type: string
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sorts results by absence reason external key ascending. For descending, prefix with '-'"
-          schema:
-            type: string
-        -
-          name: 'sort[name]'
-          in: query
-          description: "Sorts results by absence reason name ascending. For descending, prefix with '-'. (this is the default sorting method)"
-          schema:
-            type: string
+            $ref: '#/components/schemas/GetAbsenceReasonSortOptions'
       responses:
         200:
           description: 'A list of absence reasons that match the given filters'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AbsenceReason'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMetaInformation'
-                type: object
+                $ref: '#/components/schemas/GetAbsenceReasonResponse'
         400:
           description: 'Bad Request'
           content:
@@ -269,16 +248,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ArboRole'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMetaInformation'
-                type: object
+                $ref: '#/components/schemas/GetArboRoleResponse'
         400:
           description: 'Bad Request'
           content:
@@ -323,16 +293,44 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/CompanyDoctor'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMetaInformation'
-                type: object
+                $ref: '#/components/schemas/GetCompanyDoctorResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  '/contact-person/{type}':
+    post:
+      tags:
+        - ContactPerson
+      summary: 'Create a new contact person'
+      description: 'Creates a new contact person for either an employer or organizational unit. This endpoint handles the creation process and associates the contact person with the specified entity.'
+      operationId: essential.post.contact-person
+      parameters:
+        -
+          name: type
+          in: path
+          description: 'Type of contact person (employer or organizational-unit)'
+          required: true
+          schema:
+            type: string
+            enum:
+              - employer
+              - organizational-unit
+      responses:
+        201:
+          description: 'Contact person successfully created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactPerson'
         400:
           description: 'Bad Request'
           content:
@@ -351,7 +349,7 @@ paths:
         - EmployerContracts
       summary: 'Delete an employer contract'
       description: 'Deletes an employer contract based on the ID.'
-      operationId: essential.delete.employer-contract
+      operationId: essential.delete.employer-contract.id
       parameters:
         -
           name: id
@@ -418,36 +416,20 @@ paths:
           in: query
           description: 'Filter by the type of the contract type'
           schema:
-            type: string
-            enum:
-              - custom
-              - base
+            $ref: '#/components/schemas/ContractTypeTypeEnumOptions'
         -
           name: sort
           in: query
           description: 'Sort results by a specific field'
           schema:
-            type: string
-            enum:
-              - code
-              - name
-              - dateStart
+            $ref: '#/components/schemas/GetContractTypeSortOptions'
       responses:
         200:
           description: 'A list of contract types'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ContractType'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMetaInformation'
-                type: object
+                $ref: '#/components/schemas/GetContractTypeResponse'
         400:
           description: 'Bad Request'
           content:
@@ -563,39 +545,22 @@ paths:
               - ended
               - blocked
         -
-          name: 'include[contractType]'
+          name: include
           in: query
-          description: 'Include the contract type in the output'
+          description: 'Include the related resources - use comma separated values to include multiple resources'
+          style: form
+          explode: false
           schema:
-            type: string
-        -
-          name: 'include[serviceType]'
-          in: query
-          description: 'Include the service type (only for service contracts) in the output'
-          schema:
-            type: string
-        -
-          name: 'include[employer]'
-          in: query
-          description: 'Include the employer in the output'
-          schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/GetEmployerContractIncludeOptions'
       responses:
         200:
           description: 'A list of employer contracts'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Contract'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMetaInformation'
-                type: object
+                $ref: '#/components/schemas/GetEmployerContractResponse'
         400:
           description: 'Bad Request'
           content:
@@ -717,16 +682,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Module'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMetaInformation'
-                type: object
+                $ref: '#/components/schemas/GetContractModulesResponse'
         400:
           description: 'Bad Request'
           content:
@@ -783,26 +739,14 @@ paths:
           in: query
           description: 'sort results by a specific field'
           schema:
-            type: string
-            enum:
-              - name
-              - dateCreated
+            $ref: '#/components/schemas/GetPartnershipSortOptions'
       responses:
         200:
           description: 'A list of partnerships'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Partnership'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMetaInformation'
-                type: object
+                $ref: '#/components/schemas/GetPartnershipResponse'
         400:
           description: 'Bad Request'
           content:
@@ -841,16 +785,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ServiceType'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMetaInformation'
-                type: object
+                $ref: '#/components/schemas/GetServiceTypeResponse'
         400:
           description: 'Bad Request'
           content:
@@ -1016,66 +951,18 @@ paths:
             format: date-time-offset
           example: '2024-01-01T12:34:56+01:00'
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by given options, use '-' to sort descending"
           schema:
-            type: string
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
+            $ref: '#/components/schemas/GetAbsenceCourseSortOptions'
       responses:
         200:
           description: 'A list of AbsenceCourses'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/AbsenceCourse'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetAbsenceCourseResponse'
         400:
           description: 'Bad request'
           content:
@@ -1278,16 +1165,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierDocumentType'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMetaInformation'
-                type: object
+                $ref: '#/components/schemas/GetDossierDocumentTypeResponse'
         400:
           description: 'Bad Request'
           content:
@@ -1370,16 +1248,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierNoteType'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMetaInformation'
-                type: object
+                $ref: '#/components/schemas/GetDossierNoteTypeResponse'
         400:
           description: 'Bad Request'
           content:
@@ -1469,49 +1338,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierUploadType'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/configuration/dossier/upload-types?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/configuration/dossier/upload-types?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/configuration/dossier/upload-types?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/configuration/dossier/upload-types?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/configuration/dossier/upload-types?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetDossierUploadTypeResponse'
         400:
           description: 'Bad Request'
           content:
@@ -1564,7 +1391,7 @@ paths:
       tags:
         - DossierContent
       summary: 'Get a list of documents that can be applied to dossier content'
-      operationId: b5d1dc044ceeaf3c029fbbfc522c5b10
+      operationId: essential.get.dossier.content.documents
       parameters:
         -
           name: 'filter[id]'
@@ -1639,73 +1466,11 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierDocumentResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/document?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/document?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/document?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/document?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/document?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetDossierContentDocumentResponse'
         400:
-          description: 'Bad Request'
-          content:
-            application/json:
-              schema:
-                properties:
-                  message:
-                    type: string
-                    example: 'Validation of the request failed'
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: 'Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.'
-                      type: object
-                type: object
+          $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          $ref: '#/components/schemas/ServerErrorResponse'
   '/dossier/content/document/{uuid}':
     patch:
       tags:
@@ -1754,7 +1519,7 @@ paths:
         - DossierContent
       summary: 'Create a new document'
       description: 'Create a new document for a dossier'
-      operationId: 86772ab418be166088f74e165f5b83a3
+      operationId: essential.post.dossier.content.document
       requestBody:
         description: 'The document data'
         required: true
@@ -1818,7 +1583,7 @@ paths:
       tags:
         - 'Dossier External Resource'
       summary: 'Delete a dossier external resource'
-      operationId: 8ad235048e1045cf07c1fc88aafa8309
+      operationId: essential.delete.dossier.external-resource.id
       parameters:
         -
           name: id
@@ -1851,8 +1616,8 @@ paths:
       tags:
         - 'Dossier External Resource'
       summary: 'Update an external resource with ID'
-      description: 'Update an external resource associated with a dossier using its ID'
-      operationId: 76e26cc695b5aaffeb029ea9c3697d95
+      description: 'Update an external resource associated with a dossier using its unique identifier'
+      operationId: essential.patch.dossier.external-resource.id
       parameters:
         -
           name: id
@@ -1892,7 +1657,7 @@ paths:
       tags:
         - 'Dossier External Resource'
       summary: 'Get a list of external resources'
-      operationId: 7215b2d9eabe66740869d3653e753d47
+      operationId: essential.get.dossier.external-resource
       parameters:
         -
           name: 'filter[id]'
@@ -1926,59 +1691,25 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierExternalResourceResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'http://localhost/api/public/external-resource?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'http://localhost/api/public/external-resource?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'http://localhost/api/public/external-resource?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'http://localhost/api/public/external-resource?page[size]=25'
-                      next:
-                        type: string
-                        format: uri
-                        example: 'http://localhost/api/public/external-resource?page[number]=1&page[size]=25'
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 100
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 4
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetDossierExternalResourceResourceResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - 'Dossier External Resource'
       summary: 'Create an external resource'
       description: 'Create an external resource associated with a dossier'
-      operationId: 86a89fe56bbefe11db7ecbd411a6d82e
+      operationId: essential.post.dossier.external-resource
       requestBody:
         description: 'Dossier external resource data for creating a new dossier external resource'
         required: true
@@ -2010,7 +1741,7 @@ paths:
         - 'Dossier External Resource'
       summary: 'Update an external resource'
       description: "Update an external resource associated with a dossier by providing either its 'id' or 'key' through the request body"
-      operationId: 1d5c8ee7fa777e586eedcba6e5127e46
+      operationId: essential.patch.dossier.external-resource
       requestBody:
         description: 'Dossier external resource data for updating a dossier external resource'
         required: true
@@ -2043,7 +1774,7 @@ paths:
         - 'Dossier External Resource'
       summary: 'Create an external resource'
       description: 'Create an external resource associated with a dossier'
-      operationId: 6967709bde5c0ccbd00b16ef6bc6b48f
+      operationId: essential.post.dossier.id.external-resource
       parameters:
         -
           name: dossierId
@@ -2084,7 +1815,7 @@ paths:
         - DossierContent
       summary: 'Delete a note'
       description: 'Deletes a note based on the unique identifier.'
-      operationId: ac24bce5b327350fccbf2ff243478f63
+      operationId: essential.delete.dossier.note.id
       parameters:
         -
           name: id
@@ -2118,7 +1849,7 @@ paths:
       tags:
         - DossierContent
       summary: 'Get a list of notes that can be applied to dossier content'
-      operationId: a5a6f4bd9737b86871cb037f585e44c0
+      operationId: essential.get.dossier.content.notes
       parameters:
         -
           name: 'filter[id]'
@@ -2200,80 +1931,26 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierNoteResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/note?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/note?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/note?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/note?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/note?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetDossierContentNoteResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
-                properties:
-                  message:
-                    type: string
-                    example: 'Validation of the request failed'
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: 'Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.'
-                      type: object
-                type: object
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   '/dossier/content/note/{uuid}':
     patch:
       tags:
         - DossierContent
       summary: 'Update an existing note'
       description: 'Update an existing belonging to a dossier'
-      operationId: d6e7b59b464ec11b7df8db65c30db671
+      operationId: essential.patch.dossier.content.note.id
       parameters:
         -
           name: uuid
@@ -2315,7 +1992,7 @@ paths:
         - DossierContent
       summary: 'Create a new note'
       description: 'Create a new note for a dossier'
-      operationId: 0840fd929a61573bdbc60b5f982b57a4
+      operationId: essential.post.dossier.content.note
       requestBody:
         description: 'The note data'
         required: true
@@ -2347,7 +2024,7 @@ paths:
         - DossierContent
       summary: 'Update an existing note'
       description: 'Update an existing note belonging to a dossier'
-      operationId: 1a0894db984e7b556db3a5ec945bff62
+      operationId: essential.patch.dossier.content.note
       requestBody:
         description: 'The note data'
         required: true
@@ -2380,7 +2057,7 @@ paths:
         - DossierContent
       summary: 'Delete a dossier upload'
       description: 'Deletes a dossier upload based on the ID.'
-      operationId: dac096a3e991d2033754d498508df0e2
+      operationId: essential.delete.dossier.upload.id
       parameters:
         -
           name: id
@@ -2414,7 +2091,7 @@ paths:
       tags:
         - DossierContent
       summary: 'Get a list of dossier uploads'
-      operationId: 3823ef74c41de9c11359260ed5ad7b37
+      operationId: essential.get.dossier.content.upload
       parameters:
         -
           name: 'filter[id]'
@@ -2474,79 +2151,25 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierUploadResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/upload?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/upload?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/upload?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/upload?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/content/upload?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetDossierContentUploadResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
-                properties:
-                  message:
-                    type: string
-                    example: 'Validation of the request failed'
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: 'Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.'
-                      type: object
-                type: object
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - DossierContent
       summary: 'Create a new upload'
       description: 'Create a new upload for a dossier'
-      operationId: 054f53b6fadf900cd7407ce8bd097cd4
+      operationId: essential.post.dossier.content.upload
       requestBody:
         description: 'The upload data'
         required: true
@@ -2578,7 +2201,7 @@ paths:
         - DossierContent
       summary: 'Update an existing upload'
       description: 'Update an existing upload belonging to a dossier'
-      operationId: d7bfb765d3a2fe924bccb11a5c6894bf
+      operationId: essential.patch.dossier.content.upload
       requestBody:
         description: 'The upload data'
         required: true
@@ -2611,7 +2234,7 @@ paths:
         - DossierContent
       summary: 'Update an existing upload'
       description: 'Update an existing upload belonging to a dossier'
-      operationId: b8f7f989866431c83f3682e26340a96e
+      operationId: essential.patch.dossier.content.upload.id
       parameters:
         -
           name: uuid
@@ -2651,8 +2274,8 @@ paths:
     get:
       tags:
         - Dossier
-      summary: 'Get a list of tasks associated to a dossier'
-      operationId: a60a4e48be6e73c5689f96d9d65b6e5d
+      summary: 'Get a list of dossier tasks'
+      operationId: advanced.get.dossier.task
       parameters:
         -
           name: 'filter[id]'
@@ -2748,89 +2371,31 @@ paths:
           in: query
           description: 'sort results by a field'
           schema:
-            type: string
-            enum:
-              - code
-              - name
-              - dateStart
+            $ref: '#/components/schemas/GetDossierTaskSortOptions'
       responses:
         200:
           description: 'A list of dossier tasks'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierTask'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetDossierTaskResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
-                properties:
-                  message:
-                    type: string
-                    example: 'Validation of the request failed'
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: 'Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.'
-                      type: object
-                type: object
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - 'Dossier Task'
       summary: 'Create a new dossier task'
-      operationId: 0d357fe86a31e533f0c8f5ec1fa3ae55
+      operationId: advanced.post.dossier.task
       requestBody:
         description: 'Dossier Task data'
         required: true
@@ -2862,7 +2427,7 @@ paths:
         - 'Dossier Task'
       summary: 'Update a dossier task using request body ID'
       description: 'Update a dossier task by specifying its ID in the request payload.'
-      operationId: 24ed7e419fe414b14c64a26d6f52b5d8
+      operationId: advanced.patch.dossier.task
       requestBody:
         description: 'Data payload for updating the dossier task.'
         required: true
@@ -2895,7 +2460,7 @@ paths:
         - 'Dossier Task'
       summary: 'Update a specific dossier task by ID in the url'
       description: 'Perform an update on a specified dossier task using its unique ID.'
-      operationId: 519db703b94c9735acbcbd738d2769a9
+      operationId: essential.patch.dossier.task.id
       parameters:
         -
           name: id
@@ -2937,7 +2502,7 @@ paths:
       tags:
         - Dossier
       summary: 'Get a list of birth leave dossiers'
-      operationId: f47900b77ddead61bee0c38b4155e4c4
+      operationId: advanced.get.dossier.birth-leave
       parameters:
         -
           name: 'filter[id]'
@@ -3000,86 +2565,36 @@ paths:
             type: string
             format: date-time
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by startDate, externalKey or dateUpdated use '-' as prefix to sort descending"
           schema:
-            type: string
-            format: date
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
-            format: date-time
+            $ref: '#/components/schemas/GetDossierSortOptions'
       responses:
         200:
           description: 'A list of birth leave dossiers'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/BirthLeaveDossier'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetBirthLeaveDossierResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - Dossier
       summary: 'Create a birth leave dossier'
       description: 'This endpoint is used to create a new birth leave dossier.'
-      operationId: 260909fba8009e4d8ddff5d28654231b
+      operationId: advanced.post.dossier.birth-leave
       requestBody:
         description: 'Dossier data'
         required: true
@@ -3111,7 +2626,7 @@ paths:
         - Dossier
       summary: 'Update a Birth Leave dossier'
       description: 'This endpoint is used to update a Birth Leave dossier.'
-      operationId: 15b46a18a598ad10ee1abf20c8eea2f9
+      operationId: advanced.patch.dossier.birth-leave
       requestBody:
         description: 'Dossier data'
         required: true
@@ -3143,7 +2658,8 @@ paths:
       tags:
         - Dossier
       summary: 'Get a list of dossiers'
-      operationId: 1aac9adeb6beb293da9d3a8f788b6a66
+      description: 'Lists all dossiers that match the parameters specified on the request.'
+      operationId: essential.get.dossier
       parameters:
         -
           name: 'filter[id]'
@@ -3213,84 +2729,36 @@ paths:
             type: string
             format: date-time
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by startDate, externalKey or dateUpdated, prefix with '-' to sort descending"
           schema:
-            type: string
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
+            $ref: '#/components/schemas/GetDossierSortOptions'
       responses:
         200:
           description: 'A list of Dossiers'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Dossier'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetDossierResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /dossier/preventive:
     get:
       tags:
         - Dossier
       summary: 'Get a list of preventive dossiers'
-      operationId: 9168b466fd11e192b32bfa512616473e
+      operationId: essential.get.dossier.preventive
       parameters:
         -
           name: 'filter[id]'
@@ -3347,84 +2815,36 @@ paths:
           schema:
             type: string
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by startDate, externalKey or dateUpdated, prefix with '-' to sort descending"
           schema:
-            type: string
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
+            $ref: '#/components/schemas/GetDossierSortOptions'
       responses:
         200:
           description: 'A list of Preventive Dossiers'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Dossier'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetDossierResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - Dossier
       summary: 'Create a preventive dossier'
       description: 'This endpoint is used to create a new preventive dossier.'
-      operationId: 870dd37d6d3351a6d5136248764dd83e
+      operationId: essential.post.dossier.preventive
       requestBody:
         description: 'Dossier data'
         required: true
@@ -3456,7 +2876,7 @@ paths:
         - Dossier
       summary: 'Update a preventive dossier'
       description: 'This endpoint is used to update a preventive dossier.'
-      operationId: 7fa1ba1121647cc60d8fc670a5ce3a8e
+      operationId: essential.patch.dossier.preventive
       requestBody:
         description: 'Dossier data'
         required: true
@@ -3488,7 +2908,7 @@ paths:
       tags:
         - Dossier
       summary: 'Get a list of Medical Preventive dossiers'
-      operationId: 070332d5c85dbc3db42471268bf4ba98
+      operationId: ultimate.get.dossier.medical-preventive
       parameters:
         -
           name: 'filter[id]'
@@ -3545,84 +2965,36 @@ paths:
           schema:
             type: string
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by startDate, externalKey or dateUpdated, prefix with '-' to sort descending"
           schema:
-            type: string
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
+            $ref: '#/components/schemas/GetDossierSortOptions'
       responses:
         200:
           description: 'A list of Medical Preventive Dossiers'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Dossier'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetDossierResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - Dossier
       summary: 'Create a medical preventive dossier'
       description: 'This endpoint is used to create a new medical preventive dossier.'
-      operationId: d4ba8d850f738cd3244cfafb227b9fc1
+      operationId: ultimate.post.dossier.medical-preventive
       requestBody:
         description: 'Dossier data'
         required: true
@@ -3654,7 +3026,7 @@ paths:
         - Dossier
       summary: 'Update a medical preventive dossier'
       description: 'This endpoint is used to update a medical preventive dossier.'
-      operationId: b8f0be7de42af4e509dbec7f4c49b9ee
+      operationId: ultimate.patch.dossier.medical-preventive
       requestBody:
         description: 'Dossier data'
         required: true
@@ -3681,12 +3053,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/illness:
+  /dossier/illness:
     get:
       tags:
         - Dossier
       summary: 'Get a list of Illness dossiers'
-      operationId: 5a405cbd3db668136bf281b995c57bf2
+      operationId: essential.get.dossier.illness
       parameters:
         -
           name: 'filter[id]'
@@ -3743,100 +3115,20 @@ paths:
           schema:
             type: string
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by startDate, externalKey or dateUpdated, prefix with '-' to sort descending"
           schema:
-            type: string
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
+            $ref: '#/components/schemas/GetDossierSortOptions'
       responses:
         200:
           description: 'A list of Illness Dossiers'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Dossier'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetDossierResponse'
         400:
           description: 'Bad Request'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-    patch:
-      tags:
-        - Dossier
-      summary: 'Update a illness dossier'
-      description: 'This endpoint is used to update a new illness dossier.'
-      operationId: 897d2c9cadd92752479c2493b04a9790
-      requestBody:
-        description: 'Dossier data'
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchIllnessRequestBody'
-      responses:
-        201:
-          description: 'Dossier successfully created'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dossier'
-        400:
-          description: 'Invalid input'
           content:
             application/json:
               schema:
@@ -3852,7 +3144,7 @@ paths:
       tags:
         - DossierContent
       summary: 'Get a list of dossier sections that can be applied to dossier contents'
-      operationId: b10b6e0dd69c1e78850dc76dbe344816
+      operationId: essential.get.dossier.section
       parameters:
         -
           name: 'filter[id]'
@@ -3896,124 +3188,32 @@ paths:
           in: query
           description: 'Filter by the type of dossier linked to the dossier section.'
           schema:
-            type: string
-            enum:
-              - illness
-              - pregnancy
-              - preventive
-              - medical
-              - adoption
-              - organ-donation
-              - company-dossier
-              - wga
-              - zwerd
-              - objection-and-appeal
-              - reintegration
-              - medical-preventive
-              - frequent-absence
-              - research-by-occupational-health-expert
-              - employee
-              - absence-dossier
-              - budgetcoaching
-              - rie
-              - pago
-              - pmo
-              - workplace-survey
-              - training
-              - vitality
-              - care-coaching
-              - consultancy
-              - job-coaching
-              - act-meting
-              - career-guidance
-              - assessment
-              - outplacement
-              - acquisition-of-employment
-              - spoor-3
-              - development-advice
-              - spoor-2
-              - birth-leave
-              - illness-and-zwerd
-              - paid-parental-leave
+            $ref: '#/components/schemas/DossierTypeEnumOptions'
       responses:
         200:
           description: 'A list of dossier sections'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierSection'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/section?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/section?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/section?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/section?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/dossier/section?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetDossierSectionResponse'
         400:
-          description: 'Bad Request'
+          description: 'Bad request'
           content:
             application/json:
               schema:
-                properties:
-                  message:
-                    type: string
-                    example: 'Validation of the request failed'
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: 'Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.'
-                      type: object
-                type: object
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /dossier/paid-parental-leave:
     get:
       tags:
         - Dossier
       summary: 'Get a list of paid parental leave dossiers'
-      operationId: f5c618750800e2750974c402ac359964
+      operationId: advanced.get.dossier.paid-parental-leave
       parameters:
         -
           name: 'filter[id]'
@@ -4077,86 +3277,36 @@ paths:
             type: string
             format: date-time
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by startDate, externalKey or dateUpdated use '-' as prefix to sort descending"
           schema:
-            type: string
-            format: date
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
-            format: date-time
+            $ref: '#/components/schemas/GetDossierSortOptions'
       responses:
         200:
           description: 'A list of paid parental leave dossiers'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PaidParentalLeaveDossier'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetPaidParentalLeaveDossierResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - Dossier
       summary: 'Create a paid parental leave dossier'
       description: 'This endpoint is used to create a new paid parental leave dossier.'
-      operationId: b427ffef4420183dbc8006f93705728d
+      operationId: advanced.post.dossier.paid-parental-leave
       requestBody:
         description: 'Dossier data'
         required: true
@@ -4188,7 +3338,7 @@ paths:
         - Dossier
       summary: 'Update a Paid Parental Leave dossier'
       description: 'This endpoint is used to update a Paid Parental Leave dossier.'
-      operationId: e69bc78dd9e543b58382992004eb89a3
+      operationId: advanced.patch.dossier.paid-parental-leave
       requestBody:
         description: 'Dossier data'
         required: true
@@ -4220,7 +3370,7 @@ paths:
       tags:
         - Dossier
       summary: 'Get a list of pregnancy dossiers'
-      operationId: 849a90587a625f7a464a51cfb338c453
+      operationId: essential.get.dossier.pregnancy
       parameters:
         -
           name: 'filter[id]'
@@ -4284,86 +3434,36 @@ paths:
             type: string
             format: date-time
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by startDate, externalkey or dateUpdated use '-' as prefix to sort descending"
           schema:
-            type: string
-            format: date
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
-            format: date-time
+            $ref: '#/components/schemas/GetDossierSortOptions'
       responses:
         200:
           description: 'A list of pregnancy dossiers'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/PregnancyDossier'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetPregnancyDossierResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - Dossier
       summary: 'Create a pregnancy dossier'
       description: 'This endpoint is used to create a new pregnancy dossier.'
-      operationId: 204f715f2ced74138fe28ab2c1a15115
+      operationId: essential.post.dossier.pregnancy
       requestBody:
         description: 'Dossier data'
         required: true
@@ -4384,13 +3484,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   '/dossier/{id}/return-to-work-advice':
     get:
       tags:
         - 'Return to work advice'
       summary: 'Get the return to work advice base on the dossier'
       description: 'Returns the return to work advice based on the dossier ID.'
-      operationId: 948a2e1021c00b86fb4844111a9787f7
+      operationId: ultimate.get.dossier.id.return-to-work-advice
       parameters:
         -
           name: id
@@ -4424,7 +3530,7 @@ paths:
       tags:
         - Dossier
       summary: 'Get a list of Spoor-2 dossiers'
-      operationId: 4a703d4003608002a8629ca42528fbc2
+      operationId: ultimate.get.dossier.spoor2
       parameters:
         -
           name: 'filter[id]'
@@ -4484,84 +3590,36 @@ paths:
           schema:
             type: string
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by startDate, externalKey or dataUpdated use '-' as prefix to sort descending"
           schema:
-            type: string
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
+            $ref: '#/components/schemas/GetDossierSortOptions'
       responses:
         200:
           description: 'A list of Spoor-2 Dossiers'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Spoor2Dossier'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetSpoor2DossierResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - Dossier
       summary: 'Create a spoor 2 dossier'
       description: 'This endpoint is used to create a new spoor 2 dossier.'
-      operationId: 122af3d02aa7d9fd3ea4d67cb2be9932
+      operationId: ultimate.post.dossier.spoor2
       requestBody:
         description: 'Dossier data'
         required: true
@@ -4593,7 +3651,7 @@ paths:
         - Dossier
       summary: 'Update a spoor 2 dossier'
       description: 'This endpoint is used to update a new spoor 2 dossier.'
-      operationId: fb64c163ad2875d81f71003d429b3072
+      operationId: ultimate.patch.dossier.spoor2
       requestBody:
         description: 'Dossier data'
         required: true
@@ -4625,7 +3683,7 @@ paths:
       tags:
         - Dossier
       summary: 'Get a list of ZW ERD dossiers'
-      operationId: 600149916a858558639da428fd8a969d
+      operationId: ultimate.get.dossier.zwerd
       parameters:
         -
           name: 'filter[id]'
@@ -4689,85 +3747,36 @@ paths:
             type: string
             format: date-time
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by startDate, externalKey or dataUpdated use '-' as prefix to sort descending"
           schema:
-            type: string
-            format: date
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
+            $ref: '#/components/schemas/GetDossierSortOptions'
       responses:
         200:
           description: 'A list of ZW-ERD Dossiers'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ZwerdDossier'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetZwerdDossierResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - Dossier
       summary: 'Create a ZW ERD dossier'
       description: 'This endpoint is used to create a new ZW ERD dossier.'
-      operationId: 3b0f848958800dec2d06ddc7cd32a950
+      operationId: ultimate.post.dossier.zwerd
       requestBody:
         description: 'Dossier data'
         required: true
@@ -4799,7 +3808,7 @@ paths:
         - Dossier
       summary: 'Update a ZW ERD dossier'
       description: 'This endpoint is used to update a ZW ERD dossier.'
-      operationId: bac2ef1fe221cbadffb47c160d3470b2
+      operationId: ultimate.patch.dossier.zwerd
       requestBody:
         description: 'Dossier data'
         required: true
@@ -4826,12 +3835,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /api/public/dossier/illness-and-zwerd:
+  /dossier/illness-and-zwerd:
     get:
       tags:
         - Dossier
       summary: 'Get a list of Illness and ZW ERD dossiers'
-      operationId: f76e1b5443de68b151a0ff770c0d6654
+      operationId: ultimate.get.dossier.illness-and-zwerd
       parameters:
         -
           name: 'filter[id]'
@@ -4891,85 +3900,70 @@ paths:
           schema:
             type: string
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by startDate, externalKey or dataUpdated use '-' as prefrix to sort descending"
           schema:
-            type: string
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
+            $ref: '#/components/schemas/GetDossierSortOptions'
       responses:
         200:
           description: 'A list of Illness and ZW-ERD Dossiers'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ZwerdDossier'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetZwerdDossierResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /api/public/dossier/illness:
+    patch:
+      tags:
+        - Dossier
+      summary: 'Update a illness dossier'
+      description: 'This endpoint is used to update a new illness dossier.'
+      operationId: essential.patch.dossier.illness
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchIllnessRequestBody'
+      responses:
+        201:
+          description: 'Dossier successfully created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        400:
+          description: 'Invalid input'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /dossier/wga:
     post:
       tags:
         - Dossier
       summary: 'Create a wga dossier'
       description: 'This endpoint is used to create a new wga dossier.'
-      operationId: a0e884537b44a7613aa5083b564e50a3
+      operationId: ultimate.post.dossier.wga
       requestBody:
         description: 'Dossier data'
         required: true
@@ -5001,7 +3995,7 @@ paths:
         - Dossier
       summary: 'Create a wga dossier'
       description: 'This endpoint is used to update a wga dossier.'
-      operationId: bfc5ae39b1fd5534e317efd152922cd0
+      operationId: ultimate.patch.dossier.wga
       requestBody:
         description: 'Dossier data'
         required: true
@@ -5033,7 +4027,7 @@ paths:
       tags:
         - 'Dossier Officers'
       summary: 'Get a list of Dossier Officers (dossierverantwoordelijken)'
-      operationId: 190ee06f4cc5e34d649f3963734dffa5
+      operationId: essential.get.dossier-officer
       parameters:
         -
           name: 'filter[id]'
@@ -5062,73 +4056,13 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/DossierOfficer'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test.com/public/dossier-officers?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test.com/public/dossier-officers?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test.com/public/dossier-officers?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test.com/public/dossier-officers?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test.com/public/dossier-officers?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetDossierOfficerResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
-                properties:
-                  message:
-                    type: string
-                    example: 'Validation of the request failed'
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: 'Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, username`.'
-                      type: object
-                type: object
+                $ref: '#/components/schemas/BadRequestResponse'
   '/employee/{id}':
     delete:
       tags:
@@ -5199,102 +4133,28 @@ paths:
           schema:
             type: string
         -
-          name: 'include[person]'
+          name: include
           in: query
-          description: "Include the employee's personal details in the response"
+          description: 'Include the related resources in the response - use a comma separated values to include multiple resources'
+          style: form
+          explode: false
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/GetEmployeeIncludeOptions'
         -
-          name: 'include[employments]'
-          in: query
-          description: "Include the employee's employments in the response"
-          schema:
-            type: string
-        -
-          name: 'include[employments.employmentContracts]'
-          in: query
-          description: "Include the employment contracts associated with the employee's employments in the response"
-          schema:
-            type: string
-        -
-          name: 'include[currentOrLastEmploymentContract.organizationalUnit.employer]'
-          in: query
-          description: 'Include the employer the employee belongs to through their organizational unit in the response'
-          schema:
-            type: string
-        -
-          name: 'include[addresses]'
-          in: query
-          description: "Include the employee's addresses in the response"
-          schema:
-            type: string
-        -
-          name: 'include[employmentContract]'
-          in: query
-          description: "Include the employee's employment contract in the response"
-          schema:
-            type: string
-        -
-          name: 'include[communicationMethods]'
-          in: query
-          description: "Include the employee's communication methods in the response"
-          schema:
-            type: string
-        -
-          name: 'sort[externalKey]'
+          name: sort
           in: query
           description: "Sort results by external key, use '-externalKey' to sort descending"
           schema:
-            type: string
+            $ref: '#/components/schemas/GetEmployeeSortOptions'
       responses:
         200:
           description: 'A list of Employees'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/EmployeeResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetEmployeeResponse'
         400:
           description: 'Bad Request'
           content:
@@ -5371,7 +4231,7 @@ paths:
         - Employer
       summary: 'Delete an employer'
       description: 'Deletes an employer based on the ID. This operation also removes any users, contracts, roles, authorizations and organizational unit types linked to the employer.'
-      operationId: eeaee0f304958079d45d46879ca3f54b
+      operationId: essential.delete.employer.id
       parameters:
         -
           name: id
@@ -5405,7 +4265,7 @@ paths:
       tags:
         - Employer
       summary: 'Update an employer while referencing the employer by its id'
-      operationId: 4b45f0c730f5ecefd0bdfab7aa52ef67
+      operationId: essential.patch.employer.id
       parameters:
         -
           name: id
@@ -5446,7 +4306,7 @@ paths:
       tags:
         - Employer
       summary: "Get a list of arbo services (in application known as 'arbodiensten')"
-      operationId: 65f32e4a1fa9576b9fafeb0efa81cab4
+      operationId: essential.get.employer.arbo-service
       parameters:
         -
           name: 'filter[id]'
@@ -5471,79 +4331,25 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ArboService'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/arbo?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/arbo?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/arbo?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/arbo?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/arbo?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetEmployerArboServiceResponse'
         400:
-          description: 'Bad Request'
+          description: 'Bad request'
           content:
             application/json:
               schema:
-                properties:
-                  message:
-                    type: string
-                    example: 'Validation of the request failed'
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: 'Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.'
-                      type: object
-                type: object
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /employer:
     get:
       tags:
         - Employer
       summary: 'Get a list of employers'
-      operationId: 2ab2dc3c3facdaaf6f21c40f2668fc5d
+      operationId: essential.get.employer
       parameters:
         -
           name: 'filter[search]'
@@ -5586,9 +4392,13 @@ paths:
         -
           name: include
           in: query
-          description: "Include related resources (\r\n *              organizationalUnitsCount,\r\n *              insurancePolicies,\r\n *              employerDivision,\r\n *              companyDoctor.user,\r\n *              dossierOfficer.user,\r\n *              arboService,\r\n *              visitorAddress.country,\r\n *              postalAddress,\r\n *              contracts.type,\r\n *              contracts.service,\r\n *              contactPersons,\r\n *              ownRiskContracts.type,\r\n *              communications,\r\n *              contactPersons.details\r\n *          ) - use comma separated values to include multiple resources - use dot notation to include nested resources"
+          description: 'Include related resources - use comma separated values to include multiple resources'
+          style: form
+          explode: false
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/GetEmployerIncludeOptions'
         -
           name: 'sort[externalKey]'
           in: query
@@ -5607,49 +4417,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Employer'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetEmployerResponse'
         400:
           description: 'Bad Request'
           content:
@@ -5666,7 +4434,7 @@ paths:
       tags:
         - Employer
       summary: 'Create an employer'
-      operationId: 7399dff84b9cd4e160d3ca5c79c67da5
+      operationId: essential.post.employer
       requestBody:
         description: 'Employer data'
         required: true
@@ -5697,7 +4465,7 @@ paths:
       tags:
         - Employer
       summary: 'Update an employer'
-      operationId: fe6ccd9aaaa17d0d33e3110a8ce5209b
+      operationId: essential.patch.employer
       requestBody:
         description: 'Employer data'
         required: true
@@ -5729,7 +4497,7 @@ paths:
       tags:
         - 'Employer Divisions'
       summary: 'Get a list of employer divisions (werkgever indeling)'
-      operationId: 273db18dc65432e22815d1c85ffad2ed
+      operationId: essential.get.employer-division
       parameters:
         -
           name: 'filter[id]'
@@ -5762,50 +4530,14 @@ paths:
           in: query
           description: 'Sort by a specific field (externalKey)'
           schema:
-            type: string
+            $ref: '#/components/schemas/GetEmployerDivisionSortOptions'
       responses:
         200:
           description: 'A list of employer divisions that match the given filters'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/EmployerDivision'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                      first:
-                        type: string
-                        format: uri
-                      last:
-                        type: string
-                        format: uri
-                      prev:
-                        type: string
-                        format: uri
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                      perPage:
-                        type: integer
-                      currentPage:
-                        type: integer
-                      lastPage:
-                        type: integer
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetEmployerDivisionResponse'
         400:
           description: 'Bad Request'
           content:
@@ -5823,7 +4555,7 @@ paths:
       tags:
         - 'User Roles'
       summary: 'Get a list of employer roles that can be assigned to users'
-      operationId: 12e4e80f4151274e66bebd305becfd9c
+      operationId: essential.get.employer-role
       parameters:
         -
           name: 'filter[id]'
@@ -5861,91 +4593,39 @@ paths:
         -
           name: include
           in: query
-          description: 'Include relations'
+          description: 'Include related resources - use comma separated values to include multiple resources - use dot notation to include nested resources'
+          style: form
+          explode: false
           schema:
-            type: string
-            enum:
-              - arboRole
+            type: array
+            items:
+              $ref: '#/components/schemas/GetEmployerRoleIncludeOptions'
       responses:
         200:
           description: 'A list of available employer roles'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/EmployerRole'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetEmployerRoleResponse'
         400:
-          description: 'Bad Request'
+          description: 'Bad request'
           content:
             application/json:
               schema:
-                properties:
-                  message:
-                    type: string
-                    example: 'Validation of the request failed'
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: 'Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.'
-                      type: object
-                type: object
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   '/employment/contract/{id}':
     delete:
       tags:
         - Employments
       summary: 'Delete an employment contract'
       description: 'Deletes an employment contract based on the ID.'
-      operationId: c4ef21ee815cba40150349037afab3b5
+      operationId: essential.delete.employment.contract.id
       parameters:
         -
           name: id
@@ -5980,7 +4660,7 @@ paths:
         - Employments
       summary: 'Delete an employment and all employment-contracts that belong to it'
       description: 'Deletes an employment based on the ID.'
-      operationId: 08b024c55cd8567e4413786353916f57
+      operationId: advanced.delete.employment.id
       parameters:
         -
           name: id
@@ -6014,7 +4694,7 @@ paths:
       tags:
         - Employments
       summary: 'Get a list of employment contracts'
-      operationId: 757c282089fc3b16c1aba2c57060c932
+      operationId: advanced.get.employment.contract
       parameters:
         -
           name: 'filter[id]'
@@ -6101,63 +4781,25 @@ paths:
           name: include
           in: query
           description: 'Include related resources in the output (organizationalUnit, employmentType, employment)'
+          style: form
+          explode: false
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/GetEmploymentContractResourceIncludeOptions'
         -
           name: sort
           in: query
           description: "Sort results by field, use '-keyName' to sort in descending order (externalKey, dateUpdated)"
           schema:
-            type: string
+            $ref: '#/components/schemas/GetEmploymentContractResourceSortOptions'
       responses:
         200:
           description: 'A list of Employment Contracts'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/EmploymentContractResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employment/contract?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employment/contract?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employment/contract?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employment/contract?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employment/contract?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetEmploymentContractResponse'
         400:
           description: 'Bad Request'
           content:
@@ -6175,7 +4817,7 @@ paths:
         - Employments
       summary: 'Create a new employment contract'
       description: 'Create a new employment contract'
-      operationId: a8bfe8d0e8d1ba6d0f5608b55199d4fb
+      operationId: advanced.post.employment.contract
       requestBody:
         description: 'Employment Contract data'
         required: true
@@ -6308,7 +4950,7 @@ paths:
         - Employments
       summary: 'Update an existing employment contract'
       description: 'Update an existing employment contract'
-      operationId: 065c050ad01ad95f0ffc7594bb1e386d
+      operationId: advanced.patch.employment.contract
       requestBody:
         description: 'Employment Contract data'
         required: true
@@ -6435,7 +5077,7 @@ paths:
       tags:
         - Employments
       summary: 'Get a list of employments'
-      operationId: e8d1d9897af02835f3fcc6876b8446c5
+      operationId: advanced.get.employment
       parameters:
         -
           name: 'filter[id]'
@@ -6538,40 +5180,20 @@ paths:
         -
           name: include
           in: query
-          description: 'Include related resources in the output (employmentEndReason,employee,supervisor,externalSupervisor,currentOrLastEmploymentContract,firstEmploymentContract,uwvSector)'
+          description: 'Include related resources in the output'
+          style: form
+          explode: false
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/GetEmploymentIncludeOptions'
           example: 'employmentEndReason,employee,supervisor,externalSupervisor,uwvSector'
-        -
-          name: 'include[employmentContracts]'
-          in: query
-          description: 'Include the employment contracts associated with the employment in the output'
-          schema:
-            type: string
-        -
-          name: 'include[employmentContracts.employmentType]'
-          in: query
-          description: 'Include the employment contracts and their employment types associated with the employment'
-          schema:
-            type: string
-        -
-          name: 'include[currentOrLastEmploymentContract.organizationalUnit.employer]'
-          in: query
-          description: 'Include the employer (and the organizational unit) the employment belongs to in the output'
-          schema:
-            type: string
-        -
-          name: 'include[currentOrLastEmploymentContract.employmentType]'
-          in: query
-          description: 'Include the current or last employment contract and its employment type in the output'
-          schema:
-            type: string
         -
           name: sort
           in: query
           description: "Sort results by field, use '-keyName' to sort in descending order (externalKey, dateUpdated)"
           schema:
-            type: string
+            $ref: '#/components/schemas/GetEmploymentSortOptions'
           example: '-dateUpdated'
       responses:
         200:
@@ -6579,49 +5201,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Employment'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employment/contract?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employment/contract?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employment/contract?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employment/contract?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/employment/contract?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetEmploymentResponse'
         400:
           description: 'Bad Request'
           content:
@@ -6639,7 +5219,7 @@ paths:
         - Employments
       summary: 'Create a new employment'
       description: 'Create a new employment'
-      operationId: 610cc6b4af9dc07b81f4eb7810cb6f0d
+      operationId: advanced.post.employment
       requestBody:
         description: 'Employment data'
         required: true
@@ -6813,7 +5393,7 @@ paths:
         - Employments
       summary: 'Update an existing employment'
       description: 'Update an existing employment'
-      operationId: 30bc26c40c88d9fb7b068b146b39bdf6
+      operationId: advanced.patch.employment
       requestBody:
         description: 'Employment data'
         required: true
@@ -6845,7 +5425,7 @@ paths:
       tags:
         - Employments
       summary: 'Get a list of employment types'
-      operationId: 1b3c2e16c12da470a5506184345616b1
+      operationId: advanced.get.employment.employment-type
       parameters:
         -
           name: 'filter[id]'
@@ -6878,49 +5458,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/EmploymentType'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetEmploymentTypeResponse'
         400:
           description: 'Bad Request'
           content:
@@ -6933,7 +5471,7 @@ paths:
         - Employments
       summary: 'Update an existing employment'
       description: 'Update an existing employment'
-      operationId: 0c5a918b2b97f9618fd79e688e70fdf4
+      operationId: advanced.patch.employment.id
       parameters:
         -
           name: uuid
@@ -6974,7 +5512,7 @@ paths:
       tags:
         - 'External Supervisor'
       summary: 'Get a list of external supervisors'
-      operationId: 9fd14b15c0f9b5b3bd7920bf21db98cb
+      operationId: essential.get.external-supervisor
       parameters:
         -
           name: 'filter[id]'
@@ -7013,89 +5551,37 @@ paths:
           name: include
           in: query
           description: 'Include related resources'
+          style: form
+          explode: false
           schema:
-            type: string
-            enum:
-              - person
+            type: array
+            items:
+              $ref: '#/components/schemas/GetExternalSupervisorIncludeOptions'
       responses:
         200:
           description: 'A list of external supervisors'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ExternalSupervisor'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetExternalSupervisorResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
-                properties:
-                  message:
-                    type: string
-                    example: 'Validation of the request failed'
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: 'Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, externalKey, active`.'
-                      type: object
-                type: object
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /operation:
     get:
       tags:
         - Operation
       summary: 'Get a list of operations'
-      operationId: fa81c18d4d054be06d710cb63bdf4ce0
+      operationId: essential.get.operation
       parameters:
         -
           name: 'filter[id]'
@@ -7116,73 +5602,19 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Operation'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetOperationResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
-                properties:
-                  message:
-                    type: string
-                    example: 'Validation of the request failed'
-                  timestamp:
-                    type: integer
-                    example: 1682685774
-                  status:
-                    type: integer
-                    example: 400
-                  errors:
-                    type: array
-                    items:
-                      properties:
-                        errors:
-                          type: string
-                          example: 'Requested filter(s) `externalKeys` are not allowed. Allowed filter(s) are `id, search.'
-                      type: object
-                type: object
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /billable-operation:
     get:
       tags:
@@ -7350,7 +5782,7 @@ paths:
         - 'Organizational Units'
       summary: 'Delete an organizational unit'
       description: 'Deletes an organizational unit based on the ID. This operation also removes any employees linked to the organizational unit, along with their associated employment contracts.'
-      operationId: 804161d2fcecd09881e6b7d5ece5c0fa
+      operationId: essential.delete.organizational-unit.id
       parameters:
         -
           name: id
@@ -7384,7 +5816,7 @@ paths:
         - 'Organizational Units'
       summary: 'Update an existing organizational unit'
       description: "Updates an existing organizational unit. Allows for 'id' to be in the path or in the request body."
-      operationId: b293b499f470172dbd760456f638b3a4
+      operationId: essential.patch.organizational-unit.id
       parameters:
         -
           name: id
@@ -7563,7 +5995,7 @@ paths:
       tags:
         - 'Organizational Units'
       summary: 'Get a list of organizational units'
-      operationId: 0d2206988fa113e63b5f6a35f7c6c053
+      operationId: essential.get.organizational-unit
       parameters:
         -
           name: 'filter[id]'
@@ -7620,62 +6052,24 @@ paths:
           in: query
           description: "Sort by field (name, officialName, code, sbiCode, number, kvkNumber, vatNumber, relationNumber, externalKey). Prefix with '-' to sort descending"
           schema:
-            type: string
+            $ref: '#/components/schemas/GetOrganizationalUnitSortOptions'
         -
           name: include
           in: query
-          description: "Include related resources (\r\n *              employer,\r\n *              parentOrganizationalUnit,\r\n *              companyDoctor,\r\n *              dossierOfficer,\r\n *              internalSupervisor,\r\n *              externalSupervisor,\r\n *              contactPersons,\r\n *              visitorAddress,\r\n *              postalAddress,\r\n *              communications,\r\n *     )"
+          description: "Include related resources (\n *              employer,\n *              parentOrganizationalUnit,\n *              companyDoctor,\n *              dossierOfficer,\n *              internalSupervisor,\n *              externalSupervisor,\n *              contactPersons,\n *              visitorAddress,\n *              postalAddress,\n *              communications) use comma to separate multiple values"
+          style: form
+          explode: false
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/GetOrganizationalUnitIncludeOptions'
       responses:
         200:
           description: 'A list of organization units that match the given filters'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/OrganizationalUnit'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/organizational-unit?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/organizational-unit?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/organizational-unit?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/organizational-unit?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/organizational-unit?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetOrganizationalUnitResponse'
         400:
           description: 'Bad Request'
           content:
@@ -7693,7 +6087,7 @@ paths:
         - 'Organizational Units'
       summary: 'Create a new organizational unit'
       description: 'Create a new organizational unit'
-      operationId: 19ebd72a615c0fbac26582efec1dbbd7
+      operationId: essential.post.organizational-unit
       requestBody:
         description: "Organizational Unit data - please be aware: 'company.normHours' is required when 'company' is present"
         required: true
@@ -7847,7 +6241,7 @@ paths:
       tags:
         - 'Organizational Units'
       summary: 'Get a list of organizational unit types'
-      operationId: 52b747bbbb1e5b107e8349ab5ea0e886
+      operationId: essential.get.organizational-unit.organizational-unit-type
       parameters:
         -
           name: 'filter[employerId]'
@@ -7860,57 +6254,19 @@ paths:
           name: include
           in: query
           description: 'Include related resources (employer)'
+          style: form
+          explode: false
           schema:
-            type: string
+            type: array
+            items:
+              $ref: '#/components/schemas/GetOrganizationalUnitTypeIncludeOptions'
       responses:
         200:
           description: 'A list of organization unit types that match the given filters'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/OrganizationalUnitType'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/organizational-unit?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/organizational-unit?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/organizational-unit?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/organizational-unit?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/organizational-unit?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetOrganizationalUnitTypeResponse'
         400:
           description: 'Bad Request'
           content:
@@ -7954,57 +6310,13 @@ paths:
           in: query
           description: 'Show only tasks with the given task type'
           schema:
-            type: string
-            enum:
-              - order
-              - evaluation
-              - informative
-              - legal
-              - uwv
+            $ref: '#/components/schemas/TaskType'
         -
           name: 'filter[protocol]'
           in: query
           description: 'Show only tasks with the given protocol'
           schema:
-            type: string
-            enum:
-              - wvp
-              - zwangerschap
-              - adoptie
-              - orgaandonatie
-              - zw-erd
-              - wga
-              - bezwaar-en-beroep
-              - reintegratie
-              - preventief
-              - medisch
-              - medisch-preventief
-              - frequent-verzuim
-              - arbeidsdeskundig-onderzoek
-              - afwezigheid
-              - budgetcoaching
-              - rie
-              - pago
-              - pmo
-              - werkplekonderzoek
-              - training
-              - vitaliteit
-              - zorgcoaching
-              - consultancy
-              - jobcoaching
-              - act-meting
-              - loopbaan-begeleiding
-              - assessment
-              - outplacement
-              - overname-dienstverband
-              - spoor-3
-              - ontwikkeladvies
-              - spoor-2
-              - werknemer
-              - geboorteverlof
-              - verzuim-zw-erd
-              - bedrijfsdossier
-              - betaald-ouderschapsverlof
+            $ref: '#/components/schemas/ProtocolEnumOptions'
         -
           name: 'filter[onlyProtocolTask]'
           in: query
@@ -8050,36 +6362,14 @@ paths:
           in: query
           description: 'Sort results by a specific column, use - before the field name to sort descending'
           schema:
-            type: string
-            enum:
-              - externalKey
-              - '-externalKey'
-              - protocolId
-              - '-protocolId'
-              - dateCreated
-              - '-dateCreated'
-              - dateUpdated
-              - '-dateUpdated'
-              - taskTypeId
-              - '-taskTypeId'
-              - title
-              - '-title'
+            $ref: '#/components/schemas/GetTaskSortOptions'
       responses:
         200:
           description: 'A list of Task entities'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Task'
-                  links:
-                    $ref: '#/components/schemas/PaginationLinks'
-                  meta:
-                    $ref: '#/components/schemas/PaginationMetaInformation'
-                type: object
+                $ref: '#/components/schemas/GetTaskResponse'
         400:
           description: 'Bad Request'
           content:
@@ -8285,7 +6575,7 @@ paths:
       tags:
         - User
       summary: 'Get a list of employer users'
-      operationId: 6d0e2fafa4fac68c95222c9f64ce7109
+      operationId: advanced.get.user.employer
       parameters:
         -
           name: 'filter[id]'
@@ -8363,90 +6653,30 @@ paths:
             type: string
             format: uuid
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by start given field, use '-' as prefix to sort descending"
           schema:
-            type: string
-        -
-          name: 'sort[dateEnd]'
-          in: query
-          description: "Sort results by end date, use '-dateEnd' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateCreated]'
-          in: query
-          description: "Sort results by created date, use '-dateCreated' to sort descending"
-          schema:
-            type: string
+            $ref: '#/components/schemas/GetUserSortOptions'
       responses:
         200:
           description: 'A list of Users'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetUserResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - User
@@ -8484,7 +6714,7 @@ paths:
       tags:
         - User
       summary: 'Get a list of internal users'
-      operationId: de3be3a852a28c71c017986bbff65fd2
+      operationId: advanced.get.user.internal
       parameters:
         -
           name: 'filter[id]'
@@ -8562,90 +6792,30 @@ paths:
             type: string
             format: uuid
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by the given field, use '-' as prefix to sort descending"
           schema:
-            type: string
-        -
-          name: 'sort[dateEnd]'
-          in: query
-          description: "Sort results by end date, use '-dateEnd' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateCreated]'
-          in: query
-          description: "Sort results by created date, use '-dateCreated' to sort descending"
-          schema:
-            type: string
+            $ref: '#/components/schemas/GetUserSortOptions'
       responses:
         200:
           description: 'A list of Users'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetUserResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - User
@@ -8683,7 +6853,7 @@ paths:
       tags:
         - User
       summary: 'Get a list of external users'
-      operationId: 677a37761e2a4d213b4c99236adabd1f
+      operationId: advanced.get.user.external
       parameters:
         -
           name: 'filter[id]'
@@ -8761,90 +6931,30 @@ paths:
             type: string
             format: uuid
         -
-          name: 'sort[dateStart]'
+          name: sort
           in: query
-          description: "Sort results by start date, use '-dateStart' to sort descending"
+          description: "Sort results by the given field, use '-' as prefix to sort descending"
           schema:
-            type: string
-        -
-          name: 'sort[dateEnd]'
-          in: query
-          description: "Sort results by end date, use '-dateEnd' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[externalKey]'
-          in: query
-          description: "Sort results by external key, use '-externalKey' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateUpdated]'
-          in: query
-          description: "Sort results by updated date, use '-dateUpdated' to sort descending"
-          schema:
-            type: string
-        -
-          name: 'sort[dateCreated]'
-          in: query
-          description: "Sort results by created date, use '-dateCreated' to sort descending"
-          schema:
-            type: string
+            $ref: '#/components/schemas/GetUserSortOptions'
       responses:
         200:
           description: 'A list of Users'
           content:
             application/json:
               schema:
-                properties:
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UserResource'
-                  links:
-                    properties:
-                      self:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      first:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                      last:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=1&page[size]=25'
-                      prev:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[size]=25'
-                        nullable: true
-                      next:
-                        type: string
-                        format: uri
-                        example: 'https://api.dotweb.test/public/user/roles/employer?page[number]=2&page[size]=25'
-                        nullable: true
-                    type: object
-                  meta:
-                    properties:
-                      total:
-                        type: integer
-                        example: 123
-                      perPage:
-                        type: integer
-                        example: 25
-                      totalPages:
-                        type: integer
-                        example: 5
-                    type: object
-                type: object
+                $ref: '#/components/schemas/GetUserResponse'
         400:
           description: 'Bad Request'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     post:
       tags:
         - User
@@ -8945,6 +7055,26 @@ paths:
                 $ref: '#/components/schemas/ServerErrorResponse'
 components:
   schemas:
+    GetAbsenceReasonResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AbsenceReason'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetAbsenceReasonSortOptions:
+      type: string
+      enum:
+        - externalKey
+        - name
+        - code
+        - '-externalKey'
+        - '-name'
+        - '-code'
     AbsenceReason:
       properties:
         id:
@@ -9156,6 +7286,17 @@ components:
           type: string
           example: sample-uuid-string
       type: object
+    GetArboRoleResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArboRole'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
     ArboRole:
       properties:
         id:
@@ -9190,6 +7331,17 @@ components:
           type: boolean
           example: 'true'
       type: object
+    GetCompanyDoctorResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanyDoctor'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
     CompanyDoctor:
       properties:
         id:
@@ -9223,6 +7375,101 @@ components:
         person:
           $ref: '#/components/schemas/MasterPerson'
       type: object
+    PostContactPersonRequestBody:
+      required:
+        - type
+        - initials
+        - firstName
+        - lastName
+        - email
+        - mobile
+      properties:
+        initials:
+          description: 'Initials of the contact person'
+          type: string
+          maxLength: 30
+          example: J.D.
+        prefix:
+          description: 'Last name prefix of the contact person'
+          type: string
+          maxLength: 16
+          example: 'van der'
+          nullable: true
+        lastName:
+          description: 'Last name of the contact person'
+          type: string
+          maxLength: 100
+          example: Smith
+        firstName:
+          description: 'first name of the contact person'
+          type: string
+          maxLength: 255
+          example: John
+        isUwvContactPerson:
+          description: 'Whether the contact person is a UWV contact person'
+          type: boolean
+          example: false
+        email:
+          description: 'Email address of the contact person'
+          type: string
+          format: email
+          maxLength: 191
+          example: john.doe@example.com
+        gender:
+          description: 'The gender of the contact person. (m=male, f=female, x=other)'
+          type: string
+          enum:
+            - m
+            - f
+            - x
+          example: m
+        phone:
+          description: 'Phone number of the contact person'
+          type: string
+          maxLength: 191
+          example: '+31201234567'
+          nullable: true
+        mobile:
+          description: 'Mobile number of the contact person'
+          type: string
+          maxLength: 255
+          example: '+31612345678'
+          nullable: true
+        externalKey:
+          description: 'External identifier for the contact person'
+          type: string
+          maxLength: 191
+          example: cp-123
+        type:
+          description: 'Type of contact person'
+          type: string
+          enum:
+            - general
+            - uwv
+          example: general
+        employerId:
+          description: "The unique identifier of the employer the contact person belongs to, mutually exclusive with 'employerKey'. One employer identifier is required when creating a ContactPerson of type 'employer'."
+          type: string
+          format: uuid
+          maxLength: 16
+          example: 550e8400-e29b-41d4-a716-446655440000
+        employerKey:
+          description: "The external key of the employer the contact person belongs to. Mutually exclusive with 'employerId'. One employer identifier is required when creating a ContactPerson of type 'employer'."
+          type: string
+          maxLength: 191
+          example: some-key@remote-system@12345
+        organizationalUnitId:
+          description: "The unique identifier of the organizational unit. Mutually exclusive with 'organizationalUnitKey'. One organizational unit identifier is required when creating a ContactPerson of type 'organizational-unit'."
+          type: string
+          format: uuid
+          maxLength: 16
+          example: 550e8400-e29b-41d4-a716-446655440001
+        organizationalUnitKey:
+          description: "The external key of the organizational unit the contact person belongs to. Mutually exclusive with 'organizationalUnitId'. One organizational unit identifier is required when creating a ContactPerson of type 'organizational-unit'."
+          type: string
+          maxLength: 191
+          example: some-key@remote-system@12345
+      type: object
     ContactPerson:
       properties:
         id:
@@ -9246,15 +7493,6 @@ components:
           minLength: 0
           example: old_id@74839
           nullable: true
-        user:
-          $ref: '#/components/schemas/User'
-        team:
-          description: 'The team that the contact person is associated with, only applicable with primary contact person (part of team structures)'
-          type: object
-        employee:
-          $ref: '#/components/schemas/EmployeeResource'
-        person:
-          $ref: '#/components/schemas/EmployerPersonResource'
         organizationalUnit:
           $ref: '#/components/schemas/OrganizationalUnit'
         employer:
@@ -9264,7 +7502,7 @@ components:
           type: string
           format: email
           example: mail@domain.com
-        telephone:
+        phone:
           description: 'The phonenumber of the contact person'
           type: string
           maxLength: 191
@@ -9272,7 +7510,7 @@ components:
           example: '088 800 8000'
           nullable: true
         mobile:
-          description: 'The mobile-phonenumber of the contact person'
+          description: 'The mobile phonenumber of the contact person'
           type: string
           maxLength: 191
           minLength: 0
@@ -9283,13 +7521,13 @@ components:
           maxLength: 30
           minLength: 1
           example: J
-        surname:
+        lastName:
           description: 'The surname/lastname of the contact person'
           type: string
           maxLength: 100
           minLength: 1
           example: Doe
-        nickname:
+        firstName:
           description: 'The nickname/callname of the contact person'
           type: string
           maxLength: 255
@@ -9297,7 +7535,7 @@ components:
           example: John
           nullable: true
         prefix:
-          description: 'The prefix of the contact person'
+          description: 'The last name prefix of the contact person'
           type: string
           maxLength: 16
           minLength: 0
@@ -9345,6 +7583,83 @@ components:
           format: date-time
           example: '2023-12-31 12:34:45'
       type: object
+    GetContractTypeResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractType'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetContractTypeSortOptions:
+      type: string
+      enum:
+        - code
+        - name
+        - dateStart
+        - '-code'
+        - '-name'
+        - '-dateStart'
+    GetEmployerContractResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contract'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetEmployerContractIncludeOptions:
+      type: string
+      enum:
+        - contractType
+        - serviceType
+        - employer
+    GetContractModulesResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Module'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetPartnershipResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Partnership'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetPartnershipSortOptions:
+      type: string
+      enum:
+        - name
+        - dateCreated
+        - '-name'
+        - '-dateCreated'
+    GetServiceTypeResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceType'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
     PatchEmployerContractRequestBody:
       description: 'You only have to submit the mutuable fields'
       required:
@@ -9366,7 +7681,7 @@ components:
           type: string
           format: uuid
         serviceTypeId:
-          description: "The unique identifier of the service type. ('dienstverlening soorten', only applicable when 'dienstverlening' is enabled)"
+          description: 'The unique identifier of the service type'
           type: string
           format: uuid
         organizationalUnitId:
@@ -9374,11 +7689,11 @@ components:
           type: string
           format: uuid
         contractTypeId:
-          description: 'The unique identifier of the contract type. (contractsoorten)'
+          description: 'The unique identifier of the contract type'
           type: string
           format: uuid
         partnershipId:
-          description: 'The unique identifier of the partnership (samenwerkingsverbanden)'
+          description: 'The unique identifier of the partnership'
           type: string
           format: uuid
         dateStart:
@@ -9440,17 +7755,17 @@ components:
           example: External-Key-Test
           nullable: true
         contractTypeId:
-          description: 'The unique identifier of the Contract type. (contractsoorten)'
+          description: 'The unique identifier of the Contract type.'
           type: string
           format: uuid
           example: bc1a50da-1093-4809-8efc-e3553b2f49b0
         partnershipId:
-          description: 'The unique identifier of the Partnership. (samenwerkingsverbanden)'
+          description: 'The unique identifier of the Partnership.'
           type: string
           format: uuid
           example: bc1a50da-1093-4809-8efc-e3553b2f49b0
         serviceTypeId:
-          description: "The unique identifier of the service type. REQUIRED if the partner uses service contracts ('dienstverlening soorten', only applicable when 'dienstverlening' is enabled)"
+          description: 'The unique identifier of the service type. REQUIRED if the partner uses service contracts'
           type: string
           format: uuid
           example: bc1a50da-1093-4809-8efc-e3553b2f49b0
@@ -9563,6 +7878,11 @@ components:
           format: date-time
           example: '2020-01-23 12:34:56'
       type: object
+    ContractTypeTypeEnumOptions:
+      type: string
+      enum:
+        - base
+        - custom
     ContractType:
       properties:
         id:
@@ -9613,12 +7933,7 @@ components:
           pattern: '(\d{0,8}.\d{0,2})'
           example: '250.00'
         type:
-          description: 'The type of the contract type'
-          type: string
-          enum:
-            - base
-            - custom
-          example: base
+          $ref: '#/components/schemas/ContractTypeTypeEnumOptions'
         billingType:
           description: 'The billing type of the contract type'
           type: string
@@ -9898,6 +8213,24 @@ components:
           format: date-time
           example: '2020-12-23 12:34:56'
       type: object
+    GetAbsenceCourseResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AbsenceCourse'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetAbsenceCourseSortOptions:
+      type: string
+      enum:
+        - dateStart
+        - '-dateStart'
+        - externalKey
+        - '-externalKey'
     PatchAbsenceCourseRequestBody:
       required:
         - id
@@ -10109,6 +8442,50 @@ components:
           minimum: 0
           example: 25
       type: object
+    GetDossierDocumentTypeResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DossierDocumentType'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetDossierNoteTypeResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DossierNoteType'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetDossierUploadTypeResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DossierUploadType'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetDossierContentDocumentResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DossierDocumentResource'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
     PatchDossierDocumentRequestBody:
       properties:
         id:
@@ -10238,6 +8615,17 @@ components:
           format: date-time
           example: '2021-12-31 23:59:59'
       type: object
+    GetDossierExternalResourceResourceResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DossierExternalResourceResource'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
     PatchDossierExternalResourceRequestBody:
       properties:
         id:
@@ -10321,6 +8709,17 @@ components:
           maxLength: 36
           minLength: 36
           example: 90dd731a-5e65-43f9-82df-bba234855918
+      type: object
+    GetDossierContentNoteResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DossierNoteResource'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
       type: object
     PatchDossierNoteRequestBody:
       properties:
@@ -10472,6 +8871,17 @@ components:
           format: date-time
           example: '2021-12-31 23:59:59'
       type: object
+    GetDossierContentUploadResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DossierUploadResource'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
     PatchDossierUploadRequestBody:
       properties:
         id:
@@ -10596,6 +9006,26 @@ components:
           format: date-time
           example: '2021-12-31 23:59:59'
       type: object
+    GetDossierTaskResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DossierTask'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetDossierTaskSortOptions:
+      type: string
+      enum:
+        - code
+        - '-code'
+        - name
+        - '-name'
+        - dateStart
+        - '-dateStart'
     DossierTaskResource:
       title: 'Dossier Task Resource'
       description: 'Representation of a dossier task with properties required for updating.'
@@ -10794,6 +9224,117 @@ components:
           example: 123e4567-e89b-12d3-a456-426614174000
           nullable: true
       type: object
+    GetBirthLeaveDossierResponse:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/GetDossierSortOptions'
+        -
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/BirthLeaveDossier'
+            links:
+              $ref: '#/components/schemas/PaginationLinks'
+            meta:
+              $ref: '#/components/schemas/PaginationMetaInformation'
+          type: object
+    GetDossierResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dossier'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetDossierSortOptions:
+      type: string
+      enum:
+        - dateStart
+        - '-dateStart'
+        - externalKey
+        - '-externalKey'
+        - dateUpdated
+        - '-dateUpdated'
+    GetDossierSectionResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DossierSection'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetPaidParentalLeaveDossierResponse:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/GetDossierSortOptions'
+        -
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/PaidParentalLeaveDossier'
+            links:
+              $ref: '#/components/schemas/PaginationLinks'
+            meta:
+              $ref: '#/components/schemas/PaginationMetaInformation'
+          type: object
+    GetPregnancyDossierResponse:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/GetDossierSortOptions'
+        -
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/PregnancyDossier'
+            links:
+              $ref: '#/components/schemas/PaginationLinks'
+            meta:
+              $ref: '#/components/schemas/PaginationMetaInformation'
+          type: object
+    GetSpoor2DossierResponse:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/GetDossierSortOptions'
+        -
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Spoor2Dossier'
+            links:
+              $ref: '#/components/schemas/PaginationLinks'
+            meta:
+              $ref: '#/components/schemas/PaginationMetaInformation'
+          type: object
+    GetZwerdDossierResponse:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/GetDossierSortOptions'
+        -
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/ZwerdDossier'
+            links:
+              $ref: '#/components/schemas/PaginationLinks'
+            meta:
+              $ref: '#/components/schemas/PaginationMetaInformation'
+          type: object
     PatchBirthLeaveDossierRequestBody:
       required:
         - id
@@ -13052,6 +11593,48 @@ components:
           format: date-time
           example: '2024-12-31 18:30:00'
       type: object
+    DossierTypeEnumOptions:
+      description: 'Type of dossier'
+      type: string
+      enum:
+        - illness
+        - pregnancy
+        - preventive
+        - medical
+        - adoption
+        - organ-donation
+        - company-dossier
+        - wga
+        - zwerd
+        - objection-and-appeal
+        - reintegration
+        - medical-preventive
+        - frequent-absence
+        - research-by-occupational-health-expert
+        - employee
+        - absence-dossier
+        - budgetcoaching
+        - rie
+        - pago
+        - pmo
+        - workplace-survey
+        - training
+        - vitality
+        - care-coaching
+        - consultancy
+        - job-coaching
+        - act-meting
+        - career-guidance
+        - assessment
+        - outplacement
+        - acquisition-of-employment
+        - spoor-3
+        - development-advice
+        - spoor-2
+        - birth-leave
+        - illness-and-zwerd
+        - paid-parental-leave
+      example: illness
     DossierSection:
       properties:
         id:
@@ -13101,47 +11684,7 @@ components:
           type: boolean
           example: false
         dossierType:
-          description: 'Type of dossier'
-          type: string
-          enum:
-            - illness
-            - pregnancy
-            - preventive
-            - medical
-            - adoption
-            - organ-donation
-            - company-dossier
-            - wga
-            - zwerd
-            - objection-and-appeal
-            - reintegration
-            - medical-preventive
-            - frequent-absence
-            - research-by-occupational-health-expert
-            - employee
-            - absence-dossier
-            - budgetcoaching
-            - rie
-            - pago
-            - pmo
-            - workplace-survey
-            - training
-            - vitality
-            - care-coaching
-            - consultancy
-            - job-coaching
-            - act-meting
-            - career-guidance
-            - assessment
-            - outplacement
-            - acquisition-of-employment
-            - spoor-3
-            - development-advice
-            - spoor-2
-            - birth-leave
-            - illness-and-zwerd
-            - paid-parental-leave
-          example: illness
+          $ref: '#/components/schemas/DossierTypeEnumOptions'
         dateCreated:
           description: 'Date and time the dossier section was created in our system'
           type: string
@@ -13509,6 +12052,17 @@ components:
           description: "An identifier provided by an external system that uniquely specifies the dossier. This key serves as an alternative to the 'id' field for referencing the dossier."
           type: string
       type: object
+    GetDossierOfficerResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DossierOfficer'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
     DossierOfficer:
       properties:
         id:
@@ -13542,6 +12096,32 @@ components:
         person:
           $ref: '#/components/schemas/MasterPerson'
       type: object
+    GetEmployeeResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployeeResource'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetEmployeeSortOptions:
+      type: string
+      enum:
+        - externalKey
+        - '-externalKey'
+    GetEmployeeIncludeOptions:
+      type: string
+      enum:
+        - person
+        - employments
+        - employments.employmentContracts
+        - currentOrLastEmploymentContract.organizationalUnit.employer
+        - addresses
+        - employmentContract
+        - communicationMethods
     PatchEmployeeRequestBody:
       required:
         - employeeId
@@ -14215,6 +12795,52 @@ components:
           items:
             $ref: '#/components/schemas/Employment'
       type: object
+    GetEmployerArboServiceResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArboService'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetEmployerResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employer'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetEmployerSortOptions:
+      type: string
+      enum:
+        - externalKey
+        - '-externalKey'
+        - name
+        - '-name'
+    GetEmployerIncludeOptions:
+      type: string
+      enum:
+        - organizationalUnitsCount
+        - insurancePolicies
+        - employerDivision
+        - companyDoctor.user
+        - dossierOfficer.user
+        - arboService
+        - visitorAddress.country
+        - postalAddress
+        - contracts.type
+        - contracts.service
+        - contactPersons
+        - ownRiskContracts.type
+        - communications
+        - contactPersons.details
     PatchEmployerRequestBody:
       description: 'You should only send the fields that need to be updated; any omitted fields will remain unchanged.'
       properties:
@@ -14766,6 +13392,22 @@ components:
           type: integer
           example: '12'
       type: object
+    GetEmployerDivisionResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployerDivision'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetEmployerDivisionSortOptions:
+      type: string
+      enum:
+        - externalKey
+        - '-externalKey'
     EmployerDivision:
       title: 'Employer Division'
       properties:
@@ -15082,6 +13724,21 @@ components:
           format: date-time
           example: '2020-01-23 01:23:45'
       type: object
+    GetEmployerRoleResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployerRole'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetEmployerRoleIncludeOptions:
+      type: string
+      enum:
+        - arboRole
     EmployerRole:
       properties:
         id:
@@ -15137,6 +13794,73 @@ components:
             -
               $ref: '#/components/schemas/ArboRole'
           nullable: true
+      type: object
+    GetEmploymentContractResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmploymentContractResource'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetEmploymentContractResourceSortOptions:
+      type: string
+      enum:
+        - externalKey
+        - dateUpdated
+        - '-externalKey'
+        - '-dateUpdated'
+    GetEmploymentContractResourceIncludeOptions:
+      type: string
+      enum:
+        - organizationalUnit
+        - employmentType
+        - employment
+    GetEmploymentResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employment'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetEmploymentSortOptions:
+      type: string
+      enum:
+        - externalKey
+        - '-externalKey'
+        - dateUpdated
+        - '-dateUpdated'
+    GetEmploymentIncludeOptions:
+      type: string
+      enum:
+        - employmentEndReason
+        - employee
+        - supervisor
+        - externalSupervisor
+        - currentOrLastEmploymentContract
+        - firstEmploymentContract
+        - uwvSector
+        - employmentContracts
+        - employmentContracts.employmentType
+        - currentOrLastEmploymentContract.organizationalUnit.employer
+        - currentOrLastEmploymentContract.employmentType
+    GetEmploymentTypeResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmploymentType'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationLinks'
       type: object
     PatchEmploymentRequestBody:
       properties:
@@ -15457,6 +14181,21 @@ components:
           type: boolean
           example: 'false'
       type: object
+    GetExternalSupervisorResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExternalSupervisor'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetExternalSupervisorIncludeOptions:
+      type: string
+      enum:
+        - person
     ExternalSupervisor:
       properties:
         id:
@@ -15595,6 +14334,17 @@ components:
           type: string
           format: email
           example: john.doe@company.com
+      type: object
+    GetOperationResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Operation'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
       type: object
     Operation:
       properties:
@@ -15748,6 +14498,66 @@ components:
           example: null
           nullable: true
       type: object
+    GetOrganizationalUnitResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationalUnit'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetOrganizationalUnitSortOptions:
+      type: string
+      enum:
+        - name
+        - officialName
+        - code
+        - sbiCode
+        - number
+        - kvkNumber
+        - vatNumber
+        - relationNumber
+        - externalKey
+        - '-name'
+        - '-officialName'
+        - '-code'
+        - '-sbiCode'
+        - '-number'
+        - '-kvkNumber'
+        - '-vatNumber'
+        - '-relationNumber'
+        - '-externalKey'
+    GetOrganizationalUnitIncludeOptions:
+      type: string
+      enum:
+        - employer
+        - parentOrganizationalUnit
+        - companyDoctor
+        - dossierOfficer
+        - internalSupervisor
+        - externalSupervisor
+        - contactPersons
+        - visitorAddress
+        - postalAddress
+        - communications
+    GetOrganizationalUnitTypeResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationalUnitType'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetOrganizationalUnitTypeIncludeOptions:
+      type: string
+      enum:
+        - employer
     OrganizationalUnitCompany:
       properties:
         legalName:
@@ -16089,6 +14899,80 @@ components:
           description: 'Whether this is a primary RecoveryReason or not.'
           type: boolean
       type: object
+    GetTaskResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetTaskSortOptions:
+      type: string
+      enum:
+        - externalKey
+        - '-externalKey'
+        - protocolId
+        - '-protocolId'
+        - dateCreated
+        - '-dateCreated'
+        - dateUpdated
+        - '-dateUpdated'
+        - taskTypeId
+        - '-taskTypeId'
+        - title
+        - '-title'
+    ProtocolEnumOptions:
+      type: string
+      enum:
+        - wvp
+        - zwangerschap
+        - adoptie
+        - orgaandonatie
+        - zw-erd
+        - wga
+        - bezwaar-en-beroep
+        - reintegratie
+        - preventief
+        - medisch
+        - medisch-preventief
+        - frequent-verzuim
+        - arbeidsdeskundig-onderzoek
+        - afwezigheid
+        - budgetcoaching
+        - rie
+        - pago
+        - pmo
+        - werkplekonderzoek
+        - training
+        - vitaliteit
+        - zorgcoaching
+        - consultancy
+        - jobcoaching
+        - act-meting
+        - loopbaan-begeleiding
+        - assessment
+        - outplacement
+        - overname-dienstverband
+        - spoor-3
+        - ontwikkeladvies
+        - spoor-2
+        - werknemer
+        - geboorteverlof
+        - verzuim-zw-erd
+        - bedrijfsdossier
+        - betaald-ouderschapsverlof
+    TaskType:
+      type: string
+      enum:
+        - order
+        - legal
+        - informative
+        - uwv
+        - evaluation
     Task:
       properties:
         id:
@@ -16146,15 +15030,7 @@ components:
           description: 'The template ID associated with the task.'
           type: string
         taskType:
-          description: 'The task type ID associated with the task.'
-          type: string
-          enum:
-            - order
-            - legal
-            - informative
-            - uwv
-            - evaluation
-          example: legal
+          $ref: '#/components/schemas/TaskType'
         taskTrigger:
           description: 'The event that triggered the task to be generated'
           type: string
@@ -16267,6 +15143,30 @@ components:
           type: string
           format: date-time
       type: object
+    GetUserResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResource'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetUserSortOptions:
+      type: string
+      enum:
+        - dateStart
+        - '-dateStart'
+        - dateEnd
+        - '-dateEnd'
+        - externalKey
+        - '-externalKey'
+        - dateUpdated
+        - '-dateUpdated'
+        - dateCreated
+        - '-dateCreated'
     PatchUserRequestBody:
       properties:
         id:
@@ -16519,7 +15419,7 @@ components:
                     type: string
                     example: 1511_interface@155
                   authLevel:
-                    description: "The level of authorization on this object. \r\n * 'authorized' = Only authorized on the given object. \r\n * 'authorized-plus-children' = Authorized on this object and lower objects.\r\n * 'not-authorized' = excluded from authorization. \r\n * 'authorized-signals-only' = Only authorized for signals.\r\n * 'authorized-viewing-only' = Only authorized for viewing this object."
+                    description: "The level of authorization on this object. \n * 'authorized' = Only authorized on the given object. \n * 'authorized-plus-children' = Authorized on this object and lower objects.\n * 'not-authorized' = excluded from authorization. \n * 'authorized-signals-only' = Only authorized for signals.\n * 'authorized-viewing-only' = Only authorized for viewing this object."
                     type: string
                     enum:
                       - authorized
@@ -16529,7 +15429,7 @@ components:
                       - authorized-viewing-only
                     example: authorized
                   childLevel:
-                    description: "The level of authorization on the child objects. \r\n * 'authorized' = Only authorized on the given object. \r\n * 'authorized-plus-children' = Authorized on this object and lower objects.\r\n * 'not-authorized' = excluded from authorization. \r\n * 'authorized-signals-only' = Only authorized for signals.\r\n * 'authorized-viewing-only' = Only authorized for viewing this object."
+                    description: "The level of authorization on the child objects. \n * 'authorized' = Only authorized on the given object. \n * 'authorized-plus-children' = Authorized on this object and lower objects.\n * 'not-authorized' = excluded from authorization. \n * 'authorized-signals-only' = Only authorized for signals.\n * 'authorized-viewing-only' = Only authorized for viewing this object."
                     type: string
                     enum:
                       - authorized
@@ -16556,7 +15456,7 @@ components:
                     type: string
                     example: 1511_interface@155
                   authLevel:
-                    description: "The level of authorization on this object. \r\n * 'authorized' = Only authorized on the given object. \r\n * 'authorized-plus-children' = Authorized on this object and lower objects.\r\n * 'not-authorized' = excluded from authorization.\r\n * 'authorized-signals-only' = Only authorized for signals.\r\n * 'authorized-viewing-only' = Only authorized for viewing this object."
+                    description: "The level of authorization on this object. \n * 'authorized' = Only authorized on the given object. \n * 'authorized-plus-children' = Authorized on this object and lower objects.\n * 'not-authorized' = excluded from authorization.\n * 'authorized-signals-only' = Only authorized for signals.\n * 'authorized-viewing-only' = Only authorized for viewing this object."
                     type: string
                     enum:
                       - authorized
@@ -16583,7 +15483,7 @@ components:
                     type: string
                     example: 1511_interface@155
                   authLevel:
-                    description: "The level of authorization on this object. \r\n * 'authorized' = Only authorized on the given object. \r\n * 'authorized-plus-children' = Authorized on this object and lower objects.\r\n * 'not-authorized' = excluded from authorization.\r\n * 'authorized-signals-only' = Only authorized for signals.\r\n * 'authorized-viewing-only' = Only authorized for viewing this object."
+                    description: "The level of authorization on this object. \n * 'authorized' = Only authorized on the given object. \n * 'authorized-plus-children' = Authorized on this object and lower objects.\n * 'not-authorized' = excluded from authorization.\n * 'authorized-signals-only' = Only authorized for signals.\n * 'authorized-viewing-only' = Only authorized for viewing this object."
                     type: string
                     enum:
                       - authorized
@@ -16606,7 +15506,7 @@ components:
           type: string
           format: uuid
         level:
-          description: "The level of authorization on this object. \r\n * 'authorized' = Only authorized on the given object. \r\n * 'authorized-plus-children' = Authorized on this object and lower objects.\r\n * 'not-authorized' = excluded from authorization.\r\n * 'authorized-signals-only' = Only authorized for signals.\r\n * 'authorized-viewing-only' = Only authorized for viewing this object.\r\n * 'black-authorization' = Authorized until another account in the same role is assigned"
+          description: "The level of authorization on this object. \n * 'authorized' = Only authorized on the given object. \n * 'authorized-plus-children' = Authorized on this object and lower objects.\n * 'not-authorized' = excluded from authorization.\n * 'authorized-signals-only' = Only authorized for signals.\n * 'authorized-viewing-only' = Only authorized for viewing this object.\n * 'black-authorization' = Authorized until another account in the same role is assigned"
           type: string
           enum:
             - authorized
@@ -16627,7 +15527,7 @@ components:
           type: string
           format: uuid
         level:
-          description: "The level of authorization on this object. \r\n * 'authorized' = Only authorized on the given object. \r\n * 'authorized-plus-children' = Authorized on this object and lower objects.\r\n * 'not-authorized' = excluded from authorization.\r\n * 'authorized-signals-only' = Only authorized for signals.\r\n * 'authorized-viewing-only' = Only authorized for viewing this object.\r\n * 'black-authorization' = Authorized until another account in the same role is assigned"
+          description: "The level of authorization on this object. \n * 'authorized' = Only authorized on the given object. \n * 'authorized-plus-children' = Authorized on this object and lower objects.\n * 'not-authorized' = excluded from authorization.\n * 'authorized-signals-only' = Only authorized for signals.\n * 'authorized-viewing-only' = Only authorized for viewing this object.\n * 'black-authorization' = Authorized until another account in the same role is assigned"
           type: string
           enum:
             - authorized
@@ -16775,6 +15675,9 @@ tags:
   -
     name: 'Company Doctors'
     description: 'Company Doctors'
+  -
+    name: ContactPerson
+    description: ContactPerson
   -
     name: EmployerContracts
     description: EmployerContracts

@@ -3,6 +3,20 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Release April 2025
+
+### Changed
+
+- `POST` `Employee` now correctly accepts strings for the `employeeNumber` field as indicated in the documentation. (VV-7197)
+- Documentation: GET endpoint documentation have been improved in order to make it easier to generate a client based on the OpenAPI documentation. (VV-7013 / VV-7380)
+- Documentation: all endpoints have had an `operationId` property added to them. This field is used internally for API Management purposes. (VV-7161)
+- Documentation: several GET endpoints now use enums for their `sort` and `include` parameters. (VV-7283)
+
+### Added
+
+- `POST` `ContactPerson` has been introduced to allow adding contact persons to OUs and Employers. (VV-7040)
+
+
 ## Release February 2025
 
 ### Added
