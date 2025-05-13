@@ -3,6 +3,18 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Release May 2025
+
+### Added
+- New `POST` endpoints have been introduced for several new dossier types (VV-7237)
+- New `PATCH` `ContactPerson` endpoint (VV-7041)
+- `PATCH` User now allows updating the `externalKey` property (VV-7254)
+- `GET` User now returns the `ssoKey` property (VV-7298)
+
+### Changed
+- Validation of the OpenAPI documentation has been added to our CI pipeline (VV-7300)
+- Various documentation updates and improvements
+
 ## Release April 2025
 
 ### Changed
