@@ -12329,8 +12329,12 @@ components:
           nullable: true
         arboServiceId:
           description: 'The unique identifier of the arboservice (arbodienst)'
-          type: integer
-          example: 1
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          example: a1d6ae53-584e-40cd-a12b-313001409a98
+          nullable: true
         visitAddress:
           $ref: '#/components/schemas/Address'
         postalAddress:
