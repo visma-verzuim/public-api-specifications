@@ -12334,7 +12334,7 @@ components:
           maxLength: 36
           minLength: 36
           example: a1d6ae53-584e-40cd-a12b-313001409a98
-          nullable: false
+          nullable: true
         visitAddress:
           $ref: '#/components/schemas/Address'
         postalAddress:
