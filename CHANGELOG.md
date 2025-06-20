@@ -3,6 +3,19 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Release June 2025
+
+### Added
+- New `GET` appointment endpoint (VV-5613)
+- New `PATCH` endpoints for newly introduced dossier types (VV-7238)
+- New `PATCH` endpoint for `Pregnancy` dossier (VV-7173)
+- New `employee` includes added to `GET` `Employment` and `EmploymentContract` endpoints (VV-7758)
+- New `employee` include added to `GET` `BillableOperation` endpoint (VV-7565)
+
+### Changed
+- Fixed OpenAPI description of `arbosServiceId` for `POST` `Employer` endpoint (VV-7806)
+
+
 ## Release May 2025
 
 ### Added

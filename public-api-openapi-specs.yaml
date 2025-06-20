@@ -1,6 +1,7 @@
 openapi: 3.0.0
 info:
-  title: 'Public API Documentation'
+  title: 'BlueVi API'
+  description: 'Communicate with BlueVi directly over 100+ API endpoints.'
   version: v1
 paths:
   /absence-reason:
@@ -60,6 +61,94 @@ paths:
                 $ref: '#/components/schemas/BadRequestResponse'
         500:
           description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /appointment:
+    get:
+      tags:
+        - Appointments
+      summary: 'Get a list of appointments'
+      operationId: appointment-get-v1-ultimate
+      parameters:
+        -
+          name: 'filter[title]'
+          in: query
+          description: 'Filter by the appointment title. Matches partial strings, case-insensitive.'
+          schema:
+            type: string
+        -
+          name: 'filter[dateStartFrom]'
+          in: query
+          description: 'Filter by the earliest start date you want to see appointments for. Format: YYYY-MM-DD'
+          schema:
+            type: string
+            format: date
+          example: '2025-01-01'
+        -
+          name: 'filter[dateStartUntil]'
+          in: query
+          description: 'Filter by the last start date you want to see appointments for. Format: YYYY-MM-DD'
+          schema:
+            type: string
+            format: date
+          example: '2025-01-31'
+        -
+          name: 'filter[userId]'
+          in: query
+          description: 'Filter by the unique identifier of the user. Must be a valid UUID.'
+          schema:
+            type: string
+            format: uuid
+          example: 8366316b-1304-482e-bf53-0067174d477a
+        -
+          name: 'filter[status]'
+          in: query
+          description: 'Filter by the status of the appointment.'
+          schema:
+            $ref: '#/components/schemas/AppointmentStatusEnumOptions'
+        -
+          name: 'filter[employerId]'
+          in: query
+          description: 'Show only appointments for the specified employer. Must be a valid UUID.'
+          schema:
+            type: string
+            format: uuid
+          example: 8366316b-1304-482e-bf53-0067174d477a
+        -
+          name: 'filter[employeeId]'
+          in: query
+          description: 'Show only appointments for the specified employee. Must be a valid UUID.'
+          schema:
+            type: string
+            format: uuid
+          example: 8366316b-1304-482e-bf53-0067174d477a
+        -
+          name: include
+          in: query
+          description: 'Include the related resources - use comma separated values to include multiple resources'
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetAppointmentIncludeOptions'
+      responses:
+        200:
+          description: 'A list of appointments'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAppointmentResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Internal Server Error'
           content:
             application/json:
               schema:
@@ -1430,7 +1519,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /dossier/content/documents:
+  /dossier/content/document:
     get:
       tags:
         - DossierContent
@@ -1523,49 +1612,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  '/dossier/content/document/{uuid}':
-    patch:
-      tags:
-        - DossierContent
-      summary: 'Update an existing document'
-      description: 'Update an existing document belonging to a dossier'
-      operationId: dossiercontent-document-id-patch-v1-essential
-      parameters:
-        -
-          name: uuid
-          in: path
-          description: 'The uuid of the document'
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        description: 'The document data'
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchDossierDocumentRequestBody'
-      responses:
-        200:
-          description: 'The document was successfully updated'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DossierDocumentResource'
-        400:
-          description: 'Bad Request'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        500:
-          description: 'Server error'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /dossier/content/document:
     post:
       tags:
         - DossierContent
@@ -1604,6 +1650,48 @@ paths:
       summary: 'Update an existing document'
       description: 'Update an existing document belonging to a dossier'
       operationId: dossiercontent-document-patch-v1-essential
+      requestBody:
+        description: 'The document data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDossierDocumentRequestBody'
+      responses:
+        200:
+          description: 'The document was successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierDocumentResource'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  '/dossier/content/document/{uuid}':
+    patch:
+      tags:
+        - DossierContent
+      summary: 'Update an existing document'
+      description: 'Update an existing document belonging to a dossier'
+      operationId: dossiercontent-document-id-patch-v1-essential
+      parameters:
+        -
+          name: uuid
+          in: path
+          description: 'The uuid of the document'
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         description: 'The document data'
         required: true
@@ -1896,7 +1984,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /dossier/content/notes:
+  /dossier/content/note:
     get:
       tags:
         - DossierContent
@@ -1996,49 +2084,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  '/dossier/content/note/{uuid}':
-    patch:
-      tags:
-        - DossierContent
-      summary: 'Update an existing note'
-      description: 'Update an existing belonging to a dossier'
-      operationId: dossiercontent-note-id-patch-v1-essential
-      parameters:
-        -
-          name: uuid
-          in: path
-          description: 'The uuid of the note'
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        description: 'The note data'
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchDossierNoteRequestBody'
-      responses:
-        200:
-          description: 'The note was successfully updated'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DossierNoteResource'
-        400:
-          description: 'Bad Request'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        500:
-          description: 'Server error'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /dossier/content/note:
     post:
       tags:
         - DossierContent
@@ -2077,6 +2122,48 @@ paths:
       summary: 'Update an existing note'
       description: 'Update an existing note belonging to a dossier'
       operationId: dossiercontent-note-patch-v1-essential
+      requestBody:
+        description: 'The note data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDossierNoteRequestBody'
+      responses:
+        200:
+          description: 'The note was successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DossierNoteResource'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  '/dossier/content/note/{uuid}':
+    patch:
+      tags:
+        - DossierContent
+      summary: 'Update an existing note'
+      description: 'Update an existing belonging to a dossier'
+      operationId: dossiercontent-note-id-patch-v1-essential
+      parameters:
+        -
+          name: uuid
+          in: path
+          description: 'The uuid of the note'
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         description: 'The note data'
         required: true
@@ -3643,6 +3730,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: 'Update a pregnancy dossier'
+      description: 'This endpoint is used to update a Pregnancy dossier.'
+      operationId: dossier-pregnancy-patch-v1-essential
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchPregnancyDossierRequestBody'
+      responses:
+        200:
+          description: 'Dossier successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        400:
+          description: 'Invalid input'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   '/dossier/{id}/return-to-work-advice':
     get:
       tags:
@@ -4097,6 +4216,364 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /dossier/company-social-worker:
+    post:
+      tags:
+        - Dossier
+      summary: 'Create a company social worker dossier'
+      description: 'This endpoint is used to create a new company social worker dossier.'
+      operationId: dossier-companysocialworker-post-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBasicDossierRequestBody'
+      responses:
+        201:
+          description: 'Dossier successfully created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostBasicDossierResponseBody'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: 'Patch company social worker dossier'
+      description: 'This endpoint is used to update a company social worker dossier.'
+      operationId: dossier-companysocialworker-patch-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchBasicRequestBody'
+      responses:
+        200:
+          description: 'Dossier successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiPatchResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /dossier/ergonomics:
+    post:
+      tags:
+        - Dossier
+      summary: 'Create an ergonomics dossier'
+      description: 'This endpoint is used to create a new ergonomics dossier.'
+      operationId: dossier-ergonomics-post-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBasicDossierRequestBody'
+      responses:
+        201:
+          description: 'Dossier successfully created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostBasicDossierResponseBody'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: 'Patch an ergonomics dossier'
+      description: 'This endpoint is used to update an ergonomics dossier.'
+      operationId: dossier-ergonomics-patch-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchBasicRequestBody'
+      responses:
+        200:
+          description: 'Dossier successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiPatchResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /dossier/confidential-counselor:
+    post:
+      tags:
+        - Dossier
+      summary: 'Create a confidential counselor dossier'
+      description: 'This endpoint is used to create a new confidential counselor dossier.'
+      operationId: dossier-confidentialcounselor-post-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBasicDossierRequestBody'
+      responses:
+        201:
+          description: 'Dossier successfully created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostBasicDossierResponseBody'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: 'Patch a confidential counselor dossier'
+      description: 'This endpoint is used to update a confidential counselor dossier.'
+      operationId: dossier-confidentialcounselor-patch-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchBasicRequestBody'
+      responses:
+        200:
+          description: 'Dossier successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiPatchResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /dossier/second-line-care:
+    post:
+      tags:
+        - Dossier
+      summary: 'Create a second line care dossier'
+      description: 'This endpoint is used to create a new second line care dossier.'
+      operationId: dossier-secondlinecare-post-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBasicDossierRequestBody'
+      responses:
+        201:
+          description: 'Dossier successfully created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostBasicDossierResponseBody'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: 'Patch second-line-care dossier'
+      description: 'This endpoint is used to update a second-line-care dossier.'
+      operationId: dossier-secondlinecare-patch-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchBasicRequestBody'
+      responses:
+        200:
+          description: 'Dossier successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiPatchResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /dossier/physyiotherapy:
+    patch:
+      tags:
+        - Dossier
+      summary: 'Patch physyiotherapy dossier'
+      description: 'This endpoint is used to update a physyiotherapy dossier.'
+      operationId: dossier-physyiotherapy-patch-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchBasicRequestBody'
+      responses:
+        200:
+          description: 'Dossier successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiPatchResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /dossier/psychologist:
+    post:
+      tags:
+        - Dossier
+      summary: 'Create a psychologist dossier'
+      description: 'This endpoint is used to create a new psychologist dossier.'
+      operationId: dossier-psychologist-post-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBasicDossierRequestBody'
+      responses:
+        201:
+          description: 'Dossier successfully created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostBasicDossierResponseBody'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: 'Patch psychologist dossier'
+      description: 'This endpoint is used to update a psychologist dossier.'
+      operationId: dossier-psychologist-patch-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchBasicRequestBody'
+      responses:
+        200:
+          description: 'Dossier successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiPatchResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /dossier/wga:
     post:
       tags:
@@ -4162,138 +4639,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /dossier/company-social-worker:
-    post:
-      tags:
-        - Dossier
-      summary: 'Create a company social worker dossier'
-      description: 'This endpoint is used to create a new company social worker dossier.'
-      operationId: dossier-companysocialworker-post-v1-ultimate
-      requestBody:
-        description: 'Dossier data'
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostBasicDossierRequestBody'
-      responses:
-        201:
-          description: 'Dossier successfully created'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PostBasicDossierResponseBody'
-        400:
-          description: 'Bad Request'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        500:
-          description: 'Server error'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /dossier/ergonomics:
-    post:
-      tags:
-        - Dossier
-      summary: 'Create an ergonomics dossier'
-      description: 'This endpoint is used to create a new ergonomics dossier.'
-      operationId: dossier-ergonomics-post-v1-ultimate
-      requestBody:
-        description: 'Dossier data'
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostBasicDossierRequestBody'
-      responses:
-        201:
-          description: 'Dossier successfully created'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PostBasicDossierResponseBody'
-        400:
-          description: 'Bad Request'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        500:
-          description: 'Server error'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /dossier/confidential-counselor:
-    post:
-      tags:
-        - Dossier
-      summary: 'Create a confidential counselor dossier'
-      description: 'This endpoint is used to create a new confidential counselor dossier.'
-      operationId: dossier-confidentialcounselor-post-v1-ultimate
-      requestBody:
-        description: 'Dossier data'
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostBasicDossierRequestBody'
-      responses:
-        201:
-          description: 'Dossier successfully created'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PostBasicDossierResponseBody'
-        400:
-          description: 'Bad Request'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        500:
-          description: 'Server error'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /dossier/second-line-care:
-    post:
-      tags:
-        - Dossier
-      summary: 'Create a second line care dossier'
-      description: 'This endpoint is used to create a new second line care dossier.'
-      operationId: dossier-secondlinecare-post-v1-ultimate
-      requestBody:
-        description: 'Dossier data'
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostBasicDossierRequestBody'
-      responses:
-        201:
-          description: 'Dossier successfully created'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PostBasicDossierResponseBody'
-        400:
-          description: 'Bad Request'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        500:
-          description: 'Server error'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
   /dossier/physiotherapy:
     post:
       tags:
@@ -4301,39 +4646,6 @@ paths:
       summary: 'Create a physiotherapy dossier'
       description: 'This endpoint is used to create a new physiotherapy dossier.'
       operationId: dossier-physiotherapy-post-v1-ultimate
-      requestBody:
-        description: 'Dossier data'
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostBasicDossierRequestBody'
-      responses:
-        201:
-          description: 'Dossier successfully created'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PostBasicDossierResponseBody'
-        400:
-          description: 'Bad Request'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        500:
-          description: 'Server error'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /dossier/psychologist:
-    post:
-      tags:
-        - Dossier
-      summary: 'Create a psychologist dossier'
-      description: 'This endpoint is used to create a new psychologist dossier.'
-      operationId: dossier-psychologist-post-v1-ultimate
       requestBody:
         description: 'Dossier data'
         required: true
@@ -5116,6 +5428,19 @@ paths:
           schema:
             type: string
         -
+          name: 'filter[employerId]'
+          in: query
+          description: 'Filter by the unique identifier of an employer'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[employerKey]'
+          in: query
+          description: 'Filter by the external key of an employer'
+          schema:
+            type: string
+        -
           name: 'filter[dateUpdatedFrom]'
           in: query
           description: 'Filter by date of latest update being after or the same day as the one given'
@@ -5301,6 +5626,19 @@ paths:
             type: string
             format: uuid
           example: 9c77ba70-fc65-4715-9158-17d65f55c373
+        -
+          name: 'filter[employerId]'
+          in: query
+          description: 'Filter by the unique identifier of the employer associated with the current or last employment contract'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[employerKey]'
+          in: query
+          description: 'Filter by the external key of the employer associated with the current or last employment contract'
+          schema:
+            type: string
         -
           name: 'filter[employmentEndReason]'
           in: query
@@ -6901,6 +7239,259 @@ components:
           minLength: 0
           example: false
       type: object
+    AppointmentStatusEnumOptions:
+      description: 'The status of the appointment'
+      type: string
+      enum:
+        - cancelled
+        - completed
+        - reserved
+        - final
+        - noShow
+        - noAvailability
+    GetAppointmentResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Appointment'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetAppointmentIncludeOptions:
+      type: string
+      enum:
+        - employer
+        - user
+        - location
+        - employee
+        - operation
+        - methodOfConsult
+    Appointment:
+      properties:
+        id:
+          description: 'The unique identifier of the appointment'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+        title:
+          description: 'The title of the appointment'
+          type: string
+          maxLength: 191
+          minLength: 0
+          nullable: true
+        status:
+          $ref: '#/components/schemas/AppointmentStatusEnumOptions'
+        description:
+          description: 'The description of the appointment'
+          type: string
+          nullable: true
+        methodOfConsult:
+          $ref: '#/components/schemas/MethodOfConsultEnumOptions'
+        url:
+          description: "The url of the appointment in case of an 'online' appointment"
+          type: string
+          maxLength: 191
+          minLength: 0
+          nullable: true
+        phoneNumber:
+          description: "The phone number to call in case of a 'phone' appointment"
+          type: string
+          maxLength: 32
+          minLength: 0
+          nullable: true
+        operation:
+          oneOf:
+            -
+              $ref: '#/components/schemas/Operation'
+          nullable: true
+          description: 'The operation related to the appointment, available if the relation is included in the query'
+        location:
+          oneOf:
+            -
+              $ref: '#/components/schemas/AppointmentLocation'
+          nullable: true
+          description: 'The location related to the appointment, available if the relation is included in the query'
+        employee:
+          oneOf:
+            -
+              $ref: '#/components/schemas/Employee'
+          nullable: true
+          description: 'The employee the appointment is for, available if the relation is included in the query'
+        user:
+          oneOf:
+            -
+              $ref: '#/components/schemas/User'
+          nullable: true
+          description: 'The user the appointment belongs to, available if the relation is included in the query'
+        employer:
+          oneOf:
+            -
+              $ref: '#/components/schemas/Employer'
+          nullable: true
+          description: 'The employer related to the appointment, available if the relation is included in the query'
+        dateStart:
+          description: 'The start date and time of the appointment in YYYY-MM-DD HH:MM:SS format'
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        dateEnd:
+          description: 'The end date and time of the appointment in YYYY-MM-DD HH:MM:SS format'
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        dateCreated:
+          description: 'The date and time the employee was created in YYYY-MM-DD HH:MM:SS format'
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        dateUpdated:
+          description: 'The date and time the absence course was last updated in YYYY-MM-DD HH:MM:SS format'
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+      type: object
+    AppointmentEmployee:
+      properties:
+        id:
+          description: 'The unique identifier of the employee'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          example: 123e4567-e89b-12d3-a456-426614174000
+        externalKey:
+          description: "An identifier provided by an external system that uniquely specifies the employee. This key serves as an alternative to the 'id' field for referencing the employee."
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: ext-key-987654321
+          nullable: true
+        person:
+          oneOf:
+            -
+              $ref: '#/components/schemas/EmployerPersonResource'
+          nullable: true
+          description: 'The personal details associated with the employee, available if the relation is included in the query'
+        dateCreated:
+          description: 'The date and time the employee was created in our system. Format YYYY-MM-DD HH:MM:SS'
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+          example: '2020-01-23 01:23:45'
+        dateUpdated:
+          description: 'The date and time the absence course was last updated in our system. Format YYYY-MM-DD HH:MM:SS'
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+          example: '2020-01-23 12:34:56'
+      type: object
+    AppointmentLocation:
+      properties:
+        id:
+          description: 'The unique identifier of the appointment location'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+        name:
+          description: 'The name of the appointment location'
+          type: string
+          maxLength: 191
+          minLength: 1
+          example: Hoofdlocatie
+        postalCode:
+          description: 'The postal code of the appointment location'
+          type: string
+          minLength: 6
+          example: 7556BN
+        city:
+          description: 'The city of the appointment location'
+          type: string
+          maxLength: 191
+          minLength: 1
+          example: Hengelo
+        street:
+          description: 'The street of the appointment location'
+          type: string
+          maxLength: 191
+          minLength: 1
+          example: Demmersweg
+        houseNumber:
+          description: 'The house number of the appointment location'
+          type: integer
+          example: '46'
+        houseNumberAddition:
+          description: 'The house number addition of the appointment location'
+          type: string
+          maxLength: 16
+          minLength: 0
+          example: A
+      type: object
+    AppointmentSchedule:
+      properties:
+        id:
+          description: 'The id of the schedule'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+        name:
+          description: 'The name of the schedule'
+          type: string
+          maxLength: 191
+          minLength: 0
+          nullable: true
+        isWorking:
+          description: 'Whether the schedule is working or not'
+          type: boolean
+        isRoomExclusivelyReserved:
+          description: 'Whether the room is exclusively reserved for the schedule or not'
+          type: boolean
+        timeConstrainedEntityId:
+          description: 'The id of the time constrained entity of the schedule'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          nullable: true
+        schedulableEntity:
+          description: 'Whether the schedule is a schedulable entity or not'
+          type: string
+          nullable: true
+      type: object
+    AppointmentUserResource:
+      properties:
+        id:
+          description: 'The unique identifier of the user'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+        externalKey:
+          description: "An identifier provided by an external system that uniquely specifies the user. This key serves as an alternative to the 'id' field for referencing the user."
+          type: string
+          maxLength: 191
+          minLength: 0
+          nullable: true
+        username:
+          description: 'Username of the user'
+          type: string
+          maxLength: 191
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/UserTypeEnumOptions'
+        person:
+          $ref: '#/components/schemas/MasterPerson'
+        isActive:
+          description: 'Indicates if the user is active'
+          type: boolean
+      type: object
+    MethodOfConsultEnumOptions:
+      description: 'The method of consultation for the appointment'
+      type: string
+      enum:
+        - online
+        - phone
+        - location
+        - unknown
     PostAuthTokenRequestBodyScopeExample:
       description: 'This is an example of how to request scopes for the bearer token'
       properties:
@@ -9288,6 +9879,51 @@ components:
         data:
           $ref: '#/components/schemas/ReturnToWorkAdvice'
       type: object
+    PatchBasicRequestBody:
+      properties:
+        id:
+          description: 'The id for the dossier'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+        externalKey:
+          description: "An identifier provided by an external system that uniquely specifies the dossier. This key serves as an alternative to the 'id' field for referencing the dossier."
+          type: string
+          maxLength: 191
+          minLength: 1
+          example: EXT-DOS-458
+        dateStart:
+          description: 'The date the dossier started in format YYYY-MM-DD'
+          type: string
+          format: date
+          example: '2020-01-23'
+        dateReported:
+          description: 'Date the dossier was reported in format YYYY-MM-DD'
+          type: string
+          format: date
+          example: '2020-01-23'
+        dateCompleted:
+          description: 'The date the dossier completed in format YYYY-MM-DD, this property is prohibited unless dossierStatus is set to completed'
+          type: string
+          format: date
+          example: '2020-01-23'
+        dossierStatus:
+          $ref: '#/components/schemas/DossierStatusEnumOptions'
+        employmentId:
+          description: 'The unique identifier of the employment. Only one employment identifier is allowed.'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          example: e3eab6bd-4adc-4d9b-9620-2b0c49ecb7d3
+        employmentKey:
+          description: 'The external key of the employment. Only one employment identifier is allowed.'
+          type: string
+          maxLength: 191
+          minLength: 1
+          example: EXT-Key-4385
+      type: object
     DossierClosureReasonEnumOptions:
       type: string
       enum:
@@ -9574,6 +10210,58 @@ components:
           type: string
           format: date
       type: object
+    RequestedLeavePeriodEnumOptions:
+      description: "The requested leave period in weeks, this will calculate and fill the 'expectedDurationDays' property."
+      type: integer
+      enum:
+        - 4
+        - 5
+        - 6
+        - 8
+        - 9
+        - 10
+    PatchPregnancyDossierRequestBody:
+      properties:
+        dateOfBirthExpected:
+          description: 'The expected birthdate of the child'
+          type: string
+          format: date
+        dateOfActualBirth:
+          description: 'The actual birthdate of the child'
+          type: string
+          format: date
+        dateActualLeave:
+          description: 'The actual start date of the requested leave'
+          type: string
+          format: date
+        dateExpectedLeave:
+          description: 'The expected start date of the requested leave'
+          type: string
+          format: date
+        dateFirstWorkingDay:
+          description: 'The first working day after the leave period'
+          type: string
+          format: date
+        dateActualFirstWorkingDay:
+          description: 'The actual first working day after the leave period'
+          type: string
+          format: date
+        expectsMultiples:
+          description: 'Indicates if the pregnancy is expected to be multiple births'
+          type: boolean
+        hospitalizationChild:
+          description: 'Indicates if the child was hospitalized'
+          type: boolean
+        flexibleLeave:
+          description: 'Flag to indicate if the leave is flexible'
+          type: boolean
+        requestedLeavePeriod:
+          $ref: '#/components/schemas/RequestedLeavePeriodEnumOptions'
+        dateStartActual:
+          description: 'The actual start date of the requested leave'
+          type: string
+          format: date
+      type: object
     PatchPreventiveDossierRequestBody:
       properties:
         id:
@@ -9838,6 +10526,11 @@ components:
           example: EXT-DOS-458
         dateStart:
           description: 'The date the dossier started in format YYYY-MM-DD'
+          type: string
+          format: date
+          example: '2020-01-23'
+        dateReported:
+          description: "Date the dossier was reported in format YYYY-MM-DD, if omitted defaults to 'now'"
           type: string
           format: date
           example: '2020-01-23'
@@ -10155,9 +10848,7 @@ components:
           type: string
           format: date
         requestedLeavePeriod:
-          description: "The requested leave period in weeks, this will calculate and fill the 'expectedDurationDays' property."
-          type: integer
-          format: int32
+          $ref: '#/components/schemas/RequestedLeavePeriodEnumOptions'
       type: object
     PostPreventiveDossierRequestBody:
       required:
@@ -11107,6 +11798,11 @@ components:
           minLength: 0
           example: External-Dossier-Key
           nullable: true
+        dateReported:
+          description: 'Date the dossier was reported, formatted in ISO8601 (YYYY-MM-DD).'
+          type: string
+          format: date
+          example: '2020-01-23'
         dateStart:
           description: 'The effective start date of the Dossier, formatted in ISO8601 (YYYY-MM-DD).'
           type: string
@@ -12183,6 +12879,8 @@ components:
           description: "The unique identifier of the arboservice, obtainable by the list of arboservice. (field in application 'arbodienst')"
           type: string
           format: uuid
+          maxLength: 36
+          minLength: 36
           example: f814d306-ee4e-4d18-9a54-6c00d881e469
           nullable: true
         visitAddress:
@@ -12328,12 +13026,12 @@ components:
           example: 8d113cc8-2bd5-4a75-8ebd-ec71acdff9c2
           nullable: true
         arboServiceId:
-          description: 'The unique identifier of the arboservice (arbodienst)'
+          description: "The unique identifier of the arboservice, obtainable by the list of arboservices. (field in application 'arbodienst')"
           type: string
           format: uuid
           maxLength: 36
           minLength: 36
-          example: a1d6ae53-584e-40cd-a12b-313001409a98
+          example: f814d306-ee4e-4d18-9a54-6c00d881e469
           nullable: true
         visitAddress:
           $ref: '#/components/schemas/Address'
@@ -13142,9 +13840,9 @@ components:
     GetEmploymentContractResourceIncludeOptions:
       type: string
       enum:
-        - organizationalUnit
+        - organizationalUnit.employer
         - employmentType
-        - employment
+        - employment.employee.person
     GetEmploymentResponse:
       properties:
         data:
@@ -13167,7 +13865,7 @@ components:
       type: string
       enum:
         - employmentEndReason
-        - employee
+        - employee.person
         - supervisor
         - externalSupervisor
         - currentOrLastEmploymentContract
@@ -14227,8 +14925,9 @@ components:
       type: string
       enum:
         - dossierTask
+        - employment.employee
         - dossier
-        - dossier.employment
+        - dossier.employment.employee
         - dossier.employment.employmentContracts
         - dossier.employment.employmentContracts.organizationalUnit
         - dossier.employment.employmentContracts.organizationalUnit.employer
@@ -15683,6 +16382,9 @@ tags:
   -
     name: 'Absence Reasons'
     description: 'Absence Reasons'
+  -
+    name: Appointments
+    description: Appointments
   -
     name: Authentication
     description: Authentication
