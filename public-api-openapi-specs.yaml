@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: 'BlueVi API'
+  title: 'BlueVi Case Management API'
   description: 'Communicate with BlueVi directly over 100+ API endpoints.'
   version: v1
 paths:
@@ -1593,6 +1593,16 @@ paths:
           schema:
             type: string
             pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: include
+          in: query
+          description: 'Include the related resources - use comma separated values to include multiple resources'
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetDossierContentDocumentIncludeOptions'
       responses:
         200:
           description: 'A list of documents'
@@ -2065,6 +2075,16 @@ paths:
           schema:
             type: string
             pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: include
+          in: query
+          description: 'Include the related resources - use comma separated values to include multiple resources'
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetDossierContentNoteIncludeOptions'
       responses:
         200:
           description: 'A list of notes'
@@ -2284,6 +2304,16 @@ paths:
           schema:
             type: string
             pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: include
+          in: query
+          description: 'Include the related resources - use comma separated values to include multiple resources'
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetDossierContentUploadIncludeOptions'
       responses:
         200:
           description: 'A list of uploads'
@@ -4216,6 +4246,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: 'Update a illness and Zwerd dossier'
+      description: 'This endpoint is used to update a Illness and Zwerd dossier.'
+      operationId: dossier-illnessandzwerd-patch-v1-essential
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchIllnessZwerdDossierRequestBody'
+      responses:
+        200:
+          description: 'Dossier successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        400:
+          description: 'Invalid input'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /dossier/company-social-worker:
     post:
       tags:
@@ -4548,6 +4610,71 @@ paths:
       summary: 'Patch psychologist dossier'
       description: 'This endpoint is used to update a psychologist dossier.'
       operationId: dossier-psychologist-patch-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchBasicRequestBody'
+      responses:
+        200:
+          description: 'Dossier successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicApiPatchResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /dossier/occupational-expert:
+    post:
+      tags:
+        - Dossier
+      summary: 'Create a occupational expert dossier'
+      description: 'This endpoint is used to create a new occupational expert dossier.'
+      operationId: dossier-occupationalexpert-post-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBasicDossierRequestBody'
+      responses:
+        201:
+          description: 'Dossier successfully created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostBasicDossierResponseBody'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: 'Patch occupational expert dossier'
+      description: 'This endpoint is used to update a occupational expert dossier.'
+      operationId: dossier-occupationalexpert-patch-v1-ultimate
       requestBody:
         description: 'Dossier data'
         required: true
@@ -7174,6 +7301,134 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /linked-user:
+    get:
+      tags:
+        - User
+      summary: 'Get a list of LinkedUser records which represent links between users'
+      operationId: linkeduser-get-v1-essential
+      parameters:
+        -
+          name: 'filter[id]'
+          in: query
+          description: 'Filter by the unique identifier of the linked user record'
+          schema:
+            type: string
+            format: uuid
+          example: e8f92546-5970-43ae-9f44-2fd4687bfd6b
+        -
+          name: 'filter[externalKey]'
+          in: query
+          description: 'Filter by the external key of the linked user record'
+          schema:
+            type: string
+          example: company-name-linked-1234-5678
+        -
+          name: 'filter[isApproved]'
+          in: query
+          description: "Filter by 'approved' status of the linked user)"
+          schema:
+            type: boolean
+          example: true
+        -
+          name: 'filter[fromUserId]'
+          in: query
+          description: "Filter by a user's unique identifier of the 'from' user in the linked user record"
+          schema:
+            type: string
+            format: uuid
+          example: e8f92546-5970-43ae-9f44-2fd4687bfd6b
+        -
+          name: 'filter[toUserId]'
+          in: query
+          description: "Filter by a user's unique identifier of the 'from' user in the linked user record"
+          schema:
+            type: string
+            format: uuid
+          example: e8f92546-5970-43ae-9f44-2fd4687bfd6b
+        -
+          name: 'filter[fromOrToUserId]'
+          in: query
+          description: "Filter by a user's unique identifier in either the 'from' or the 'to' user in the linked user record"
+          schema:
+            type: string
+            format: uuid
+          example: e8f92546-5970-43ae-9f44-2fd4687bfd6b
+        -
+          name: 'filter[dateUpdatedFrom]'
+          in: query
+          description: "Filter by the date when the linked user record was last updated, from (and including) this date/time. Defaults to 'start of day' if only a date is specified."
+          schema:
+            type: string
+            pattern: '^(\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?)$'
+          example: '2023-10-01 12:34:56'
+        -
+          name: 'filter[dateUpdatedUntil]'
+          in: query
+          description: "Filter by the date when the linked user record was last updated, to (and including) this date/time. Defaults to 'end of day' if only a date is specified."
+          schema:
+            type: string
+            pattern: '^(\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?)$'
+          example: '2023-10-01'
+        -
+          name: 'filter[dateCreatedFrom]'
+          in: query
+          description: "Filter by the date when the linked user record was created, from (and including) this date/time. Defaults to 'start of day' if only a date is specified."
+          schema:
+            type: string
+            pattern: '^(\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?)$'
+          example: '2023-10-01 12:34:56'
+        -
+          name: 'filter[dateCreatedUntil]'
+          in: query
+          description: "Filter by the date when the linked user record was created, to (and including) this date/time. Defaults to 'end of day' if only a date is specified."
+          schema:
+            type: string
+            pattern: '^(\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?)$'
+          example: '2023-10-01'
+        -
+          name: 'filter[environmentName]'
+          in: query
+          description: "Filter by (part of) the environmentName of the linked user record, performs a case-insensitive 'like' match"
+          schema:
+            type: string
+            pattern: '^(\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?)$'
+          example: '2023-10-01'
+        -
+          name: sort
+          in: query
+          description: "Sorts results ascending by the given option, options prefixed with '-' sort descending"
+          schema:
+            $ref: '#/components/schemas/GetLinkedUserSortOptions'
+        -
+          name: include
+          in: query
+          description: 'Include related resources - use comma separated values to include multiple resources'
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetLinkedUserIncludeOptions'
+      responses:
+        200:
+          description: 'A list of LinkedUser records that match the given filters'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLinkedUserResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
 components:
   schemas:
     GetAbsenceReasonResponse:
@@ -7417,7 +7672,7 @@ components:
         houseNumber:
           description: 'The house number of the appointment location'
           type: integer
-          example: '46'
+          example: 46
         houseNumberAddition:
           description: 'The house number addition of the appointment location'
           type: string
@@ -8143,6 +8398,13 @@ components:
       enum:
         - general
         - uwv
+        - team-contact-person
+        - preferred-professional
+        - internal-confidential-counselor
+        - prevention-officer
+        - chairman-of-the-works-council
+        - manager
+        - hr-manager
     ContactPerson:
       properties:
         id:
@@ -8264,7 +8526,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Contract'
+            $ref: '#/components/schemas/EmployerContract'
         links:
           $ref: '#/components/schemas/PaginationLinks'
         meta:
@@ -8276,6 +8538,8 @@ components:
         - contractType
         - serviceType
         - employer
+        - organizationalUnit
+        - partnership
     GetContractModulesResponse:
       properties:
         data:
@@ -8344,6 +8608,7 @@ components:
           description: 'The unique identifier of the organizational unit'
           type: string
           format: uuid
+          nullable: true
         contractTypeId:
           description: 'The unique identifier of the contract type'
           type: string
@@ -8420,6 +8685,10 @@ components:
           type: string
           format: uuid
           example: bc1a50da-1093-4809-8efc-e3553b2f49b0
+        organizationalUnitId:
+          description: 'Optional: the unique identifier of the organizational unit the employer contract is associated with.'
+          type: string
+          format: uuid
         dateStart:
           description: 'The start-date of the employer contract in format YYYY-MM-DD'
           type: string
@@ -8713,7 +8982,7 @@ components:
         serviceType:
           $ref: '#/components/schemas/ServiceType'
         employer:
-          $ref: '#/components/schemas/Employer'
+          $ref: '#/components/schemas/EmployerWithoutRelations'
         partnership:
           $ref: '#/components/schemas/Partnership'
         organizationalUnit:
@@ -9082,6 +9351,12 @@ components:
         meta:
           $ref: '#/components/schemas/PaginationMetaInformation'
       type: object
+    GetDossierContentDocumentIncludeOptions:
+      type: string
+      enum:
+        - dossier
+        - documentType
+        - dossierSection
     GetDossierContentDocumentResponse:
       properties:
         data:
@@ -9322,6 +9597,12 @@ components:
           minLength: 36
           example: 90dd731a-5e65-43f9-82df-bba234855918
       type: object
+    GetDossierContentNoteIncludeOptions:
+      type: string
+      enum:
+        - dossier
+        - noteType
+        - dossierSection
     GetDossierContentNoteResponse:
       properties:
         data:
@@ -9483,6 +9764,12 @@ components:
           pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
           example: '2021-12-31 23:59:59'
       type: object
+    GetDossierContentUploadIncludeOptions:
+      type: string
+      enum:
+        - dossier
+        - uploadType
+        - dossierSection
     GetDossierContentUploadResponse:
       properties:
         data:
@@ -10097,6 +10384,74 @@ components:
           description: 'The date the dossier was completed in format YYYY-MM-DD'
           type: string
           format: date
+      type: object
+    PatchIllnessZwerdDossierRequestBody:
+      properties:
+        id:
+          description: 'The unique identifier of the dossier to be updated'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+        externalKey:
+          description: "An identifier provided by an external system that uniquely specifies the dossier. This key serves as an alternative to the 'id' field for referencing the dossier."
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: ext-dos-1234
+          nullable: true
+        zwerdDecline:
+          description: 'Indicates if the ZWERD request is declined'
+          type: boolean
+        zwerdRequestStatus:
+          description: 'The status of the ZWERD request'
+          type: string
+          maxLength: 191
+          minLength: 0
+          nullable: true
+        highestDayPayment:
+          description: 'The highest daily payment amount'
+          type: number
+          example: 45
+          nullable: true
+        HighestBrutoDayPayment:
+          description: 'The highest bruto daily payment amount'
+          type: number
+          example: 35
+          nullable: true
+        dateZwerdRequestStart:
+          description: 'Start date of the ZWERD request'
+          type: string
+          format: date
+          nullable: true
+        dateZwerdRequestEnd:
+          description: 'End date of the ZWERD request (must be after zwerdRequestStart)'
+          type: string
+          format: date
+          nullable: true
+        datePaymentPeriodZwerdStart:
+          description: 'Start date of the ZWERD payment period'
+          type: string
+          format: date
+          nullable: true
+        datePaymentPeriodZwerdEnd:
+          description: 'End date of the ZWERD payment period (must be after paymentPeriodZwerdStart)'
+          type: string
+          format: date
+          nullable: true
+        dateDepositPeriodStart:
+          description: 'Start date of the deposit period'
+          type: string
+          format: date
+          nullable: true
+        dateDepositPeriodEnd:
+          description: 'End date of the deposit period (must be after depositPeriodStart)'
+          type: string
+          format: date
+          nullable: true
+        afterRegistrationZwerd:
+          description: 'Indicates if this is after ZWERD registration'
+          type: boolean
       type: object
     PatchMedicalPreventiveDossierRequestBody:
       properties:
@@ -12296,6 +12651,8 @@ components:
       enum:
         - externalKey
         - '-externalKey'
+        - dateUpdated
+        - '-dateUpdated'
     GetEmployeeIncludeOptions:
       type: string
       enum:
@@ -12303,7 +12660,7 @@ components:
         - employments
         - employments.employmentContracts
         - currentOrLastEmploymentContract.organizationalUnit.employer
-        - addresses
+        - addresses.country
         - employmentContract
         - communicationMethods
     EmployeeRequestBodyPerson:
@@ -12798,6 +13155,7 @@ components:
         - ownRiskContracts.type
         - communications
         - contactPersons.details
+        - incomeInsuranceProvider
     PatchEmployerRequestBody:
       description: 'You should only send the fields that need to be updated; any omitted fields will remain unchanged.'
       properties:
@@ -12887,6 +13245,14 @@ components:
           $ref: '#/components/schemas/Address'
         postalAddress:
           $ref: '#/components/schemas/Address'
+        incomeInsuranceProviderId:
+          description: 'The unique identifier of the income insurance provider'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          example: c9ef0d79-7c66-406d-ae4a-a66515992ef7
+          nullable: true
       type: object
     EmployerRequestBodyContract:
       required:
@@ -13039,6 +13405,13 @@ components:
           $ref: '#/components/schemas/Address'
         contract:
           $ref: '#/components/schemas/EmployerRequestBodyContract'
+        incomeInsuranceProviderId:
+          description: 'The unique identifier of the income insurance provider'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          example: c9ef0d79-7c66-406d-ae4a-a66515992ef7
       type: object
     Address:
       description: Address
@@ -13350,6 +13723,8 @@ components:
           description: 'The number of organizational units associated with the employer'
           type: integer
           example: 12
+        incomeInsuranceProvider:
+          $ref: '#/components/schemas/IncomeInsuranceProvider'
       type: object
     EmployerWithoutRelations:
       properties:
@@ -13427,6 +13802,46 @@ components:
           minLength: 0
           example: 'Internal remark with regards to this employer'
           nullable: true
+      type: object
+    IncomeInsuranceProvider:
+      properties:
+        id:
+          description: 'The unique identifier of the income insurance provider'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          example: 5e517511-5e36-4a1f-9405-c5a58dfdce74
+        externalKey:
+          description: "An identifier provided by an external system that uniquely specifies the income insurance provider. This key serves as an alternative to the 'id' field for referencing the income insurance provider."
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: income-insurance-provider-1234
+          nullable: true
+        migrationKey:
+          description: 'The internal migration key associated with the income insurance provider.'
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: database_234@84739
+          nullable: true
+        name:
+          description: 'The name of the income insurance provider'
+          type: string
+          maxLength: 191
+          minLength: 1
+          example: 'Income Insurerer Example Entity'
+        dateCreated:
+          description: 'The date and time that the arbo service was created in our system. Format YYYY-MM-DD HH:MM:SS'
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+          example: '2020-02-20 12:34:56'
+        dateUpdated:
+          description: 'The date and time that the arbo service was last updated in our system. Format YYYY-MM-DD HH:MM:SS'
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+          example: '2020-02-20 12:34:56'
       type: object
     GetEmployerDivisionResponse:
       properties:
@@ -13533,8 +13948,15 @@ components:
           minLength: 0
           example: Demmersweg
           nullable: true
+        country:
+          description: 'The ISO 2 code of the country of the address associated with the employer person address.'
+          type: string
+          maxLength: 2
+          minLength: 2
+          example: NL
+          nullable: true
         number:
-          description: 'The number of the address associated with the employer person address. including the suffix.'
+          description: "The number of the address associated with the employer person address. including the suffix. Only available if the 'country' relation is included in the query."
           type: string
           maxLength: 191
           minLength: 0
@@ -14515,9 +14937,10 @@ components:
           type: object
     EmploymentWithoutRelations:
       properties:
-        uuid:
+        id:
           description: 'The unique identifier of the employment'
           type: string
+          format: uuid
           maxLength: 36
           minLength: 36
           example: 123e4567-e89b-12d3-a456-426614174000
@@ -16212,6 +16635,81 @@ components:
           example: 98798779@12
         authorization:
           $ref: '#/components/schemas/UserAuthorization'
+      type: object
+    GetLinkedUserResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedUser'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetLinkedUserSortOptions:
+      type: string
+      enum:
+        - externalKey
+        - '-externalKey'
+        - dateUpdated
+        - '-dateUpdated'
+        - dateCreated
+        - '-dateCreated'
+    GetLinkedUserIncludeOptions:
+      type: string
+      enum:
+        - fromUser
+        - toUser
+    LinkedUser:
+      description: 'Represents a link between two users in the system.'
+      properties:
+        id:
+          description: 'The unique identifier of the linked user record.'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          example: 40b03a3c-e304-4b8f-b4ae-562b315e36f2
+        externalKey:
+          description: "An identifier provided by an external system that uniquely specifies the link between the users. This key serves as an alternative to the 'id' field for referencing the user link."
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: link-from-1234-to-5678
+          nullable: true
+        fromUser:
+          oneOf:
+            -
+              $ref: '#/components/schemas/User'
+          nullable: true
+          description: "The 'main' user that the 'toUser' is linked to. Nullable in situations where the user does not exist or is not loaded."
+        toUser:
+          oneOf:
+            -
+              $ref: '#/components/schemas/User'
+          nullable: true
+          description: "The 'secondary' user that is linked to the 'fromUser'. Nullable in situations where the user does not exist or is not loaded."
+        environmentName:
+          description: 'An identifying string meant to be help the user identify the link'
+          type: string
+          maxLength: 191
+          minLength: 1
+          example: 'Jansen BV (Case Manager)'
+        approved:
+          description: 'Indicates whether the link between the users has been approved and is therefore active.'
+          type: boolean
+          example: true
+        dateCreated:
+          description: 'The date and time when the link was created.'
+          type: string
+          pattern: '^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})$'
+          example: '2023-10-01 12:34:56'
+        dateUpdated:
+          description: 'The date and time when the link was last updated.'
+          type: string
+          pattern: '^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})$'
+          example: '2023-10-01 12:34:56'
       type: object
     ArboAuthorizationLevelEnumOptions:
       type: string

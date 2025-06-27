@@ -3,6 +3,12 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Update June 2025-06-27
+
+### Changed
+- Fixed some documentation issues and oversights that were reported
+- Be aware: the documentation references a new `GET` `LinkedUsers` endpoint, this is not yet available on the `staging` environment. It will be part of the next release.
+
 ## Release June 2025
 
 ### Added
