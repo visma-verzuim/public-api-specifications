@@ -339,7 +339,149 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  '/contact-persons/{type}':
+  /contact-person:
+    get:
+      tags:
+        - ContactPerson
+      summary: 'Get contact persons'
+      description: 'Returns a list of contact persons based on the provided query parameters.'
+      operationId: contactperson-get-v1-essential
+      parameters:
+        -
+          name: 'filter[id]'
+          in: query
+          description: 'Filter by unique identifier to get a specific contact person.'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[externalKey]'
+          in: query
+          description: 'Filter by external key to get a specific contact person.'
+          schema:
+            type: string
+        -
+          name: 'filter[employerId]'
+          in: query
+          description: 'Filter by employer ID to get contact persons associated with a specific employer.'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[organizationalUnitId]'
+          in: query
+          description: 'Filter by organizational unit ID to get contact persons associated with a specific organizational unit.'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[employerKey]'
+          in: query
+          description: 'Filter by employer key to get contact persons associated with a specific employer.'
+          schema:
+            type: string
+        -
+          name: 'filter[organizationalUnitKey]'
+          in: query
+          description: 'Filter by organizational unit key to get contact persons associated with a specific organizational unit.'
+          schema:
+            type: string
+        -
+          name: 'filter[type]'
+          in: query
+          description: 'Filter by contact person type. The type that the contact person is associated with.'
+          schema:
+            $ref: '#/components/schemas/ContactPersonTypeEnumOptions'
+        -
+          name: 'filter[dateUpdatedFrom]'
+          in: query
+          description: 'Filter by date updated from'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: 'filter[dateUpdatedUntil]'
+          in: query
+          description: 'Filter up to (and including) the update date'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: sort
+          in: query
+          description: "Sort results by specific column, Use '-' as prefix to sort descending."
+          schema:
+            $ref: '#/components/schemas/GetContactPersonSortOptions'
+        -
+          name: include
+          in: query
+          description: 'Include related resources in the response. Use comma to separate multiple values.'
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetContactPersonIncludeOptions'
+      responses:
+        200:
+          description: 'A list of contact persons matching the query parameters.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetContactPersonResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  '/contact-person/{type}':
+    post:
+      tags:
+        - ContactPerson
+      summary: 'Create a new contact person'
+      description: 'Creates a new contact person for either an employer or organizational unit. This endpoint handles the creation process and associates the contact person with the specified entity.'
+      operationId: contactperson-post-v1-essential
+      parameters:
+        -
+          name: type
+          in: path
+          description: 'Type of contact person (employer or organizational-unit)'
+          required: true
+          schema:
+            $ref: '#/components/schemas/PostContactPersonTypeEnumOptions'
+      requestBody:
+        description: 'Contact person data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostContactPersonRequestBody'
+      responses:
+        201:
+          description: 'Contact person successfully created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactPerson'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
     patch:
       tags:
         - ContactPerson
@@ -429,47 +571,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  '/contact-person/{type}':
-    post:
-      tags:
-        - ContactPerson
-      summary: 'Create a new contact person'
-      description: 'Creates a new contact person for either an employer or organizational unit. This endpoint handles the creation process and associates the contact person with the specified entity.'
-      operationId: contactperson-post-v1-essential
-      parameters:
-        -
-          name: type
-          in: path
-          description: 'Type of contact person (employer or organizational-unit)'
-          required: true
-          schema:
-            $ref: '#/components/schemas/PostContactPersonTypeEnumOptions'
-      requestBody:
-        description: 'Contact person data'
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostContactPersonRequestBody'
-      responses:
-        201:
-          description: 'Contact person successfully created'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ContactPerson'
-        400:
-          description: 'Bad Request'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        500:
-          description: 'Server error'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
   '/employer-contract/{id}':
     delete:
       tags:
@@ -544,6 +645,12 @@ paths:
           description: 'Filter by the type of the contract type'
           schema:
             $ref: '#/components/schemas/ContractTypeTypeEnumOptions'
+        -
+          name: 'filter[code]'
+          in: query
+          description: "Filter by the 'code' of the contract type"
+          schema:
+            type: string
         -
           name: sort
           in: query
@@ -1207,7 +1314,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /configuration/dossier/document-types:
+  /configuration/dossier/document-type:
     get:
       tags:
         - DossierContent
@@ -1394,7 +1501,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
-  /configuration/dossier/upload-types:
+  /configuration/dossier/upload-type:
     get:
       tags:
         - DossierContent
@@ -2524,6 +2631,19 @@ paths:
           description: 'Filter by active status'
           schema:
             type: boolean
+        -
+          name: 'filter[dossierId]'
+          in: query
+          description: 'Filter by the unique identifier of the Dossier'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[dossierExternalKey]'
+          in: query
+          description: 'Filter by Dossier externalKey'
+          schema:
+            type: string
         -
           name: sort
           in: query
@@ -6600,6 +6720,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  '/user/{id}':
+    delete:
+      tags:
+        - User
+      summary: 'Delete a user and all associated entities, including linked users, dossier officers, and company doctors'
+      description: 'Deletes a user based on the UUID.'
+      operationId: user-id-delete-v1-advanced
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Unique identifier of the user to delete.'
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: 'User successfully deleted'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /user/event:
     post:
       tags:
@@ -7306,7 +7461,7 @@ paths:
       tags:
         - User
       summary: 'Get a list of LinkedUser records which represent links between users'
-      operationId: linkeduser-get-v1-essential
+      operationId: user-linkeduser-get-v1-ultimate
       parameters:
         -
           name: 'filter[id]'
@@ -7417,6 +7572,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetLinkedUserResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    post:
+      tags:
+        - User
+      summary: 'Create a linked user'
+      description: 'With this endpoint two users can be linked'
+      operationId: user-linkeduser-post-v1-ultimate
+      requestBody:
+        description: 'Linked user data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostLinkedUserRequestBody'
+      responses:
+        201:
+          description: 'Linked user successfully created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostLinkedUserResponseBody'
         400:
           description: 'Bad Request'
           content:
@@ -8174,6 +8361,33 @@ components:
         person:
           $ref: '#/components/schemas/MasterPerson'
       type: object
+    GetContactPersonResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactPerson'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetContactPersonSortOptions:
+      type: string
+      enum:
+        - externalKey
+        - '-externalKey'
+        - type
+        - '-type'
+        - dateCreated
+        - '-dateCreated'
+        - dateUpdated
+        - '-dateUpdated'
+    GetContactPersonIncludeOptions:
+      type: string
+      enum:
+        - employer
+        - organizationalUnit
     PatchContactPersonResponse:
       allOf:
         -
@@ -12834,16 +13048,20 @@ components:
           nullable: true
       type: object
     PatchEmployeeRequestBody:
-      required:
-        - employeeId
       properties:
-        employeeId:
-          description: 'The unique identifier of the employee to update'
+        id:
+          description: "The unique identifier of the employee to update. Required unless 'key' is provided, mutually exclusive with 'key'."
           type: string
           format: uuid
           example: f9e8d7c6-1234-5678-9012-abcdef987654
+        key:
+          description: "Identifier in an external system that uniquely specifies the employee to be updated. Required unless 'id' is provided. This key serves as an alternative to the 'id' field for referencing the employee; only one of 'id' or 'key' is allowed in a request to identify the employee."
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: 1234@external-key|test
         externalKey:
-          description: "An identifier provided by an external system that uniquely specifies the employee. This key serves as an alternative to the 'id' field for referencing the employee."
+          description: 'This is used to set a new external key for the employee, this is the identfier in an external system.'
           type: string
           maxLength: 191
           minLength: 0
@@ -14959,11 +15177,9 @@ components:
           example: Migration-Key-456
           nullable: true
         employmentNumber:
-          description: 'The total number of employments for the employee'
-          type: string
-          maxLength: 191
-          minLength: 0
-          example: '3'
+          description: 'The number of the employment for this employee, f.e. if there is already an employment then the next employment will get employmentNumber 2, etc.'
+          type: integer
+          example: 3
           nullable: true
         primary:
           description: 'Indication if the employment is flagged as primary or not.'
@@ -16661,6 +16877,48 @@ components:
       enum:
         - fromUser
         - toUser
+    PostLinkedUserResponseBody:
+      allOf:
+        -
+          $ref: '#/components/schemas/PublicApiPostResponse'
+        -
+          properties:
+            data:
+              $ref: '#/components/schemas/LinkedUser'
+          type: object
+    PostLinkedUserRequestBody:
+      required:
+        - fromId
+        - toId
+        - environmentDescription
+      properties:
+        externalKey:
+          description: 'An identifier provided by an external system that uniquely specifies the linked user.'
+          type: string
+          maxLength: 191
+          minLength: 1
+          example: EXT-DOS-458
+        environmentDescription:
+          description: 'Describes the environment where the users is going to log into'
+          type: string
+          maxLength: 191
+          minLength: 1
+          example: 'Test environment 1'
+        fromId:
+          description: 'Id of main user where to link users to'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          example: e3eab6bd-4adc-4d9b-9620-2b0c49ecb7d3
+        toId:
+          description: 'Id of linked user'
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          example: e3eab6bd-4adc-4d9b-9620-2b0c49ecb7d3
+      type: object
     LinkedUser:
       description: 'Represents a link between two users in the system.'
       properties:

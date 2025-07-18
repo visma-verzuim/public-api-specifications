@@ -3,6 +3,31 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Release July 2025
+
+### Added
+- New `GET` `LinkedUsers` endpoint (VV-7540)
+- New `POST` `LinkedUsers` endpoint (VV-7527)
+- New `GET` `ContactPerson` endpoint (VV-7512)
+- New `DELETE` `User` endpoint (VV-7297)
+- New `PATCH` `Dossier` endpoint for the `illness-plus-zwerd` dossier type (VV-7520)
+- New `PATCH` `Dossier` endpoint for the `occupational-expert` dossier type (VV-7830)
+
+### Changed
+- `PATCH` `Employee` now allows changing the `externalKey` property (VV-7997)
+- `GET` `DossierTask` now allows filtering by dossier (VV-7743)
+- `GET` `Employee` now allows including the country as part of the address via the `addresses.country` include (VV-6586)
+- `POST` `EmployerContract` validation errors fixed (dates + contractNumber) (VV-7840)
+- `AbsenceCourse` and `Dossier` resources should now return enums in kebab-case instead of snake_case (VV-8024)
+- Additional enum options were added for `ContactPerson.type` (VV-7324)
+
+### Documentation fixes:
+- paths for `UploadType` and `DocumentType` have been corrected; a trailing 's' has been removed (VV-8112)
+- `GET` `EmployerContract` had `includes` added for `organizationalUnit` and `partnership` (VV-8026)
+- `POST` `EmployerContract` now returns the `organizationalUnit` property in its response (VV-8026)
+- `GET` `ContractType` now shows the `code` filter in the OpenAPI documentation (VV-8068)
+- The `Employment` resource documentation now correctly shows that `employmentNumber` is an integer (VV-8068)
+
 ## Update June 2025-06-27
 
 ### Changed
