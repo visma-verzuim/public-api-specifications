@@ -3,6 +3,19 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Release August 2025
+
+### Changed
+- `operations` includes have been added to `GET` `Task` and `GET` `DossierTask` endpoints (VV-8229)
+- `PATCH` endpoints for `Dossiers` now allow updating the `externalKey` property (VV-7705)
+- WGA dossiers can now be created for employments that have ended (VV-8205)
+- Fixed spelling for status property "cancelled" for `GET` `DossierTask` endpoint (VV-8219)
+
+### Documentation fixes:
+- Removed trailing 's' in the documentation for API routes (VV-8203):
+  - `GET` `DossierType` endpoint
+  - `PATCH` `ContactPerson` endpoint
+
 ## Release July 2025
 
 ### Added
