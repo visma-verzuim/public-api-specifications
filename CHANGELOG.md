@@ -3,6 +3,14 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Documentation update August 22nd 2025
+
+### Documentation fixes
+- Added 'modules' to `POST` and `PATCH` `EmployerContract` endpoints (VV-8310)
+- Added 'operations' to `Task` and `DossierTask` resources (VV-8310)
+- `POST` `DossierTask` response is now a DossierTask (VV-8310)
+
+
 ## Release August 2025
 
 ### Changed
@@ -11,7 +19,7 @@ The changelog has been tracked since March 15, 2024. Changes prior to this date 
 - WGA dossiers can now be created for employments that have ended (VV-8205)
 - Fixed spelling for status property "cancelled" for `GET` `DossierTask` endpoint (VV-8219)
 
-### Documentation fixes:
+### Documentation fixes
 - Removed trailing 's' in the documentation for API routes (VV-8203):
   - `GET` `DossierType` endpoint
   - `PATCH` `ContactPerson` endpoint
@@ -34,7 +42,7 @@ The changelog has been tracked since March 15, 2024. Changes prior to this date 
 - `AbsenceCourse` and `Dossier` resources should now return enums in kebab-case instead of snake_case (VV-8024)
 - Additional enum options were added for `ContactPerson.type` (VV-7324)
 
-### Documentation fixes:
+### Documentation fixes
 - paths for `UploadType` and `DocumentType` have been corrected; a trailing 's' has been removed (VV-8112)
 - `GET` `EmployerContract` had `includes` added for `organizationalUnit` and `partnership` (VV-8026)
 - `POST` `EmployerContract` now returns the `organizationalUnit` property in its response (VV-8026)
