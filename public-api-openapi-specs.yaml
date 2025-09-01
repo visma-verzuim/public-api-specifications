@@ -2722,14 +2722,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DossierTaskResource'
+              $ref: '#/components/schemas/PatchDossierTaskRequestBody'
       responses:
         200:
           description: 'Dossier task successfully updated.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DossierTaskResource'
+                $ref: '#/components/schemas/DossierTask'
         400:
           description: 'Invalid input provided.'
           content:
@@ -2765,14 +2765,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DossierTaskResource'
+              $ref: '#/components/schemas/PatchDossierTaskRequestBody'
       responses:
         200:
           description: 'Dossier task successfully updated.'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DossierTaskResource'
+                $ref: '#/components/schemas/DossierTask'
         400:
           description: 'Invalid input provided.'
           content:
@@ -9483,32 +9483,22 @@ components:
         - dossier.nursingAddress
         - absenceReason
     PatchAbsenceCourseRequestBody:
-      required:
-        - id
       properties:
         id:
-          description: 'The unique identifier of the absence course'
+          description: "The unique identifier of the absence course. Mutually exclusive with 'key'. Required if 'key' is not provided."
           type: string
           format: uuid
           maxLength: 36
           minLength: 36
           example: 22ac850c-144e-4fda-8ccb-2e098116012d
-        employmentId:
-          description: "The unique identifier of the employment the absence is related to, exclusive with 'employmentKey'. Either this field is mandatory or field employmentKey is mandatory."
-          type: string
-          format: uuid
-          maxLength: 36
-          minLength: 36
-          example: e8f92546-5970-43ae-9f44-2fd4687bfd6b
-        employmentKey:
-          description: "The external key of the employment the absence is related to, exclusive with 'employmentId'. Either this field is mandatory or field employmentId is mandatory."
+        key:
+          description: "The external key that identifies the absence course. Mutually exclusive with 'id'. Required if 'id' is not provided."
           type: string
           maxLength: 191
           minLength: 0
-          example: dvb-1001-1
-          nullable: true
+          example: verzuimverloop-1001-01
         externalKey:
-          description: "An identifier provided by an external system that uniquely specifies the absence-course. This key serves as an alternative to the 'id' field for referencing the absence-course."
+          description: 'An identifier provided by an external system that uniquely identifies the absence-course.'
           type: string
           maxLength: 191
           minLength: 0
@@ -10269,7 +10259,8 @@ components:
         - dossier.employment.employee.employerPerson
         - baseTask
         - baseTask.operations
-    DossierTaskResource:
+        - billableOperations
+    PatchDossierTaskRequestBody:
       title: 'Dossier Task Resource'
       description: 'Representation of a dossier task with properties required for updating.'
       properties:
@@ -10296,14 +10287,6 @@ components:
           nullable: true
         dossierId:
           description: 'The unique identifier of the dossier associated with the task.'
-          type: string
-          format: uuid
-          maxLength: 36
-          minLength: 36
-          example: 123e4567-e89b-12d3-a456-426614174000
-          nullable: true
-        absenceCourseId:
-          description: 'The unique identifier for the course related to absences within the dossier task.'
           type: string
           format: uuid
           maxLength: 36
@@ -10401,11 +10384,6 @@ components:
           maxLength: 36
           minLength: 36
           example: 123e4567-e89b-12d3-a456-426614174000
-        absenceCourseId:
-          description: 'The unique identifier of the absence course associated with the dossier task'
-          type: string
-          example: 123e4567-e89b-12d3-a456-426614174000
-          nullable: true
         taskId:
           description: 'The unique identifier of the associated base task of the dossier-task'
           type: string
@@ -11842,6 +11820,7 @@ components:
         - passed-away
         - partial-recovery
         - fully-sick-again
+        - end-waiting-period
     AbsenceCourse:
       type: object
       allOf:
@@ -12662,7 +12641,7 @@ components:
         - finished
         - cancelled
         - overdue
-    DossierTask:
+    DossierTaskWithoutRelations:
       properties:
         id:
           description: 'The unique identifier of the DossierTask'
@@ -12686,10 +12665,6 @@ components:
           minLength: 0
           example: Migration-479.10345
           nullable: true
-        dossier:
-          $ref: '#/components/schemas/DossierWithPossibleRelationToEmployee'
-        baseTask:
-          $ref: '#/components/schemas/Task'
         taskStatus:
           $ref: '#/components/schemas/TaskStatusEnumOptions'
         title:
@@ -12736,6 +12711,23 @@ components:
           pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
           nullable: true
       type: object
+    DossierTask:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/DossierTaskWithoutRelations'
+        -
+          properties:
+            dossier:
+              $ref: '#/components/schemas/DossierWithPossibleRelationToEmployee'
+            baseTask:
+              $ref: '#/components/schemas/Task'
+            billableOperations:
+              description: 'A list of billable operations associated with the dossier task'
+              type: array
+              items:
+                $ref: '#/components/schemas/BillableOperationWithoutRelations'
+          type: object
     PaidParentalLeaveDossier:
       type: object
       allOf:
@@ -15731,7 +15723,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Operationable'
+            $ref: '#/components/schemas/BillableOperation'
         links:
           $ref: '#/components/schemas/PaginationLinks'
         meta:
@@ -15758,8 +15750,7 @@ components:
         - dossier.employment.employmentContracts
         - dossier.employment.employmentContracts.organizationalUnit
         - dossier.employment.employmentContracts.organizationalUnit.employer
-    Operationable:
-      description: 'JSON resource representing an billable operation.'
+    BillableOperationWithoutRelations:
       properties:
         id:
           description: 'The unique identifier of the billable operation.'
@@ -15775,18 +15766,6 @@ components:
           minLength: 0
           example: EXT-SYS-43523345
           nullable: true
-        operation:
-          $ref: '#/components/schemas/Operation'
-        employer:
-          $ref: '#/components/schemas/EmployerWithoutRelations'
-        organizationalUnit:
-          $ref: '#/components/schemas/OrganizationalUnit'
-        dossier:
-          $ref: '#/components/schemas/Dossier'
-        dossierTask:
-          $ref: '#/components/schemas/DossierTask'
-        employment:
-          $ref: '#/components/schemas/EmploymentWithPossibleRelationToEmployer'
         time:
           description: 'The time in minutes that is registered during the execution of the operation.'
           type: integer
@@ -15825,6 +15804,26 @@ components:
           example: '2024-12-01 12:34:56'
           nullable: true
       type: object
+    BillableOperation:
+      type: object
+      allOf:
+        -
+          $ref: '#/components/schemas/BillableOperationWithoutRelations'
+        -
+          properties:
+            operation:
+              $ref: '#/components/schemas/Operation'
+            employer:
+              $ref: '#/components/schemas/EmployerWithoutRelations'
+            organizationalUnit:
+              $ref: '#/components/schemas/OrganizationalUnit'
+            dossier:
+              $ref: '#/components/schemas/Dossier'
+            dossierTask:
+              $ref: '#/components/schemas/DossierTaskWithoutRelations'
+            employment:
+              $ref: '#/components/schemas/EmploymentWithPossibleRelationToEmployer'
+          type: object
     GetOrganizationalUnitResponse:
       properties:
         data:
@@ -16334,7 +16333,11 @@ components:
           items:
             $ref: '#/components/schemas/OrganizationalUnitCommunication'
         company:
-          $ref: '#/components/schemas/OrganizationalUnitCompany'
+          oneOf:
+            -
+              $ref: '#/components/schemas/OrganizationalUnitCompany'
+          nullable: true
+          description: 'Company information related to the organizational unit'
         dateStart:
           description: 'Start date of the organizational unit in YYYY-MM-DD format'
           type: string
@@ -16476,16 +16479,20 @@ components:
         registrationNumber:
           description: "UWV identification number ('aansluitnummer') of the company"
           type: string
+          nullable: true
         riskCode:
           description: 'UWV risk code of the company'
-          type: integer
+          type: string
+          nullable: true
         sectorId:
           description: 'UWV sector ID of the company'
           type: integer
+          nullable: true
         payrollTaxIdentificationNumber:
           description: "Payroll tax identification number ('loonheffingsnummer') of the company"
           type: string
       type: object
+      nullable: true
     RecoveryReason:
       properties:
         id:

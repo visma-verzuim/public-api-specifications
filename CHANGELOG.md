@@ -3,6 +3,25 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+/*
+2025-09-01 - Public API: OrgUnitResource 'company' is nullable (VV-8358) (#4295)
+2025-08-28 - Removed absenceCourse from patch and post dossier task, updated documentation (vv-8251) (#4233)
+2025-08-27 - Public API: add 'billable-operation' include to GET dossier-task (VV-8337) (#4277)
+2025-08-27 - PATCH AbsenceCourse can update externalkey (VV-8195) (#4271)
+*/
+
+## Release September 2025
+
+### Added
+- `PATCH` `AbsenceCourse` can now update `externalKey` (VV-8195)
+
+### Changed
+- `Organizational Unit` property `company` is now nullable when the OU is not a legal entity (VV-8358)
+- Removed property `absenceCourse` from `PATCH` and `POST` `DossierTask`, it is only for internal use (VV-8251)
+- `GET` `DossierTask` has a new `billableOperation` include (VV-8337)
+- `POST` and `PATCH` `EmployerContract` property `accountNumber` now actually accepts strings (VV-8276)
+
+
 ## Documentation update August 22nd 2025
 
 ### Documentation fixes
