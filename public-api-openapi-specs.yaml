@@ -3578,6 +3578,63 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  '/dossier/content/upload/{uuid}/content':
+    get:
+      tags:
+        - DossierContent
+      summary: 'Download dossier upload file content'
+      operationId: dossiercontent-upload-content-get-v1-essential
+      parameters:
+        -
+          name: uuid
+          in: path
+          description: 'The unique identifier of the dossier upload'
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: 'File content streamed successfully'
+          headers:
+            Content-Type:
+              description: 'The MIME type of the file'
+              schema:
+                type: string
+                example: application/pdf
+            Content-Disposition:
+              description: 'Attachment disposition with filename. Filename is generated from upload title (trimmed, validated for alphanumeric characters, slugified) or falls back to UUID if title is invalid'
+              schema:
+                type: string
+                example: 'attachment; filename=document-title.pdf'
+            Content-Length:
+              description: 'Size of the file in bytes'
+              schema:
+                type: integer
+                example: 1024000
+            FileName:
+              description: 'The filename of the downloaded file. Generated from upload title (trimmed, validated for alphanumeric characters, slugified) or falls back to UUID if title contains only special characters or is equal or shorter than 1 character'
+              schema:
+                type: string
+                example: document-title.pdf
+          content:
+            application/octet-stream:
+              schema:
+                description: 'Binary file content'
+                type: string
+                format: binary
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /dossier/paid-parental-leave:
     get:
       tags:
@@ -7404,8 +7461,8 @@ paths:
     patch:
       tags:
         - User
-      summary: 'Create Users patch Endpoint'
-      description: 'Patch endpoint to create users'
+      summary: 'Modify existing user'
+      description: 'Make changes to existing users'
       operationId: user-patch-v1-advanced
       requestBody:
         description: 'User data'
@@ -7416,6 +7473,39 @@ paths:
               $ref: '#/components/schemas/PatchUserRequestBody'
       responses:
         200:
+          description: 'User successfully created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /user/employee:
+    post:
+      tags:
+        - User
+      summary: 'Create employee user'
+      description: 'Post endpoint to create employee users'
+      operationId: user-employee-post-v1-advanced
+      requestBody:
+        description: 'User data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostEmployeeUserRequestBody'
+      responses:
+        201:
           description: 'User successfully created'
           content:
             application/json:
@@ -7646,16 +7736,6 @@ paths:
           description: "Sorts results ascending by the given option, options prefixed with '-' sort descending"
           schema:
             $ref: '#/components/schemas/GetLinkedUserSortOptions'
-        -
-          name: include
-          in: query
-          description: 'Include related resources - use comma separated values to include multiple resources'
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/GetLinkedUserIncludeOptions'
       responses:
         200:
           description: 'A list of LinkedUser records that match the given filters'
@@ -7823,7 +7903,11 @@ components:
           type: string
           nullable: true
         methodOfConsult:
-          $ref: '#/components/schemas/MethodOfConsultEnumOptions'
+          oneOf:
+            -
+              $ref: '#/components/schemas/MethodOfConsultEnumOptions'
+          nullable: true
+          description: 'The method of consultation of the appointment'
         url:
           description: "The url of the appointment in case of an 'online' appointment"
           type: string
@@ -8021,10 +8105,10 @@ components:
       description: 'The method of consultation for the appointment'
       type: string
       enum:
-        - WEB
-        - TEL
-        - LOC
-        - UNKNOWN
+        - online
+        - phone
+        - location
+        - invalid-value
     PostAuthTokenRequestBodyScopeExample:
       description: 'This is an example of how to request scopes for the bearer token'
       properties:
@@ -8962,8 +9046,14 @@ components:
           format: float
           nullable: true
         incomingDossiers:
-          description: 'Whether the employer contract receives incoming dossiers'
+          description: 'Indicate if dossiers started before the start-date are associated to this employer-contract'
           type: boolean
+          example: true
+          nullable: true
+        outgoingDossiers:
+          description: "Indicates whether tasks and dossiers from this employer remain visible in the case management portal's open tasks and dossier lists after the contract has ended (Uitloop dossier option)"
+          type: boolean
+          example: true
           nullable: true
       type: object
     PostEmployerContractRequestBody:
@@ -9033,6 +9123,11 @@ components:
           nullable: true
         incomingDossiers:
           description: 'Indicate if dossiers started before the start-date are associated to this employer-contract'
+          type: boolean
+          example: true
+          nullable: true
+        outgoingDossiers:
+          description: "Indicates whether tasks and dossiers from this employer remain visible in the case management portal's open tasks and dossier lists after the contract has ended (Uitloop dossier option)"
           type: boolean
           example: true
           nullable: true
@@ -9241,6 +9336,14 @@ components:
           $ref: '#/components/schemas/OrganizationalUnitWithoutRelations'
         contractStatus:
           $ref: '#/components/schemas/EmployerContractStatusEnumOptions'
+        incomingDossiers:
+          description: 'Indicate if dossiers started before the start-date are associated to this employer-contract'
+          type: boolean
+          example: true
+        outgoingDossiers:
+          description: "Indicates whether tasks and dossiers from this employer remain visible in the case management portal's open tasks and dossier lists after the contract has ended (Uitloop dossier option)"
+          type: boolean
+          example: true
         accountNumber:
           description: 'The administrative account number associated with the contract'
           type: string
@@ -9324,6 +9427,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Module'
+        incomingDossiers:
+          description: 'Indicate if dossiers started before the start-date are associated to this employer-contract'
+          type: boolean
+          example: true
+        outgoingDossiers:
+          description: "Indicates whether tasks and dossiers from this employer remain visible in the case management portal's open tasks and dossier lists after the contract has ended (Uitloop dossier option)"
+          type: boolean
+          example: true
         dateStart:
           description: 'The start date in YYYY-MM-DD format'
           type: string
@@ -10567,20 +10678,6 @@ components:
           type: string
           format: date
           example: '2021-12-23'
-        employmentId:
-          description: "The unique identifier of the employment, required if 'employmentKey' is omitted"
-          type: string
-          format: uuid
-          maxLength: 36
-          minLength: 36
-          example: 391b510c-1899-443b-9b72-5883ccebad1e
-        employmentKey:
-          description: "The key of the employment, required if 'employmentId' is omitted"
-          type: string
-          maxLength: 191
-          minLength: 0
-          example: EXT-DVB-354
-          nullable: true
         protocol:
           $ref: '#/components/schemas/ProtocolEnumOptions'
         dossierNumber:
@@ -10667,17 +10764,6 @@ components:
           description: 'The date the dossier started in format YYYY-MM-DD'
           type: string
           format: date
-        employmentId:
-          description: "The unique identifier of the employment, required if 'employmentKey' is omitted"
-          type: string
-          format: uuid
-          maxLength: 36
-          minLength: 36
-        employmentKey:
-          description: "The key of the employment, required if 'employmentId' is omitted"
-          type: string
-          maxLength: 191
-          minLength: 0
         protocol:
           $ref: '#/components/schemas/ProtocolEnumOptions'
         dossierNumber:
@@ -10713,6 +10799,12 @@ components:
           description: 'The date the dossier was completed in format YYYY-MM-DD'
           type: string
           format: date
+        pa:
+          description: 'Indicates if the problem analysis has been made'
+          type: boolean
+        pva:
+          description: 'Indicates if the plan of approach has been made'
+          type: boolean
       type: object
     PatchIllnessZwerdDossierRequestBody:
       properties:
@@ -10787,6 +10879,12 @@ components:
         afterRegistrationZwerd:
           description: 'Indicates if this is after ZWERD registration'
           type: boolean
+        pa:
+          description: 'Indicates if the problem analysis has been made'
+          type: boolean
+        pva:
+          description: 'Indicates if the plan of approach has been made'
+          type: boolean
       type: object
     PatchMedicalPreventiveDossierRequestBody:
       properties:
@@ -10814,15 +10912,6 @@ components:
           type: string
           format: date
           example: '2020-01-23'
-        employmentId:
-          description: 'The unique identifier of the employment associated with the medical preventive dossier.'
-          type: string
-          format: uuid
-          example: 64fd4be3-6cd8-4dae-a265-ab2453896b75
-        employmentKey:
-          description: 'The key of the employment associated with the medical preventive dossier.'
-          type: string
-          example: EXT-DVB-6468
       type: object
     PatchPaidParentalLeaveDossierRequestBody:
       required:
@@ -10855,13 +10944,6 @@ components:
           description: 'The date the dossier started in format YYYY-MM-DD'
           type: string
           format: date
-        employmentId:
-          description: "The unique identifier of the employment, required if 'employmentKey' is omitted"
-          type: string
-          format: uuid
-        employmentKey:
-          description: "The external key of the employment, required if 'employmentId' is omitted"
-          type: string
         protocol:
           $ref: '#/components/schemas/ProtocolEnumOptions'
         dossierNumber:
@@ -11000,20 +11082,6 @@ components:
           type: string
           format: date
           example: '2020-01-23'
-        employmentId:
-          description: 'The unique identifier of the employment'
-          type: string
-          format: uuid
-          maxLength: 36
-          minLength: 36
-          example: 4907e15a-112b-431d-9592-5f4868892e75
-        employmentKey:
-          description: 'The key of the employment'
-          type: string
-          maxLength: 191
-          minLength: 0
-          example: EXT-DVB-438957
-          nullable: true
         dateCompleted:
           description: 'The date the dossier was completed in format YYYY-MM-DD'
           type: string
@@ -11055,20 +11123,6 @@ components:
           description: 'The date the dossier started in format YYYY-MM-DD'
           type: string
           format: date
-        employmentId:
-          description: "The unique identifier of the employment, required if 'employmentKey' is omitted"
-          type: string
-          format: uuid
-          maxLength: 36
-          minLength: 36
-          example: d76c5058-c84f-41b5-8c2a-3380f8a6a490
-        employmentKey:
-          description: "The key of the employment, required if 'employmentId' is omitted"
-          type: string
-          maxLength: 191
-          minLength: 0
-          example: EXT-DVB-348957
-          nullable: true
         protocol:
           $ref: '#/components/schemas/ProtocolEnumOptions'
         dossierNumber:
@@ -11151,13 +11205,6 @@ components:
           description: 'The date the dossier started'
           type: string
           format: date
-        employmentId:
-          description: "The id of the employment, required if 'employmentKey' is omitted"
-          type: string
-          format: uuid
-        employmentKey:
-          description: "The key of the employment, required if 'employmentId' is omitted"
-          type: string
         dossierNumber:
           description: 'The dossier number, defaults to 0'
           type: string
@@ -11210,20 +11257,6 @@ components:
           type: string
           format: date
           example: '2020-01-23'
-        employmentId:
-          description: 'The unique identifier of the employment'
-          type: string
-          format: uuid
-          maxLength: 36
-          minLength: 36
-          example: 0df61c83-63e3-44d9-8a0d-ca76b6d78d78
-        employmentKey:
-          description: 'The key of the employment'
-          type: string
-          maxLength: 191
-          minLength: 0
-          example: DVB-4857
-          nullable: true
         payrollNumber:
           description: 'The payroll number of the employee'
           type: string
@@ -11817,10 +11850,12 @@ components:
       enum:
         - recovered
         - ill-out-of-service
+        - end-wait-period
+        - start-aow
         - passed-away
+        - start-pregnancy-leave
         - partial-recovery
         - fully-sick-again
-        - end-waiting-period
     AbsenceCourse:
       type: object
       allOf:
@@ -12572,6 +12607,12 @@ components:
           type: string
           pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
           example: '2024-12-31 18:30:00'
+        pa:
+          description: 'Indicates if the problem analysis has been made'
+          type: boolean
+        pva:
+          description: 'Indicates if the plan of approach has been made'
+          type: boolean
       type: object
     DossierSection:
       properties:
@@ -12685,29 +12726,26 @@ components:
         dateStart:
           description: 'The date when the task is scheduled to start.'
           type: string
-          format: date
+          pattern: '^\d{4}-\d{2}-\d{2}$'
           nullable: true
         dateEnd:
           description: 'The date when the task is scheduled to be completed.'
           type: string
-          format: date
+          pattern: '^\d{4}-\d{2}-\d{2}$'
           nullable: true
         dateCompleted:
           description: 'The date and time when the task is marked as completed'
           type: string
-          format: date
           pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
           nullable: true
         dateCreated:
           description: 'The date and time of the creation of the dossier-task'
           type: string
-          format: date
           pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
           nullable: true
         dateUpdated:
           description: 'The date and time of the last-update of the dossier-task'
           type: string
-          format: date
           pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
           nullable: true
       type: object
@@ -14704,7 +14742,7 @@ components:
         links:
           $ref: '#/components/schemas/PaginationLinks'
         meta:
-          $ref: '#/components/schemas/PaginationLinks'
+          $ref: '#/components/schemas/PaginationMetaInformation'
       type: object
     PatchEmploymentContractRequestBody:
       properties:
@@ -16667,9 +16705,6 @@ components:
           minLength: 0
           example: 'Opstellen Plan van Aanpak'
           nullable: true
-        templateId:
-          description: 'The template ID associated with the task.'
-          type: string
         taskType:
           $ref: '#/components/schemas/TaskTypeEnumOptions'
         taskTrigger:
@@ -16802,7 +16837,7 @@ components:
           format: email
           example: user1@mail.com
         phone:
-          description: 'The phonenumber of the user'
+          description: 'The phonenumber of the user, will be set as their mobile number'
           type: string
           example: '06123456789'
         initials:
@@ -16810,11 +16845,11 @@ components:
           type: string
           example: J.K.
         surname:
-          description: 'The lastname of the user'
+          description: 'The last name of the user'
           type: string
           example: Doe
         nickname:
-          description: 'The firstname of the user'
+          description: 'The first name of the user'
           type: string
           example: Jan
         prefix:
@@ -16870,7 +16905,7 @@ components:
           format: date
           nullable: true
         employerId:
-          description: 'The unique identifier of the employer for assigning the user to a specific employer'
+          description: 'The unique identifier of the employer for assigning the user to a specific employer. Only applicable for employer users'
           type: string
           format: uuid
         belongsToEmployeeId:
@@ -16893,8 +16928,60 @@ components:
           description: 'SSO key unique in scope for partner/employer sso solution, not globally unique'
           type: string
           example: nfr5ffg8jdnksDf3
+        welcomeEmailSent:
+          description: "Marking this 'false' triggers (re)sending of the welcome email to the user and sets the value back to 'true' once the email is sent. User has to have system access and start date of the account must be today or in the past. If start date is in the future then the user will receive the email on that day."
+          type: boolean
+          example: true
         person:
           $ref: '#/components/schemas/UserPerson'
+      type: object
+    PostEmployeeUserRequestBody:
+      properties:
+        externalkey:
+          description: 'The key known in an external system to identify the user'
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: 98798779@12
+          nullable: true
+        username:
+          type: string
+          maxLength: 191
+          minLength: 1
+          example: my-username
+        active:
+          description: 'Indication if the user account is active'
+          type: boolean
+          example: true
+        hasSystemAccess:
+          description: 'Indicates whether the user is allowed to log in to the system. For example, machine users may not require login access.'
+          type: boolean
+          example: false
+        dateStart:
+          description: 'The startdate of the user account in format YYYY-MM-DD. Defaults to NOW()'
+          type: string
+          format: date
+        dateEnd:
+          description: 'The end date of the user account in format YYYY-MM-DD. Defaults to NULL'
+          type: string
+          format: date
+          nullable: true
+        employeeId:
+          description: 'The unique identifier of an employee for generating personalia from employee data'
+          type: string
+          format: uuid
+        employeeKey:
+          description: 'Key of an employee for generating personalia from employee data'
+          type: string
+          example: employee-unique-key
+        ssoKey:
+          description: 'SSO key unique in scope for partner/employer sso solution, not globally unique'
+          type: string
+          example: nfr5ffg8jdnksDf3
+        sendWelcomeEmail:
+          description: "By default no email is sent to new users to invite them to set up their account (set password and 2FA). Set this property to 'true' to automatically send the invitation email but ssoKey must be null."
+          type: boolean
+          example: true
       type: object
     PostUserRequestBody:
       properties:
@@ -16958,7 +17045,7 @@ components:
           type: string
           example: nfr5ffg8jdnksDf3
         sendWelcomeEmail:
-          description: "By default no email is sent to new users to invite them to set up their account (set password and 2FA). Set this property to 'true' to automatically send the invitation email"
+          description: "By default no email is sent to new users to invite them to set up their account (set password and 2FA). Set this property to 'true' to automatically send the invitation email. An email is only sent if the user has system access and the start date is today or is in the past. A nightly job invites users on the appropriate date, unless this property is set to false."
           type: boolean
           example: true
         person:
@@ -17077,11 +17164,6 @@ components:
         - '-dateUpdated'
         - dateCreated
         - '-dateCreated'
-    GetLinkedUserIncludeOptions:
-      type: string
-      enum:
-        - fromUser
-        - toUser
     PostLinkedUserResponseBody:
       allOf:
         -
@@ -17298,11 +17380,14 @@ components:
         welcomeEmailSent:
           description: 'Indicates if an email was sent to the user to setup their account'
           type: boolean
+        hasSystemAccess:
+          description: 'Indicates whether the user is allowed to log in to the system.'
+          type: boolean
         fullyAuthorized:
           description: 'Indicates if the user has root authorization which supersedes all other authorizations'
           type: boolean
         isActive:
-          description: 'Indicates if the user is active'
+          description: "Indicates if the user is active. Combines checks on the 'active', 'hasSystemAccess' and 'isDeleted' properties as well as the 'dateStart' and 'dateEnd' properties"
           type: boolean
         isDeleted:
           description: 'Indicates if the user is deleted'

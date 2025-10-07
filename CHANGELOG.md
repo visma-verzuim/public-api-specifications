@@ -3,12 +3,29 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
-/*
-2025-09-01 - Public API: OrgUnitResource 'company' is nullable (VV-8358) (#4295)
-2025-08-28 - Removed absenceCourse from patch and post dossier task, updated documentation (vv-8251) (#4233)
-2025-08-27 - Public API: add 'billable-operation' include to GET dossier-task (VV-8337) (#4277)
-2025-08-27 - PATCH AbsenceCourse can update externalkey (VV-8195) (#4271)
-*/
+## Release October 2025
+
+### Added
+- `POST` `User` endpoint for creating `Employee` users (VV-8080)
+- `GET` `DossierContent` endpoint for retrieving `Upload` content (VV-7998)
+
+### Changed
+- `GET` `Task` - removed 'templateId' property from response (VV-8391)
+- `POST` and `PATCH` `OrganizationalUnit` - fixed misleading validation error for `visitAddress` (VV-8395)
+- `POST` and `PATCH` `EmployerContract` now allows setting `outgoingDossiers` (VV-8257)
+- `PATCH` `Dossier` endpoints no longer allow `employmentId` and `employmentKey` properties to be set (VV-7704)
+- `POST` `OrganizationalUnit` now correctly stores the `payrollTaxIdentificationNumber` (loonheffingsnummer) property (VV-8423)
+- `PATCH` `Dossier` - some endpoints now allow nulling certain dates (VV-7703)
+- `GET` `LinkedUser` now includes the `toUser` and `fromUser` relations by default (VV-8201)
+- `PATCH` `Dossier` - `illness` and `illness-plus-zwerd` endpoints now allow updating the `pa` and `pva` properties (VV-8330)
+- `GET` `Appointments` endpoint received performance improvements for large datasets (VV-8519)
+- `PATCH` `User` endpoints now allow changing `welcomeEmailSent` (VV-7712)
+- A mechanism was implemented to add `Deprecated` and `Sunset` headers to endpoints that are deprecated or scheduled for removal (VV-8140)
+
+### Documentation
+- `GET` `EmploymentType` endpoint now returns the correct schema for the `meta` response property (VV-8572)
+- The API-management version of the documentation shows optional `Deprecated` and `Sunset` headers for endpoints that are deprecated or scheduled for removal (VV-8139)
+
 
 ## Release September 2025
 
