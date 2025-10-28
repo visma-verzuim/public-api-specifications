@@ -3,6 +3,16 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Release October 28th 2025
+
+### Changed
+- `POST` `Employer` takes (a lot) less time to complete, further improvements are coming (VV-8556)
+- `POST` `ContactPerson` no longer mixes up `firstName` and `lastName` properties (VV-8377)
+
+### Documentation
+- `POST` `OrganizationalUnit` request body now correctly shows `dateStart` and `dateEnd`, these are removed from `company` (VV-8738)
+
+
 ## Release October 2025
 
 ### Added

@@ -65,6 +65,134 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /agenda/billable/availabilities:
+    get:
+      tags:
+        - Agenda
+        - BillableAvailability
+      summary: 'Get a list of billable availabilities'
+      operationId: agenda-billable-availabilities-get-v1-ultimate
+      parameters:
+        -
+          name: 'filter[id]'
+          in: query
+          description: 'Filter by the unique identifier of a billable availability'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[userId]'
+          in: query
+          description: 'Filter by the user ID'
+          schema:
+            type: integer
+        -
+          name: 'filter[employerId]'
+          in: query
+          description: 'Filter by the employer ID'
+          schema:
+            type: integer
+        -
+          name: 'filter[organizationalUnitId]'
+          in: query
+          description: 'Filter by the organizational unit ID'
+          schema:
+            type: integer
+        -
+          name: 'filter[scheduleUuid]'
+          in: query
+          description: 'Filter by the schedule UUID'
+          schema:
+            type: string
+        -
+          name: 'filter[billingCode]'
+          in: query
+          description: 'Filter by the billing code'
+          schema:
+            type: string
+        -
+          name: 'filter[dateFrom]'
+          in: query
+          description: 'Filter by availabilities from this date onwards'
+          schema:
+            type: string
+            format: date
+        -
+          name: 'filter[dateUntil]'
+          in: query
+          description: 'Filter by availabilities up to this date'
+          schema:
+            type: string
+            format: date
+        -
+          name: 'filter[dateCreatedFrom]'
+          in: query
+          description: 'Filter by records created from this date'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: 'filter[dateCreatedUntil]'
+          in: query
+          description: 'Filter by records created up to this date'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: 'filter[dateUpdatedFrom]'
+          in: query
+          description: 'Filter by records updated from this date'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: 'filter[dateUpdatedUntil]'
+          in: query
+          description: 'Filter by records updated up to this date'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: 'filter[isRootRecord]'
+          in: query
+          description: 'Filter by root records (true) or mutations (false)'
+          schema:
+            type: boolean
+        -
+          name: sort
+          in: query
+          description: "Sort results by the given field, use '-' as prefix to sort descending"
+          schema:
+            $ref: '#/components/schemas/GetBillableAvailabilitiesSortOptions'
+        -
+          name: include
+          in: query
+          description: 'Include the related resources - use comma separated values to include multiple resources'
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetBillableAvailabilitiesIncludeOptions'
+      responses:
+        200:
+          description: 'A list of billable availabilities'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBillableAvailabilitiesResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /appointment:
     get:
       tags:
@@ -7852,6 +7980,41 @@ components:
           minLength: 0
           example: false
       type: object
+    GetBillableAvailabilitiesResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BillableAvailabilityResource'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetBillableAvailabilitiesSortOptions:
+      type: string
+      enum:
+        - date
+        - '-date'
+        - timeStart
+        - '-timeStart'
+        - timeEnd
+        - '-timeEnd'
+        - minutesDelta
+        - '-minutesDelta'
+        - dateCreated
+        - '-dateCreated'
+        - dateUpdated
+        - '-dateUpdated'
+    GetBillableAvailabilitiesIncludeOptions:
+      type: string
+      enum:
+        - user
+        - createdBy
+        - parentAvailability
+        - mutations
+        - employer
+        - organizationalUnit
     AppointmentStatusEnumOptions:
       description: 'The status of the appointment'
       type: string
@@ -8100,6 +8263,113 @@ components:
         isActive:
           description: 'Indicates if the user is active'
           type: boolean
+      type: object
+    BillableAvailabilityCollection:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BillableAvailabilityResource'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    BillableAvailabilityResource:
+      properties:
+        id:
+          description: 'The unique identifier of the billable availability'
+          type: string
+          format: uuid
+        date:
+          description: 'The date of the availability'
+          type: string
+          format: date
+          example: '2025-10-13'
+        timeStart:
+          description: 'The start time of the availability'
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+          example: '2025-10-13 09:00:00'
+        timeEnd:
+          description: 'The end time of the availability'
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+          example: '2025-10-13 17:00:00'
+        minutesDelta:
+          description: 'The minutes delta for this availability record'
+          type: integer
+        userId:
+          description: 'The ID of the user this availability belongs to'
+          type: integer
+        employerId:
+          description: 'The ID of the employer'
+          type: integer
+        employerName:
+          description: 'The name of the employer'
+          type: string
+        organizationalUnitId:
+          description: 'The ID of the organizational unit'
+          type: integer
+        organizationalUnitName:
+          description: 'The name of the organizational unit'
+          type: string
+        scheduleUuid:
+          description: 'The UUID of the schedule'
+          type: string
+        scheduleName:
+          description: 'The name of the schedule'
+          type: string
+        billingCode:
+          description: 'The billing code for this availability'
+          type: string
+        parentAvailabilityId:
+          description: 'The ID of the parent availability if this is a mutation'
+          type: integer
+          nullable: true
+        isRootRecord:
+          description: 'Whether this is a root record (not a mutation)'
+          type: boolean
+        isMutation:
+          description: 'Whether this is a mutation of another record'
+          type: boolean
+        originalDurationMinutes:
+          description: 'The original duration in minutes between start and end time'
+          type: integer
+        totalMinutesDelta:
+          description: 'The total minutes delta including all mutations'
+          type: integer
+        finalEffectiveMinutes:
+          description: 'The final effective minutes considering original duration and all mutations'
+          type: integer
+        createdBy:
+          description: 'The ID of the user who created this record'
+          type: integer
+        dateCreated:
+          description: 'The date and time the record was created'
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+          example: '2025-10-13 12:00:00'
+        dateUpdated:
+          description: 'The date and time the record was last updated'
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+          example: '2025-10-13 12:00:00'
+        user:
+          $ref: '#/components/schemas/UserResource'
+        createdByUser:
+          $ref: '#/components/schemas/UserResource'
+        employer:
+          $ref: '#/components/schemas/Employer'
+        organizationalUnit:
+          $ref: '#/components/schemas/OrganizationalUnit'
+        parentAvailability:
+          $ref: '#/components/schemas/BillableAvailabilityResource'
+        mutations:
+          description: 'The mutations of this availability record'
+          type: array
+          items:
+            $ref: '#/components/schemas/BillableAvailabilityResource'
       type: object
     MethodOfConsultEnumOptions:
       description: 'The method of consultation for the appointment'
@@ -16083,6 +16353,14 @@ components:
           type: string
         company:
           $ref: '#/components/schemas/PostOrganizationalUnitRequestBodyCompanyData'
+        dateStart:
+          description: "Start date, defaults to today's date if not provided"
+          type: string
+          format: date
+        dateEnd:
+          description: 'End date'
+          type: string
+          format: date
       type: object
     PostOrganizationalUnitRequestBodyCompanyData:
       properties:
@@ -16124,14 +16402,6 @@ components:
           $ref: '#/components/schemas/OrganizationalUnitAddress'
         communications:
           $ref: '#/components/schemas/OrganizationalUnitCommunication'
-        dateStart:
-          description: 'Start date, defaults to '
-          type: string
-          format: date
-        dateEnd:
-          description: 'End date'
-          type: string
-          format: date
       type: object
     LegalFormEnumOptions:
       type: string
@@ -17428,6 +17698,12 @@ tags:
   -
     name: 'Absence Reasons'
     description: 'Absence Reasons'
+  -
+    name: Agenda
+    description: Agenda
+  -
+    name: BillableAvailability
+    description: BillableAvailability
   -
     name: Appointments
     description: Appointments
