@@ -3,6 +3,12 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Update November 11th 2025
+### Added
+- `GET` `BillableAvailability` is now officially available (VV-8569)
+- `GET` `BillableOperation` has a new `executedBy` include to retrieve the user who executed the operation (VV-8642)
+- `GET` `Appointment` has a new `billing` include which exposes billing information for the appointment and the schedule it belongs to (VV-8710)
+
 ## Release October 28th 2025
 
 ### Changed
