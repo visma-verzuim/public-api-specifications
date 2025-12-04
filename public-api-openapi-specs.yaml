@@ -3732,11 +3732,11 @@ paths:
               $ref: '#/components/schemas/GetMedicalDossierIncludeOptions'
       responses:
         200:
-          description: 'A list of pregnancy dossiers'
+          description: 'A list of medical dossiers'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetPregnancyDossierResponse'
+                $ref: '#/components/schemas/GetMedicalDossierResponse'
         400:
           description: 'Bad Request'
           content:
@@ -8763,6 +8763,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Dossier'
+        links:
+          $ref: '#/components/schemas/PaginationLinks'
+        meta:
+          $ref: '#/components/schemas/PaginationMetaInformation'
+      type: object
+    GetMedicalDossierResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MedicalDossier'
         links:
           $ref: '#/components/schemas/PaginationLinks'
         meta:
