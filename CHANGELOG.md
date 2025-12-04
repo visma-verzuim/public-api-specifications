@@ -3,6 +3,26 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Release December 2025
+
+### Added
+- Added a new `GET` `/dossier/medical` endpoint to retrieve only medical dossiers (VV-8818)
+
+### Changed
+- `PATCH` `DossierUpload` endpoint now allows nullifying the `externalKey` property (VV-6154)
+- `GET` `Dossier` endpoints have a new `diagnoses` include to retrieve diagnoses information for dossiers that have them (VV-8818)
+- `GET` `Appointment` endpoint now includes `isAnonymous` and `cancellationReason` properties in its response (VV-8948)
+- `GET` `Operation` endpoint `shortCode` has been renamed to `appointmentBillingCode` for clarity, new `isForAppointment` property added (VV-8965)
+- `GET` `/dossier/illness` endpoint has new `medicalDossier` and/or `medicalDossier.diagnoses` includes to retrieve a related medical dossier and optionally its diagnoses (VV-8818)
+
+### Fixed
+- `POST` `Employer` requests now correctly create `OrganizationalUnitTypes` with UUIDs (VV-8836)
+- Duplicating a `ContractType` in the Admin portal now correctly generates a new unique UUID for the duplicate (VV-8884)
+- `PATCH` `Employer` no longer crashes with address-related errors in certain scenarios (VV-8964)
+
+### Documentation
+- `GET` `Operation` endpoint documentation filters added for `isAnonymous` and `forAppointment` (VV-8965)
+
 ## Update November 11th 2025
 ### Added
 - `GET` `BillableAvailability` is now officially available (VV-8569)
