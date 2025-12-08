@@ -3639,6 +3639,276 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerErrorResponse'
+  /dossier/illness:
+    get:
+      tags:
+        - Dossier
+      summary: 'Get a list of Illness dossiers'
+      operationId: dossier-illness-get-v1-essential
+      parameters:
+        -
+          name: 'filter[id]'
+          in: query
+          description: 'Filter by ID to get a specific dossier'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[dossierId]'
+          in: query
+          description: 'Filter by the ID of a specific dossier'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[externalKey]'
+          in: query
+          description: 'Filter by external key'
+          schema:
+            type: string
+        -
+          name: 'filter[employmentId]'
+          in: query
+          description: 'Filter by the ID of a specific employment'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[employmentNumber]'
+          in: query
+          description: 'Filter by the employment number'
+          schema:
+            type: string
+        -
+          name: 'filter[dateUpdatedFrom]'
+          in: query
+          description: 'Filter by the update date + time (YYYY-MM-DD HH:MM:SS)'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: 'filter[dateStart]'
+          in: query
+          description: 'Filter by the start date'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+        -
+          name: 'filter[dateEnd]'
+          in: query
+          description: 'Filter by the end date'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+        -
+          name: 'filter[dateUpdatedUntil]'
+          in: query
+          description: 'Filter up to (and including) the update date + time (YYYY-MM-DD HH:MM:SS)'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: sort
+          in: query
+          description: "Sort results by startDate, externalKey or dateUpdated, prefix with '-' to sort descending"
+          schema:
+            $ref: '#/components/schemas/GetDossierSortOptions'
+        -
+          name: include
+          in: query
+          description: 'Include the related resources - use comma separated values to include multiple resources'
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetIllnessDossierIncludeOptions'
+      responses:
+        200:
+          description: 'A list of Illness Dossiers'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetIllnessDossierResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: 'Update a illness dossier'
+      description: 'This endpoint is used to update a new illness dossier.'
+      operationId: dossier-illness-patch-v1-essential
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchIllnessRequestBody'
+      responses:
+        200:
+          description: 'Dossier successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IllnessDossier'
+        400:
+          description: 'Invalid input'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+  /dossier/illness-and-zwerd:
+    get:
+      tags:
+        - Dossier
+      summary: 'Get a list of Illness and ZW ERD dossiers'
+      operationId: dossier-illnessandzwerd-get-v1-essential
+      parameters:
+        -
+          name: 'filter[id]'
+          in: query
+          description: 'Filter by ID to get a specific dossier'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[dossierId]'
+          in: query
+          description: 'Filter by the ID of a specific dossier'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[externalKey]'
+          in: query
+          description: 'Filter by external key'
+          schema:
+            type: string
+        -
+          name: 'filter[employmentId]'
+          in: query
+          description: 'Filter by the ID of a specific employment'
+          schema:
+            type: string
+            format: uuid
+        -
+          name: 'filter[employmentNumber]'
+          in: query
+          description: 'Filter by the employment number'
+          schema:
+            type: string
+        -
+          name: 'filter[dateUpdatedFrom]'
+          in: query
+          description: 'Filter by the update date + time (YYYY-MM-DD HH:MM:SS)'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: 'filter[dateStart]'
+          in: query
+          description: 'Filter by the start date'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+        -
+          name: 'filter[dateEnd]'
+          in: query
+          description: 'Filter by the end date'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+        -
+          name: 'filter[dateUpdatedUntil]'
+          in: query
+          description: 'Filter up to (and including) the update date + time (YYYY-MM-DD HH:MM:SS)'
+          schema:
+            type: string
+            pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+        -
+          name: sort
+          in: query
+          description: "Sort results by startDate, externalKey or dataUpdated use '-' as prefrix to sort descending"
+          schema:
+            $ref: '#/components/schemas/GetDossierSortOptions'
+        -
+          name: include
+          in: query
+          description: 'Include the related resources - use comma separated values to include multiple resources'
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetDossierIncludeOptions'
+      responses:
+        200:
+          description: 'A list of Illness and ZW-ERD Dossiers'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetZwerdDossierResponse'
+        400:
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+    patch:
+      tags:
+        - Dossier
+      summary: 'Update a illness and Zwerd dossier'
+      description: 'This endpoint is used to update a Illness and Zwerd dossier.'
+      operationId: dossier-illnessandzwerd-patch-v1-essential
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchIllnessZwerdDossierRequestBody'
+      responses:
+        200:
+          description: 'Dossier successfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dossier'
+        400:
+          description: 'Invalid input'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+        500:
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
   /dossier/medical:
     get:
       tags:
@@ -4861,72 +5131,6 @@ paths:
                 $ref: '#/components/schemas/PublicApiPatchResponse'
         400:
           description: 'Bad Request'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        500:
-          description: 'Server error'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /dossier/illness:
-    patch:
-      tags:
-        - Dossier
-      summary: 'Update a illness dossier'
-      description: 'This endpoint is used to update a new illness dossier.'
-      operationId: dossier-illness-patch-v1-essential
-      requestBody:
-        description: 'Dossier data'
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchIllnessRequestBody'
-      responses:
-        200:
-          description: 'Dossier successfully updated'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/IllnessDossier'
-        400:
-          description: 'Invalid input'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestResponse'
-        500:
-          description: 'Server error'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerErrorResponse'
-  /dossier/illness-and-zwerd:
-    patch:
-      tags:
-        - Dossier
-      summary: 'Update a illness and Zwerd dossier'
-      description: 'This endpoint is used to update a Illness and Zwerd dossier.'
-      operationId: dossier-illnessandzwerd-patch-v1-essential
-      requestBody:
-        description: 'Dossier data'
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchIllnessZwerdDossierRequestBody'
-      responses:
-        200:
-          description: 'Dossier successfully updated'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Dossier'
-        400:
-          description: 'Invalid input'
           content:
             application/json:
               schema:
@@ -10916,6 +11120,17 @@ components:
         meta:
           $ref: '#/components/schemas/PaginationMetaInformation'
       type: object
+    GetIllnessDossierIncludeOptions:
+      type: string
+      enum:
+        - absenceCourses
+        - employment
+        - nursingAddress
+        - medicalDossier
+        - medicalDossier.diagnoses
+      allOf:
+        -
+          $ref: '#/components/schemas/GetDossierIncludeOptions'
     GetMedicalDossierIncludeOptions:
       type: string
       enum:
