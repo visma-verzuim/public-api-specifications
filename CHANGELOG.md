@@ -3,6 +3,27 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Release January 2026
+
+### Added
+- `POST` requests' `Content-Type` header is now validated according to RFC9110 (VV-8867)
+- `GET` `EmployerDivision` endpoint now supports `parent` and `children` relations and filters (VV-8997)
+- `GET` `Operation` endpoint now has `dateUpdated` filters (VV-9109)
+- `GET` `Dossier` endpoint has new `organizationalUnit` and `organizationalUnit.employer` includes for `Company` dossiers (VV-8670)
+- `GET` `user/employer` endpoint now supports filtering by `employerId` (VV-8958)
+
+### Fixed
+- `GET` `Employee` endpoint no longer crashes when the `currentOrLastEmploymentContract` include is used (VV-7692)
+- `GET` `dossier/content` `Note` and `Document` endpoints now show concept content (VV-9137)
+- `GET` `EmployerContract` endpoint now correctly honors root-level authorizations (VV-8992)
+- `Employment` resource - `dateSeniority` now correctly returns a `date` instead of `datetime` to match OpenAPI specification (VV-9170)
+
+### Documentation
+- Fixes for `GET` `dossier/medical` and `illness` endpoints (VV-8987)
+- Documentation now lists `page` parameters for all `GET` requests for pagination (VV-9114)
+- Improved consistency for nullability of `dateEnd` (VV-9147)
+- `POST` and `PATCH` responses are now wrapped in response envelope so the documentation matches real API responses (VV-8069)
+
 ## Release December 2025
 
 ### Added
