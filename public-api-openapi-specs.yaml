@@ -47,9 +47,9 @@ paths:
           schema:
             $ref: '#/components/schemas/GetAbsenceReasonSortOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of absence reasons that match the given filters'
@@ -140,9 +140,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetAppointmentIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of appointments'
@@ -275,9 +275,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetBillableAvailabilitiesIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of billable availabilities'
@@ -420,9 +420,9 @@ paths:
           schema:
             type: boolean
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of available arbo roles'
@@ -469,9 +469,9 @@ paths:
           schema:
             type: string
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of company doctors'
@@ -575,9 +575,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetContactPersonIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of contact persons matching the query parameters.'
@@ -814,9 +814,9 @@ paths:
           schema:
             $ref: '#/components/schemas/GetContractTypeSortOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of contract types'
@@ -880,7 +880,7 @@ paths:
           schema:
             type: string
             format: date-time-offset
-          example: '2024-01-01T12:34:56+01:00'
+          example: '2024-01-01 12:34:56'
         -
           name: 'filter[dateStartUntil]'
           in: query
@@ -888,7 +888,7 @@ paths:
           schema:
             type: string
             format: date-time-offset
-          example: '2024-01-01T12:34:56+01:00'
+          example: '2024-01-01 12:34:56'
         -
           name: 'filter[dateUpdatedFrom]'
           in: query
@@ -896,7 +896,7 @@ paths:
           schema:
             type: string
             format: date-time-offset
-          example: '2024-01-01T12:34:56+01:00'
+          example: '2024-01-01 12:34:56'
         -
           name: 'filter[dateUpdatedUntil]'
           in: query
@@ -904,7 +904,7 @@ paths:
           schema:
             type: string
             format: date-time-offset
-          example: '2024-01-01T12:34:56+01:00'
+          example: '2024-01-01 12:34:56'
         -
           name: 'filter[dateEndFrom]'
           in: query
@@ -919,7 +919,7 @@ paths:
           schema:
             type: string
             format: date-time-offset
-          example: '2024-01-01T12:34:56+01:00'
+          example: '2024-01-01 12:34:56'
         -
           name: 'filter[dateEndUntil]'
           in: query
@@ -927,7 +927,7 @@ paths:
           schema:
             type: string
             format: date-time-offset
-          example: '2024-01-01T12:34:56+01:00'
+          example: '2024-01-01 12:34:56'
         -
           name: 'filter[status]'
           in: query
@@ -945,9 +945,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetEmployerContractIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of employer contracts'
@@ -1063,9 +1063,9 @@ paths:
           schema:
             type: string
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of modules that can be applied to employer contracts'
@@ -1131,9 +1131,9 @@ paths:
           schema:
             $ref: '#/components/schemas/GetPartnershipSortOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of partnerships'
@@ -1174,9 +1174,9 @@ paths:
           schema:
             type: boolean
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of service types'
@@ -1270,6 +1270,10 @@ paths:
             type: string
           example: verzuimverloop-1234.03
         -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKey'
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKeyIsEmpty'
+        -
           name: 'filter[employeeId]'
           in: query
           description: 'Filter by the unique identifier of a specific employee'
@@ -1307,7 +1311,7 @@ paths:
           schema:
             type: string
             format: date-time-offset
-          example: '2024-01-01T12:34:56+01:00'
+          example: '2024-01-01 12:34:56'
         -
           name: 'filter[dateStartUntil]'
           in: query
@@ -1315,7 +1319,7 @@ paths:
           schema:
             type: string
             format: date-time-offset
-          example: '2024-01-01T12:34:56+01:00'
+          example: '2024-01-01 12:34:56'
         -
           name: 'filter[dateEndFrom]'
           in: query
@@ -1323,7 +1327,7 @@ paths:
           schema:
             type: string
             format: date-time-offset
-          example: '2024-01-01T12:34:56+01:00'
+          example: '2024-01-01 12:34:56'
         -
           name: 'filter[dateEndUntil]'
           in: query
@@ -1331,7 +1335,7 @@ paths:
           schema:
             type: string
             format: date-time-offset
-          example: '2024-01-01T12:34:56+01:00'
+          example: '2024-01-01 12:34:56'
         -
           name: 'filter[dateUpdatedFrom]'
           in: query
@@ -1339,7 +1343,7 @@ paths:
           schema:
             type: string
             format: date-time-offset
-          example: '2024-01-01T12:34:56+01:00'
+          example: '2024-01-01 12:34:56'
         -
           name: 'filter[dateUpdatedUntil]'
           in: query
@@ -1347,7 +1351,7 @@ paths:
           schema:
             type: string
             format: date-time-offset
-          example: '2024-01-01T12:34:56+01:00'
+          example: '2024-01-01 12:34:56'
         -
           name: sort
           in: query
@@ -1365,9 +1369,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetAbsenceCourseIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of AbsenceCourses'
@@ -1572,9 +1576,9 @@ paths:
           schema:
             type: boolean
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of document types'
@@ -1659,9 +1663,9 @@ paths:
           schema:
             type: boolean
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of note types'
@@ -1753,9 +1757,9 @@ paths:
           schema:
             type: boolean
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of upload types'
@@ -1895,9 +1899,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetDossierContentDocumentIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of documents'
@@ -2132,9 +2136,9 @@ paths:
           schema:
             $ref: '#/components/schemas/GetDossierExternalResourceSortOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A List of Dossier external resources that match the given filters'
@@ -2386,9 +2390,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetDossierContentNoteIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of notes'
@@ -2619,9 +2623,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetDossierContentUploadIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of uploads'
@@ -2862,9 +2866,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetDossierTaskIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of dossier tasks'
@@ -3018,6 +3022,10 @@ paths:
           schema:
             type: string
         -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKey'
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKeyIsEmpty'
+        -
           name: 'filter[employmentId]'
           in: query
           description: 'Filter by the unique identifier of a specific employment'
@@ -3074,9 +3082,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetDossierIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of birth leave dossiers'
@@ -3189,6 +3197,10 @@ paths:
           schema:
             type: string
         -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKey'
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKeyIsEmpty'
+        -
           name: 'filter[type]'
           in: query
           description: 'Filter by the dossier type'
@@ -3252,9 +3264,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetDossierIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of Dossiers'
@@ -3299,6 +3311,10 @@ paths:
           description: 'Filter by external key'
           schema:
             type: string
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKey'
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKeyIsEmpty'
         -
           name: 'filter[employmentId]'
           in: query
@@ -3459,6 +3475,10 @@ paths:
           description: 'Filter by external key'
           schema:
             type: string
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKey'
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKeyIsEmpty'
         -
           name: 'filter[employmentId]'
           in: query
@@ -3645,9 +3665,9 @@ paths:
           schema:
             $ref: '#/components/schemas/DossierTypeEnumOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of dossier sections'
@@ -3809,9 +3829,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetIllnessDossierIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of Illness Dossiers'
@@ -3890,6 +3910,10 @@ paths:
           description: 'Filter by external key'
           schema:
             type: string
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKey'
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKeyIsEmpty'
         -
           name: 'filter[employmentId]'
           in: query
@@ -4033,6 +4057,10 @@ paths:
           schema:
             type: string
         -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKey'
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKeyIsEmpty'
+        -
           name: 'filter[employmentId]'
           in: query
           description: 'Filter by the unique identifier of a specific employment'
@@ -4090,9 +4118,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetMedicalDossierIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of medical dossiers'
@@ -4197,9 +4225,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetDossierIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of paid parental leave dossiers'
@@ -4311,6 +4339,10 @@ paths:
           schema:
             type: string
         -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKey'
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKeyIsEmpty'
+        -
           name: 'filter[employmentId]'
           in: query
           description: 'Filter by the unique identifier of a specific employment'
@@ -4368,9 +4400,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetDossierIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of pregnancy dossiers'
@@ -4570,9 +4602,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetDossierIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of Spoor-2 Dossiers'
@@ -4684,6 +4716,10 @@ paths:
           schema:
             type: string
         -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKey'
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKeyIsEmpty'
+        -
           name: 'filter[employmentId]'
           in: query
           description: 'Filter by the unique identifier of a specific employment'
@@ -4741,9 +4777,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetDossierIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of ZW-ERD Dossiers'
@@ -5410,9 +5446,9 @@ paths:
           schema:
             type: string
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of Dossier Officers'
@@ -5484,6 +5520,10 @@ paths:
           schema:
             type: string
         -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKey'
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKeyIsEmpty'
+        -
           name: 'filter[employmentId]'
           in: query
           description: 'Filter by the unique identifier of a specific employment'
@@ -5528,9 +5568,9 @@ paths:
           schema:
             $ref: '#/components/schemas/GetEmployeeSortOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of Employees'
@@ -5709,9 +5749,9 @@ paths:
             type: string
           example: arbo-123
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of available arbo services'
@@ -5792,9 +5832,9 @@ paths:
           schema:
             $ref: '#/components/schemas/GetEmployerSortOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of employers that match the given filters'
@@ -5932,9 +5972,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetEmployerDivisionIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of employer divisions that match the given filters'
@@ -6005,9 +6045,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetEmployerRoleIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of available employer roles'
@@ -6118,6 +6158,10 @@ paths:
           schema:
             type: string
         -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKey'
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKeyIsEmpty'
+        -
           name: 'filter[employmentId]'
           in: query
           description: 'Filter by the unique identifier of the employment'
@@ -6215,9 +6259,9 @@ paths:
           schema:
             $ref: '#/components/schemas/GetEmploymentContractResourceSortOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of Employment Contracts'
@@ -6323,6 +6367,10 @@ paths:
           schema:
             type: string
           example: c84563d5-2fd8-4c02-b329-f2f9142e7c23
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKey'
+        -
+          $ref: '#/components/parameters/GetRequestFilterMigrationKeyIsEmpty'
         -
           name: 'filter[employeeId]'
           in: query
@@ -6437,9 +6485,9 @@ paths:
             $ref: '#/components/schemas/GetEmploymentSortOptions'
           example: '-dateUpdated'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of Employments'
@@ -6556,9 +6604,9 @@ paths:
           schema:
             type: boolean
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of EmploymentTypes'
@@ -6665,9 +6713,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetExternalSupervisorIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of external supervisors'
@@ -6760,9 +6808,9 @@ paths:
           schema:
             $ref: '#/components/schemas/GetOperationSortOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of operations'
@@ -6881,9 +6929,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetBillableOperationIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of Operationable entities'
@@ -7069,9 +7117,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetOrganizationalUnitIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of organization units that match the given filters'
@@ -7148,9 +7196,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetOrganizationalUnitTypeIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of organization unit types that match the given filters'
@@ -7265,9 +7313,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetTaskIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of Task entities'
@@ -7616,9 +7664,9 @@ paths:
             items:
               $ref: '#/components/schemas/GetUserIncludeOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of Users'
@@ -8248,9 +8296,9 @@ paths:
           schema:
             $ref: '#/components/schemas/GetLinkedUserSortOptions'
         -
-          $ref: '#/components/parameters/PageNumber'
+          $ref: '#/components/parameters/GetRequestPageNumber'
         -
-          $ref: '#/components/parameters/PageSize'
+          $ref: '#/components/parameters/GetRequestPageSize'
       responses:
         200:
           description: 'A list of LinkedUser records that match the given filters'
@@ -8759,24 +8807,9 @@ components:
         minutesDelta:
           description: 'The minutes delta for this availability record'
           type: integer
-        userId:
-          description: 'The ID of the user this availability belongs to'
-          type: string
-          format: uuid
-          example: 40b03a3c-e304-4b8f-b4ae-562b315e36f2
-        employerId:
-          description: 'The ID of the employer'
-          type: string
-          format: uuid
-          example: 40b03a3c-e304-4b8f-b4ae-562b315e36f2
         employerName:
           description: 'The name of the employer'
           type: string
-        organizationalUnitId:
-          description: 'The ID of the organizational unit'
-          type: string
-          format: uuid
-          example: 40b03a3c-e304-4b8f-b4ae-562b315e36f2
         organizationalUnitName:
           description: 'The name of the organizational unit'
           type: string
@@ -8791,12 +8824,6 @@ components:
         billingCode:
           description: 'The billing code for this availability'
           type: string
-        parentAvailabilityId:
-          description: 'The ID of the parent availability if this is a mutation'
-          type: string
-          format: uuid
-          example: 40b03a3c-e304-4b8f-b4ae-562b315e36f2
-          nullable: true
         isRootRecord:
           description: 'Whether this is a root record (not a mutation)'
           type: boolean
@@ -8808,9 +8835,6 @@ components:
           type: integer
         billableDurationMinutes:
           description: "Requires the 'mutations' include. The total minutes to be billed. The sum of the original duration +/- all mutations"
-          type: integer
-        createdBy:
-          description: 'The ID of the user who created this record'
           type: integer
         dateCreated:
           description: 'The date and time the record was created'
@@ -9148,6 +9172,47 @@ components:
             data:
               $ref: '#/components/schemas/PublicApiResponseBodyDataExample'
           type: object
+    PatchRequestPropertyKey:
+      description: "An identifier provided by an external system that uniquely specifies the resource to be updated. This key serves as an alternative to the 'id' or `migrationKeyId` field for referencing a unique resource. Identifiers are mutually exclusive; only one is allowed in a request."
+      type: string
+      maxLength: 191
+      minLength: 0
+      example: resource@identifier-in-source-system
+      nullable: true
+    PatchRequestPropertyMigrationKeyId:
+      description: 'Alternative to `id` and `key` to identify a record by its `migrationKey`. The three are mutually exclusive and one of them must be provided. Only works if the `migrationKey` is unique for the entity.'
+      type: string
+      maxLength: 191
+      minLength: 0
+      example: migration-key|test
+    PatchRequestPropertyMigrationKey:
+      description: 'An internal key, used for tracking migration between systems. Setting this property changes the existing `migrationKey` value. Uniqueness is not enforced, multiple resources may share the same migration key value for an entity.'
+      type: string
+      maxLength: 191
+      minLength: 0
+      example: BATCH-2025-Q1-001
+      nullable: true
+    PatchRequestPropertyExternalKey:
+      description: 'An identifier provided by an external system that uniquely identifies a resource. GET endpoints allow filtering by this property.'
+      type: string
+      maxLength: 191
+      minLength: 0
+      example: resource@identifier-in-source-system
+      nullable: true
+    PostRequestPropertyMigrationKey:
+      description: 'An internal key, used for tracking migrations between systems. Uniqueness is not enforced, multiple resources may share the same migration key value for an entity.'
+      type: string
+      maxLength: 191
+      minLength: 0
+      example: BATCH-2025-Q1-001
+      nullable: true
+    PostRequestPropertyExternalKey:
+      description: 'An identifier provided by an external system that uniquely identifies a resource. GET endpoints allow filtering by this property.'
+      type: string
+      maxLength: 191
+      minLength: 0
+      example: resource@identifier-in-source-system
+      nullable: true
     GetPregnancyDossierResponse:
       properties:
         data:
@@ -10451,6 +10516,10 @@ components:
           minLength: 0
           example: verzuimverloop-1001-01
           nullable: true
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         dateStart:
           description: 'The startdate of the absencecourse. Format YYYY-MM-DD'
           type: string
@@ -10524,6 +10593,8 @@ components:
           minLength: 0
           example: verzuimverloop-1001-01
           nullable: true
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         safetyNet:
           $ref: '#/components/schemas/SafetyNetEnumOptions'
         accidentType:
@@ -10585,6 +10656,13 @@ components:
           maxLength: 191
           minLength: 0
           example: dos-1234
+          nullable: true
+        setDossierMigrationKey:
+          description: 'If a new dossier is being created the migration key for that dossier will be set to this value, ignored for existing or compiled dossiers'
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: migration-key-dos-1234
           nullable: true
         expectedDurationDays:
           description: 'Expected duration of the absence in days, purely informational'
@@ -11334,12 +11412,7 @@ components:
           example: EXT12345
           nullable: true
         migrationKey:
-          description: 'A key used for identifying the task during migration processes.'
-          type: string
-          maxLength: 191
-          minLength: 0
-          example: MIG2024
-          nullable: true
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         dossierId:
           description: 'The unique identifier of the dossier associated with the task.'
           type: string
@@ -11438,12 +11511,7 @@ components:
           example: EXT-KEY-345897
           nullable: true
         migrationKey:
-          description: 'A key used for identifying the task during migration processes.'
-          type: string
-          maxLength: 191
-          minLength: 0
-          example: MIG-KEY-345
-          nullable: true
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dossierId:
           description: 'The unique identifier of the dossier where the task should be associated with'
           type: string
@@ -11574,6 +11642,10 @@ components:
           maxLength: 191
           minLength: 1
           example: EXT-DOS-458
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         dateStart:
           description: 'The date the dossier started in format YYYY-MM-DD'
           type: string
@@ -11646,6 +11718,10 @@ components:
           minLength: 0
           example: EXT-KEY-DOS123
           nullable: true
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         dossierStatus:
           $ref: '#/components/schemas/DossierStatusEnumOptions'
         dateReported:
@@ -11745,6 +11821,10 @@ components:
           maxLength: 191
           minLength: 0
           nullable: true
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         dossierStatus:
           $ref: '#/components/schemas/DossierStatusEnumOptions'
         dateReported:
@@ -11829,6 +11909,10 @@ components:
           minLength: 0
           example: ext-dos-1234
           nullable: true
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         zwerdDecline:
           description: 'Indicates if the ZWERD request is declined'
           type: boolean
@@ -11913,6 +11997,10 @@ components:
           maxLength: 191
           minLength: 1
           example: dossier-12345
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         externalKey:
           description: "An identifier provided by an external system that uniquely specifies the dossier. This key serves as an alternative to the 'id' field for referencing the dossier."
           type: string
@@ -11938,21 +12026,25 @@ components:
               $ref: '#/components/schemas/Dossier'
           type: object
     PatchPaidParentalLeaveDossierRequestBody:
-      required:
-        - id
       properties:
         id:
-          description: 'The unique identifier of the dossier to be updated'
+          description: "The unique identifier of the dossier to be updated. One of 'id', 'key', or 'migrationKeyId' must be provided to identify the dossier."
           type: string
           format: uuid
           maxLength: 36
           minLength: 36
+        key:
+          $ref: '#/components/schemas/PatchRequestPropertyKey'
         externalKey:
           description: "An identifier provided by an external system that uniquely specifies the dossier. This key serves as an alternative to the 'id' field for referencing the dossier."
           type: string
           maxLength: 191
           minLength: 0
           nullable: true
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         dossierStatus:
           oneOf:
             -
@@ -12047,6 +12139,10 @@ components:
           maxLength: 191
           minLength: 1
           example: 1234@external-key|test
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         dateOfBirthExpected:
           description: 'The expected birthdate of the child'
           type: string
@@ -12162,6 +12258,10 @@ components:
           maxLength: 191
           minLength: 1
           example: dossier-12345
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         externalKey:
           description: "An identifier provided by an external system that uniquely specifies the dossier. This key serves as an alternative to the 'id' field for referencing the dossier."
           type: string
@@ -12263,6 +12363,10 @@ components:
           maxLength: 191
           minLength: 0
           nullable: true
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         dossierStatus:
           $ref: '#/components/schemas/DossierStatusEnumOptions'
         dateReported:
@@ -12325,6 +12429,10 @@ components:
           minLength: 0
           example: ext-dos-1234
           nullable: true
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         key:
           description: "An identifier provided by an external system that uniquely specifies the dossier to be updated. The key of the dossier, this is an alternative to the 'id' field for referencing the dossier"
           type: string
@@ -12384,6 +12492,8 @@ components:
           maxLength: 191
           minLength: 1
           example: EXT-DOS-458
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dateStart:
           description: 'The date the dossier started in format YYYY-MM-DD'
           type: string
@@ -12428,6 +12538,8 @@ components:
           maxLength: 191
           minLength: 0
           nullable: true
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dossierStatus:
           $ref: '#/components/schemas/DossierStatusEnumOptions'
         dateReported:
@@ -12508,18 +12620,20 @@ components:
           type: object
     PostCompanyDossierRequestBody:
       required:
-        - organinzationalUnitId
+        - organizationalUnitId
         - dateStart
       properties:
         externalKey:
           description: "An identifier provided by an external system that uniquely specifies the dossier. This key serves as an alternative to the 'id' field for referencing the dossier."
           type: string
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dateStart:
           description: 'The date the dossier started'
           type: string
           format: date
-        organinzationalUnitId:
-          description: "The id of the organizational unit, required if 'employmentKey' is omitted"
+        organizationalUnitId:
+          description: 'The id of the organizational unit the dossier belongs to'
           type: string
           format: uuid
       type: object
@@ -12545,6 +12659,8 @@ components:
           minLength: 0
           example: EXT-DOS-123
           nullable: true
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dateStart:
           description: 'The date the dossier started in format YYYY-MM-DD'
           type: string
@@ -12588,6 +12704,8 @@ components:
           minLength: 0
           example: EX-KEY-1234
           nullable: true
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dossierStatus:
           $ref: '#/components/schemas/DossierStatusEnumOptions'
         dateReported:
@@ -12698,6 +12816,8 @@ components:
         externalKey:
           description: "An identifier provided by an external system that uniquely specifies the dossier. This key serves as an alternative to the 'id' field for referencing the dossier."
           type: string
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dateStart:
           description: 'The date the dossier started'
           type: string
@@ -12777,6 +12897,8 @@ components:
           minLength: 0
           example: 9eaf406e-5d5c-4321-a501-bcce0ec2e3a8
           nullable: true
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dateReported:
           description: 'The date the dossier was reported in format YYYY-MM-DD'
           type: string
@@ -12826,6 +12948,8 @@ components:
           minLength: 0
           example: EXT-Key-3495
           nullable: true
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dossierStatus:
           $ref: '#/components/schemas/DossierStatusEnumOptions'
         dateReported:
@@ -12924,6 +13048,8 @@ components:
         externalKey:
           description: "An identifier provided by an external system that uniquely specifies the dossier. This key serves as an alternative to the 'id' field for referencing the dossier."
           type: string
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dossierStatus:
           $ref: '#/components/schemas/DossierStatusEnumOptions'
         dateReported:
@@ -12968,6 +13094,8 @@ components:
           minLength: 0
           example: EXT-DOS-458
           nullable: true
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dateStart:
           description: 'The date the dossier started in format YYYY-MM-DD'
           type: string
@@ -13082,6 +13210,13 @@ components:
           maxLength: 191
           minLength: 0
           example: verzuimverloop-132.04
+          nullable: true
+        migrationKey:
+          description: 'The migration key of the absence-course'
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: staging_123
           nullable: true
         dateReported:
           description: 'The reporting date of the absence-course in YYYY-MM-DD format'
@@ -13807,6 +13942,13 @@ components:
           maxLength: 191
           minLength: 0
           example: External-Dossier-Key
+          nullable: true
+        migrationKey:
+          description: 'The migration key of the dossier'
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: staging_123
           nullable: true
         dateReported:
           description: 'Date the dossier was reported, formatted in ISO8601 (YYYY-MM-DD).'
@@ -14575,6 +14717,10 @@ components:
           minLength: 0
           example: EMP-PATCH-EXT-KEY-789
           nullable: true
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         person:
           $ref: '#/components/schemas/EmployeeRequestBodyPerson'
         address:
@@ -14628,12 +14774,9 @@ components:
           example: ORG-UNIT-KEY-001
           nullable: true
         externalKey:
-          description: "An identifier provided by an external system that uniquely specifies the employee. This key serves as an alternative to the 'id' field for referencing the employee."
-          type: string
-          maxLength: 191
-          minLength: 0
-          example: EMP-EXT-KEY-789
-          nullable: true
+          $ref: '#/components/schemas/PostRequestPropertyExternalKey'
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         employeeNumber:
           description: 'The employee/personnel number of the employee'
           type: string
@@ -14826,6 +14969,13 @@ components:
           maxLength: 191
           minLength: 0
           example: ext-key-987654321
+          nullable: true
+        migrationKey:
+          description: 'The migration key of the employee'
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: staging_123
           nullable: true
         socialSecurityNumber:
           description: "The SSN (BSN) of the employee. This corresponds to the field 'Citizen service number' and can be found in the edit employee screen."
@@ -16165,6 +16315,12 @@ components:
           minLength: 0
           example: EmploymentContract@Key
           nullable: true
+        externalKey:
+          $ref: '#/components/schemas/PatchRequestPropertyExternalKey'
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         employmentTypeId:
           description: "The ID of the new Employment Type, mutually exclusive with 'employmentTypeCode'"
           type: string
@@ -16275,12 +16431,11 @@ components:
           example: Employment@Key
           nullable: true
         externalKey:
-          description: "An identifier provided by an external system that uniquely specifies the employment. This key serves as an alternative to the 'id' field for referencing the employment."
-          type: string
-          maxLength: 191
-          minLength: 0
-          example: Employment@Key@New
-          nullable: true
+          $ref: '#/components/schemas/PatchRequestPropertyExternalKey'
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         waitingDays:
           description: 'The waiting period for the employment'
           type: integer
@@ -16390,6 +16545,8 @@ components:
           minLength: 0
           example: External@Key
           nullable: true
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dateStart:
           description: 'Start date for the new employment contract'
           type: string
@@ -16492,6 +16649,8 @@ components:
           minLength: 0
           example: External@Key
           nullable: true
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         waitingDays:
           description: 'The number of waiting days'
           type: integer
@@ -18506,7 +18665,7 @@ components:
           type: object
     PostUserRequestBody:
       properties:
-        externalkey:
+        externalKey:
           description: 'The key known in an external system to identify the user'
           type: string
           maxLength: 191
@@ -18970,7 +19129,20 @@ components:
                 $ref: '#/components/schemas/EmployerAuthorizationResource'
       type: object
   parameters:
-    PageNumber:
+    GetRequestFilterMigrationKey:
+      name: 'filter[migrationKey]'
+      in: query
+      description: 'Filter results by the `migrationKey` field.'
+      schema:
+        type: string
+    GetRequestFilterMigrationKeyIsEmpty:
+      name: 'filter[migrationKeyEmpty]'
+      in: query
+      description: 'Filter results by whether the `migrationKey` field is empty or not.'
+      schema:
+        type: boolean
+      example: 'true'
+    GetRequestPageNumber:
       name: 'page[number]'
       in: query
       description: 'The specific page number to retrieve for paginated results.'
@@ -18978,7 +19150,7 @@ components:
       schema:
         type: integer
         default: 1
-    PageSize:
+    GetRequestPageSize:
       name: 'page[size]'
       in: query
       description: 'The number of items per page.'

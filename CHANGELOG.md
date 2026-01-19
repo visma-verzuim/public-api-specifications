@@ -3,6 +3,15 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Update January 19 2026
+
+### Added
+- Property `migrationKey` added to `AbsenceCourse`, `Dossier`, `Employee`, `Employment`, `EmploymentContract` endpoints (VV-8800)
+
+### Documentation
+- Removed documentation for properties that didn't exist from `BillableAvailability` resource (VV-8800)
+- Renamed `migrationkey` to `migrationKey` for `PostUserRequestBody` (VV-8800)
+
 ## Release January 2026
 
 ### Added
