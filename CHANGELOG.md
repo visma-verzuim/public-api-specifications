@@ -3,6 +3,39 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Update March 3rd 2026
+
+### Added
+- `GET` `Appointments` endpoint - new fields added for dossier, employment, and additional invoice line (VV-9274)
+
+### Fixed
+- `POST` User authorizations endpoint does not accept externalKeys anymore (VV-9447)
+
+
+## Release February 2026
+
+### Added
+- `PATCH` `user/employee` endpoint implementation (VV-8146)
+- `POST` `dossier/diagnosis` endpoint for creating diagnoses for medical dossiers (VV-8906)
+- `POST` `dossier/content/contact-person` endpoint to create dossier-level contact persons (VV-9186)
+- `GET` `user/employee` endpoint implementation (VV-9261)
+- `GET` `appointment` endpoint now supports sorting by date (VV-8807)
+- Property `migrationKey` added to `Document`, `DossierUpload`, `Note`, and `UwvDocument` endpoints (VV-8801)
+- Property `code` added to `OrganizationalUnitType` resource along with frontend changes to be able to set it. `POST` and `PATCH` `OrganizationalUnit` allows using the code as an identifier (VV-9299)
+- Property `confidential` added to `Employment` API response (VV-8542)
+- Property `negativeRegistration` flag added to `EmployerContract` endpoints (VV-8543)
+
+### Fixed
+- `GET` endpoint filters for `name` or properties that can contain names now correctly handle strings containing commas (VV-9369)
+- `GET` endpoint with `migrationKeyEmpty` filter now works correctly (VV-9284)
+- `GET` `contact-person` endpoint is no longer missing data for `team-contact-person` type (VV-9253)
+- `PATCH` `employer` endpoint postal/visiting address issues resolved (VV-9287)
+- `POST` `user/employee` route configuration fixed, it can now be accessed via the path described in the OpenAPI specification (VV-9262)
+
+### Documentation
+- OpenAPI specification: clarified `percentageWorkRelated` on `DiagnosisResource` (VV-8906)
+
+
 ## Update January 19 2026
 
 ### Added
