@@ -3,6 +3,33 @@
 All notable changes to the Public API will be documented in this file.
 The changelog has been tracked since March 15, 2024. Changes prior to this date are based on the git log of the project.
 
+## Release March 2026
+
+### Added
+- `POST` `/dossier/employee` endpoint for creating employee dossiers (VV-9422)
+- `DELETE` `/user/employee` endpoint to delete employee users (VV-9418)
+- `POST` `/contact-person/employment` endpoint to create employment-level contact persons (VV-9187)
+- `DELETE` `/contact-person/{uuid}` endpoint to delete contact persons (VV-9188)
+- `PATCH` `/contact-person/dossier` endpoint to update dossier-level contact persons (VV-9190)
+- `PATCH` `/contact-person/employment` endpoint to update employment-level contact persons (VV-9191)
+- `POST` `/employer/close-tasks-after-migration` endpoint to cancel open and overdue tasks for an employer after migration; only available within 14 days of employer creation
+  (VV-9139)
+- Property `migrationKey` and/or `migrationKeyId` added to `Employer`, `OrganizationalUnit`, and `Diagnosis` endpoints (VV-8725)
+- `Employee` webhook now fires when employer person contact info, communications, or addresses are updated (VV-9485)
+
+### Fixed
+- `GET` `/dossier/*` endpoints - pagination `total` count now matches the actual number of results (VV-9395)
+- `POST` and `PATCH` endpoints no longer convert `&` to `&amp;` in string input values (VV-9425)
+- `POST` `/employer` concurrency, latency and reliability improvements (VV-9441)
+- `PATCH` `/dossier/zwerd` was returning HTTP 500 (VV-9524)
+
+### Documentation
+- Fixed `POST` `OrganizationalUnit` request body schema to match actual request parsing (VV-8326)
+- Fixed path and tag for `POST` `/dossier/diagnosis` endpoint (VV-9493)
+- Corrected typo `physyiotherapy` to `physiotherapy` in PATCH dossier path; added `icon` enum values to `DossierExternalResource` and added missing required fields to pregnancy dossier and external
+  resource request bodies (VV-9524)
+- `UserAuthorizationResource.authorizations` changed from `oneOf` to `anyOf` to fix broken generated clients; improved `scope` description on `POST` auth token request body (VV-9551)
+
 ## Update March 3rd 2026
 
 ### Added

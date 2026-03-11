@@ -893,6 +893,93 @@ paths:
                 type: string
                 example: 'Wed, 31 Dec 2025 23:00:00 UTC'
                 pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
+  '/contact-person/{id}':
+    delete:
+      tags:
+        - ContactPerson
+      summary: 'Delete a contact person'
+      description: 'Deletes a contact person based on the ID.'
+      operationId: contactperson-id-delete-v1-essential
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Unique identifier of the contact person to delete.'
+          required: true
+          schema:
+            type: string
+            format: uuid
+        -
+          name: Ocp-Apim-Subscription-Key
+          in: header
+          required: true
+          description: 'Your personal **subscription key**, which can be acquired by subscribing to one of our products and which can be viewed on your profile page.'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Contact person successfully deleted'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+          headers:
+            Deprecated:
+              description: 'This endpoint has been deprecated at the given timestamp.'
+              required: false
+              schema:
+                type: string
+                example: '@1758557834'
+                pattern: '^\@[0-9]{10}$'
+            Sunset:
+              description: 'This endpoint will be removed at the given date/time.'
+              required: false
+              schema:
+                type: string
+                example: 'Wed, 31 Dec 2025 23:00:00 UTC'
+                pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
+        '400':
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          headers:
+            Deprecated:
+              description: 'This endpoint has been deprecated at the given timestamp.'
+              required: false
+              schema:
+                type: string
+                example: '@1758557834'
+                pattern: '^\@[0-9]{10}$'
+            Sunset:
+              description: 'This endpoint will be removed at the given date/time.'
+              required: false
+              schema:
+                type: string
+                example: 'Wed, 31 Dec 2025 23:00:00 UTC'
+                pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
+        '500':
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+          headers:
+            Deprecated:
+              description: 'This endpoint has been deprecated at the given timestamp.'
+              required: false
+              schema:
+                type: string
+                example: '@1758557834'
+                pattern: '^\@[0-9]{10}$'
+            Sunset:
+              description: 'This endpoint will be removed at the given date/time.'
+              required: false
+              schema:
+                type: string
+                example: 'Wed, 31 Dec 2025 23:00:00 UTC'
+                pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
   /contact-person:
     get:
       tags:
@@ -1056,13 +1143,13 @@ paths:
       tags:
         - ContactPerson
       summary: 'Create a new contact person'
-      description: 'Creates a new contact person for either an employer, organizational unit or dossier. This endpoint handles the creation process and associates the contact person with the specified entity.'
+      description: 'Creates a new contact person for either an employer, organizational unit, dossier or employment. This endpoint handles the creation process and associates the contact person with the specified entity.'
       operationId: contactperson-post-v1-essential
       parameters:
         -
           name: type
           in: path
-          description: 'Type of contact person (employer, organizational-unit or dossier)'
+          description: 'Type of contact person (employer, organizational-unit, dossier or employment)'
           required: true
           schema:
             $ref: '#/components/schemas/PostContactPersonTypeEnumOptions'
@@ -1154,7 +1241,7 @@ paths:
         -
           name: type
           in: path
-          description: 'Type of contact person (employer or organizational-unit)'
+          description: 'Type of contact person (employer, organizational-unit or dossier)'
           required: true
           schema:
             $ref: '#/components/schemas/PatchContactPersonTypeEnumOptions'
@@ -1247,10 +1334,10 @@ paths:
         -
           name: type
           in: path
-          description: 'Type of contact person (employer or organizational-unit)'
+          description: 'Type of contact person (employer, organizational-unit or dossier)'
           required: true
           schema:
-            $ref: '#/components/schemas/PostContactPersonTypeEnumOptions'
+            $ref: '#/components/schemas/PatchContactPersonTypeEnumOptions'
         -
           name: uuid
           in: path
@@ -2780,10 +2867,10 @@ paths:
                 type: string
                 example: 'Wed, 31 Dec 2025 23:00:00 UTC'
                 pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
-  /diagnosis:
+  /dossier/diagnosis:
     post:
       tags:
-        - Diagnosis
+        - Dossier
       summary: 'Create a diagnosis'
       operationId: diagnosis-post-v1-essential
       requestBody:
@@ -9924,13 +10011,98 @@ paths:
           description: 'Your personal **subscription key**, which can be acquired by subscribing to one of our products and which can be viewed on your profile page.'
           schema:
             type: string
-  /dossier/physyiotherapy:
+  /dossier/physiotherapy:
+    post:
+      tags:
+        - Dossier
+      summary: 'Create a physiotherapy dossier'
+      description: 'This endpoint is used to create a new physiotherapy dossier.'
+      operationId: dossier-physiotherapy-post-v1-ultimate
+      requestBody:
+        description: 'Dossier data'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBasicDossierRequestBody'
+      responses:
+        '201':
+          description: 'Dossier successfully created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostBasicDossierResponseBody'
+          headers:
+            Deprecated:
+              description: 'This endpoint has been deprecated at the given timestamp.'
+              required: false
+              schema:
+                type: string
+                example: '@1758557834'
+                pattern: '^\@[0-9]{10}$'
+            Sunset:
+              description: 'This endpoint will be removed at the given date/time.'
+              required: false
+              schema:
+                type: string
+                example: 'Wed, 31 Dec 2025 23:00:00 UTC'
+                pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
+        '400':
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          headers:
+            Deprecated:
+              description: 'This endpoint has been deprecated at the given timestamp.'
+              required: false
+              schema:
+                type: string
+                example: '@1758557834'
+                pattern: '^\@[0-9]{10}$'
+            Sunset:
+              description: 'This endpoint will be removed at the given date/time.'
+              required: false
+              schema:
+                type: string
+                example: 'Wed, 31 Dec 2025 23:00:00 UTC'
+                pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
+        '500':
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+          headers:
+            Deprecated:
+              description: 'This endpoint has been deprecated at the given timestamp.'
+              required: false
+              schema:
+                type: string
+                example: '@1758557834'
+                pattern: '^\@[0-9]{10}$'
+            Sunset:
+              description: 'This endpoint will be removed at the given date/time.'
+              required: false
+              schema:
+                type: string
+                example: 'Wed, 31 Dec 2025 23:00:00 UTC'
+                pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
+      parameters:
+        -
+          name: Ocp-Apim-Subscription-Key
+          in: header
+          required: true
+          description: 'Your personal **subscription key**, which can be acquired by subscribing to one of our products and which can be viewed on your profile page.'
+          schema:
+            type: string
     patch:
       tags:
         - Dossier
-      summary: 'Patch physyiotherapy dossier'
-      description: 'This endpoint is used to update a physyiotherapy dossier.'
-      operationId: dossier-physyiotherapy-patch-v1-ultimate
+      summary: 'Patch physiotherapy dossier'
+      description: 'This endpoint is used to update a physiotherapy dossier.'
+      operationId: dossier-physiotherapy-patch-v1-ultimate
       requestBody:
         description: 'Dossier data'
         required: true
@@ -10523,27 +10695,27 @@ paths:
           description: 'Your personal **subscription key**, which can be acquired by subscribing to one of our products and which can be viewed on your profile page.'
           schema:
             type: string
-  /dossier/physiotherapy:
+  /dossier/company-dossier:
     post:
       tags:
         - Dossier
-      summary: 'Create a physiotherapy dossier'
-      description: 'This endpoint is used to create a new physiotherapy dossier.'
-      operationId: dossier-physiotherapy-post-v1-ultimate
+      summary: 'Create a company dossier'
+      description: 'This endpoint is used to create a new company dossier.'
+      operationId: dossier-companydossier-post-v1-ultimate
       requestBody:
         description: 'Dossier data'
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PostBasicDossierRequestBody'
+              $ref: '#/components/schemas/PostCompanyDossierRequestBody'
       responses:
         '201':
           description: 'Dossier successfully created'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostBasicDossierResponseBody'
+                $ref: '#/components/schemas/PostCompanyDossierResponse'
           headers:
             Deprecated:
               description: 'This endpoint has been deprecated at the given timestamp.'
@@ -10609,27 +10781,27 @@ paths:
           description: 'Your personal **subscription key**, which can be acquired by subscribing to one of our products and which can be viewed on your profile page.'
           schema:
             type: string
-  /dossier/company-dossier:
+  /dossier/employee:
     post:
       tags:
         - Dossier
-      summary: 'Create a company dossier'
-      description: 'This endpoint is used to create a new company dossier.'
-      operationId: dossier-companydossier-post-v1-ultimate
+      summary: 'Create an employee dossier'
+      description: "Creates a personal employee dossier. Each employee can have at most one employee dossier. The dossier is linked to the employee's current employment."
+      operationId: dossier-employee-post-v1-essential
       requestBody:
-        description: 'Dossier data'
+        description: 'Employee dossier data'
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PostCompanyDossierRequestBody'
+              $ref: '#/components/schemas/PostEmployeeDossierRequestBody'
       responses:
         '201':
-          description: 'Dossier successfully created'
+          description: 'Employee dossier successfully created'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostCompanyDossierResponse'
+                $ref: '#/components/schemas/PostEmployeeDossierResponse'
           headers:
             Deprecated:
               description: 'This endpoint has been deprecated at the given timestamp.'
@@ -11692,6 +11864,134 @@ paths:
                 pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          headers:
+            Deprecated:
+              description: 'This endpoint has been deprecated at the given timestamp.'
+              required: false
+              schema:
+                type: string
+                example: '@1758557834'
+                pattern: '^\@[0-9]{10}$'
+            Sunset:
+              description: 'This endpoint will be removed at the given date/time.'
+              required: false
+              schema:
+                type: string
+                example: 'Wed, 31 Dec 2025 23:00:00 UTC'
+                pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
+        '500':
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerErrorResponse'
+          headers:
+            Deprecated:
+              description: 'This endpoint has been deprecated at the given timestamp.'
+              required: false
+              schema:
+                type: string
+                example: '@1758557834'
+                pattern: '^\@[0-9]{10}$'
+            Sunset:
+              description: 'This endpoint will be removed at the given date/time.'
+              required: false
+              schema:
+                type: string
+                example: 'Wed, 31 Dec 2025 23:00:00 UTC'
+                pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
+      parameters:
+        -
+          name: Ocp-Apim-Subscription-Key
+          in: header
+          required: true
+          description: 'Your personal **subscription key**, which can be acquired by subscribing to one of our products and which can be viewed on your profile page.'
+          schema:
+            type: string
+  /employer/close-tasks-after-migration:
+    post:
+      tags:
+        - Employer
+      summary: 'Close tasks after migration'
+      description: 'Cancels all open and overdue tasks for dossiers belonging to the specified employer where the task start date is on or before the provided date. This endpoint is only available within 2 weeks of employer creation to support data migration workflows. WARNING: Tasks are generated automatically overnight (00:00-08:00). We recommend calling this endpoint at least 36 hours after migration to ensure all tasks have been generated. Calling too early may result in incomplete task cancellation. The user is responsible for correct timing and providing the correct date parameter.'
+      operationId: employermigration-post-v1-essential
+      requestBody:
+        description: 'Request parameters'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCloseTasksAfterMigrationRequestBody'
+      responses:
+        '201':
+          description: 'Tasks successfully cancelled'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCloseTasksAfterMigrationResponse'
+          headers:
+            Deprecated:
+              description: 'This endpoint has been deprecated at the given timestamp.'
+              required: false
+              schema:
+                type: string
+                example: '@1758557834'
+                pattern: '^\@[0-9]{10}$'
+            Sunset:
+              description: 'This endpoint will be removed at the given date/time.'
+              required: false
+              schema:
+                type: string
+                example: 'Wed, 31 Dec 2025 23:00:00 UTC'
+                pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
+        '400':
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          headers:
+            Deprecated:
+              description: 'This endpoint has been deprecated at the given timestamp.'
+              required: false
+              schema:
+                type: string
+                example: '@1758557834'
+                pattern: '^\@[0-9]{10}$'
+            Sunset:
+              description: 'This endpoint will be removed at the given date/time.'
+              required: false
+              schema:
+                type: string
+                example: 'Wed, 31 Dec 2025 23:00:00 UTC'
+                pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
+        '403':
+          description: 'Migration period expired'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestResponse'
+          headers:
+            Deprecated:
+              description: 'This endpoint has been deprecated at the given timestamp.'
+              required: false
+              schema:
+                type: string
+                example: '@1758557834'
+                pattern: '^\@[0-9]{10}$'
+            Sunset:
+              description: 'This endpoint will be removed at the given date/time.'
+              required: false
+              schema:
+                type: string
+                example: 'Wed, 31 Dec 2025 23:00:00 UTC'
+                pattern: '^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s[0-9]{2}\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s[0-9]{4}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC$'
+        '404':
+          description: 'Employer not found'
           content:
             application/json:
               schema:
@@ -16573,9 +16873,9 @@ components:
           pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
           example: '2025-10-13 12:00:00'
         user:
-          $ref: '#/components/schemas/UserResource'
+          $ref: '#/components/schemas/User'
         createdByUser:
-          $ref: '#/components/schemas/UserResource'
+          $ref: '#/components/schemas/User'
         employer:
           $ref: '#/components/schemas/Employer'
         organizationalUnit:
@@ -16638,6 +16938,7 @@ components:
           example:
             - read
       type: object
+      additionalProperties: true
     PostAuthTokenRequestBody:
       required:
         - grant_type
@@ -17181,6 +17482,8 @@ components:
       enum:
         - employer
         - organizational-unit
+        - dossier
+        - employment
     PatchContactPersonRequestBody:
       properties:
         id:
@@ -17275,6 +17578,30 @@ components:
           example: 550e8400-e29b-41d4-a716-446655440001
         organizationalUnitKey:
           description: "The external key of the organizational unit the contact person belongs to. Mutually exclusive with 'organizationalUnitId'. One organizational unit identifier is required when creating a ContactPerson of type 'organizational-unit'."
+          type: string
+          maxLength: 191
+          example: some-key@remote-system@12345
+        dossierId:
+          description: "The unique identifier of the dossier. Mutually exclusive with 'dossierKey'. Can be used to change which dossier the contact person belongs to."
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          example: 550e8400-e29b-41d4-a716-446655440002
+        dossierKey:
+          description: "The external key of the dossier the contact person belongs to. Mutually exclusive with 'dossierId'. Can be used to change which dossier the contact person belongs to."
+          type: string
+          maxLength: 191
+          example: some-key@remote-system@12345
+        employmentId:
+          description: "The unique identifier of the employment. Mutually exclusive with 'employmentKey'. Can be used to change which employment the contact person belongs to."
+          type: string
+          format: uuid
+          maxLength: 36
+          minLength: 36
+          example: 550e8400-e29b-41d4-a716-446655440003
+        employmentKey:
+          description: "The external key of the employment the contact person belongs to. Mutually exclusive with 'employmentId'. Can be used to change which employment the contact person belongs to."
           type: string
           maxLength: 191
           example: some-key@remote-system@12345
@@ -17386,6 +17713,17 @@ components:
           type: string
           maxLength: 191
           example: some-key@remote-system@12345
+        employmentId:
+          description: "The unique identifier of the employment. Mutually exclusive with 'employmentKey'. One employment identifier is required when creating a ContactPerson of type 'employment'."
+          type: string
+          format: uuid
+          maxLength: 36
+          example: 550e8400-e29b-41d4-a716-446655440003
+        employmentKey:
+          description: "The external key of the employment the contact person belongs to. Mutually exclusive with 'employmentId'. One employment identifier is required when creating a ContactPerson of type 'employment'."
+          type: string
+          maxLength: 191
+          example: some-key@remote-system@12345
       type: object
     PostContactPersonTypeEnumOptions:
       type: string
@@ -17393,6 +17731,7 @@ components:
         - employer
         - organizational-unit
         - dossier
+        - employment
     FullSalutationEnumOptions:
       type: string
       enum:
@@ -18470,6 +18809,8 @@ components:
           maxLength: 191
           example: External-Key-Test
           nullable: true
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         dossierId:
           description: "The Unique identifier of the dossier, required if 'dossierKey' is omitted"
           type: string
@@ -18821,6 +19162,11 @@ components:
               $ref: '#/components/schemas/DossierExternalResourceResource'
           type: object
     PostDossierExternalResourceRequestBody:
+      required:
+        - dossierId
+        - name
+        - url
+        - priority
       properties:
         priority:
           description: 'Priority position of the external resource'
@@ -18847,11 +19193,7 @@ components:
           minLength: 1
           example: 'http://intranet.local/resource/90dd731a-5e65-43f9-82df-bba234855918'
         icon:
-          description: 'Icon of the external resource'
-          type: string
-          maxLength: 191
-          minLength: 1
-          example: fa-cloud
+          $ref: '#/components/schemas/DossierExternalResourceIconTypeEnumOptions'
         dossierId:
           description: 'The unique identifier of the dossier associated with the external resource'
           type: string
@@ -20520,6 +20862,48 @@ components:
             data:
               $ref: '#/components/schemas/Dossier'
           type: object
+    PostEmployeeDossierRequestBody:
+      properties:
+        employeeId:
+          description: 'The unique identifier of the employee. Mutually exclusive with employeeKey and employeeMigrationKey.'
+          type: string
+          format: uuid
+        employeeKey:
+          description: 'External key of the employee. Mutually exclusive with employeeId and employeeMigrationKey.'
+          type: string
+          maxLength: 191
+          example: employee-unique-key
+        employeeMigrationKey:
+          description: 'Migration key of the employee. Mutually exclusive with employeeId and employeeKey.'
+          type: string
+          maxLength: 191
+          example: EMP-MIG-123
+        externalKey:
+          description: 'An identifier provided by an external system that uniquely specifies the dossier.'
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: dossier-ext-key-123
+          nullable: true
+        migrationKey:
+          description: 'The migration key of the dossier.'
+          type: string
+          maxLength: 191
+          minLength: 0
+          example: dossier-mig-123
+          nullable: true
+      type: object
+    PostEmployeeDossierResponse:
+      allOf:
+        -
+          $ref: '#/components/schemas/PublicApiPostResponseEnvelope'
+        -
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/Dossier'
+          type: object
     PostMedicalPreventiveDossierRequestBody:
       required:
         - dateStart
@@ -20684,6 +21068,8 @@ components:
       required:
         - dateStart
         - employmentId
+        - dateOfBirthExpected
+        - requestedLeavePeriod
       properties:
         externalKey:
           description: "An identifier provided by an external system that uniquely specifies the dossier. This key serves as an alternative to the 'id' field for referencing the dossier."
@@ -21233,6 +21619,12 @@ components:
           maxLength: 191
           minLength: 0
           nullable: true
+        migrationKey:
+          description: 'An internal key used for tracking migrations between systems.'
+          type: string
+          maxLength: 191
+          minLength: 0
+          nullable: true
         cvoDiagnosis:
           $ref: '#/components/schemas/CvoDiagnosis'
         cvoIsChronic:
@@ -21259,9 +21651,9 @@ components:
           example: 75.5
           nullable: true
         createdByUser:
-          $ref: '#/components/schemas/UserResource'
+          $ref: '#/components/schemas/User'
         updatedByUser:
-          $ref: '#/components/schemas/UserResource'
+          $ref: '#/components/schemas/User'
         dateReported:
           type: string
           pattern: '^\d{4}-\d{2}-\d{2}$'
@@ -22355,6 +22747,16 @@ components:
           type: string
           pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
       type: object
+    DossierExternalResourceIconTypeEnumOptions:
+      type: string
+      enum:
+        - home
+        - search
+        - user
+        - settings
+        - information
+        - question-mark
+        - plus
     GetDossierOfficerResponse:
       properties:
         data:
@@ -22967,6 +23369,8 @@ components:
           description: "An identifier provided by an external system that uniquely specifies the employer to be updated. This key serves as an alternative to the 'id' field for referencing the employer; only one of 'id' or 'key' is needed in a request to identify the employer."
           type: string
           example: 1234@external-key|test
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
         name:
           description: 'The (legal) name of the employer'
           type: string
@@ -22980,6 +23384,8 @@ components:
           minLength: 0
           example: 1c440145-0172-42c9-854a-3e95285a793d@CRM
           nullable: true
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         relationNumber:
           description: 'A relation number identifying the employer in systems like invoicing or CRM'
           type: string
@@ -23064,6 +23470,41 @@ components:
             data:
               $ref: '#/components/schemas/Employer'
           type: object
+    PostCloseTasksAfterMigrationRequestBody:
+      required:
+        - dateTarget
+      properties:
+        employerId:
+          description: 'The UUID of the employer. Mutually exclusive with employerKey.'
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        employerKey:
+          description: 'The external key of the employer. Mutually exclusive with employerId.'
+          type: string
+          example: external-system-key-123
+        dateTarget:
+          description: 'Tasks with start date on or before this date will be cancelled. Format: YYYY-MM-DD'
+          type: string
+          format: date
+          example: '2026-02-15'
+      type: object
+    PostCloseTasksAfterMigrationResponse:
+      allOf:
+        -
+          $ref: '#/components/schemas/PublicApiPostResponseEnvelope'
+        -
+          required:
+            - data
+          properties:
+            data:
+              properties:
+                tasksCancelled:
+                  description: 'The number of tasks that were cancelled'
+                  type: integer
+                  example: 42
+              type: object
+          type: object
     EmployerRequestBodyContract:
       required:
         - contractTypeId
@@ -23131,8 +23572,6 @@ components:
       description: 'Employer data'
       required:
         - name
-        - employerDivisionId
-        - arboServiceId
         - contract
       properties:
         name:
@@ -23148,6 +23587,8 @@ components:
           minLength: 0
           example: Externalkey-123
           nullable: true
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         relationNumber:
           description: 'A relation number identifying the employer in systems like invoicing or CRM'
           type: string
@@ -25456,18 +25897,22 @@ components:
     PatchOrganizationalUnitRequestBody:
       properties:
         id:
-          description: "Unique identifier of the organizational unit to be updated. Required if not provided in the path and 'key' is not provided. Mutually exclusive with 'key'"
+          description: "Unique identifier of the organizational unit to be updated. Required if not provided in the path and 'key' is not provided. Mutually exclusive with 'key' and 'migrationKeyId'."
           type: string
           format: uuid
           maxLength: 36
           minLength: 36
           example: 0a631224-f554-4762-95bc-c7c53accbd67
         key:
-          description: "External key of the organizational unit to be updated. Required if no 'id' is provided. Mutually exclusive with 'id'."
+          description: "External key of the organizational unit to be updated. Required if no 'id' is provided. Mutually exclusive with 'id' and 'migrationKeyId'."
           type: string
           maxLength: 191
           minLength: 1
           example: EXT-OU-348957
+        migrationKeyId:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKeyId'
+        migrationKey:
+          $ref: '#/components/schemas/PatchRequestPropertyMigrationKey'
         externalKey:
           description: "An identifier provided by an external system that uniquely specifies the organizational unit. This key serves as an alternative to the 'id' field for referencing the organizational unit."
           type: string
@@ -25590,6 +26035,8 @@ components:
         externalKey:
           description: "An identifier provided by an external system that uniquely specifies the organizational unit. This key serves as an alternative to the 'id' field for referencing the organizational unit."
           type: string
+        migrationKey:
+          $ref: '#/components/schemas/PostRequestPropertyMigrationKey'
         employerId:
           description: "Employer ID of the organizational unit, mutually exclusive with 'employerKey'"
           type: string
@@ -25617,20 +26064,42 @@ components:
         code:
           description: 'Code of the organizational unit'
           type: string
-        companyDoctorId:
-          description: "Company doctor ID of the organizational unit. mutually exclusive with 'companyDoctorKey'"
-          type: string
-        companyDoctorKey:
-          description: "Company doctor key of the organizational unit. mutually exclusive with 'companyDoctorId'"
-          type: string
-        dossierOfficerId:
-          description: "Dossier officer ID of the organizational unit. mutually exclusive with 'dossierOfficerKey'"
-          type: string
-        dossierOfficerKey:
-          description: "Dossier officer key of the organizational unit, mutually exclusive with 'dossierOfficerId'"
-          type: string
         company:
           $ref: '#/components/schemas/PostOrganizationalUnitRequestBodyCompanyData'
+        companyDoctorId:
+          description: "Company doctor ID of the organizational unit, mutually exclusive with 'companyDoctorKey'"
+          type: string
+          format: uuid
+          example: 42a384fb-de7e-421c-ba81-2598fb510016
+        companyDoctorKey:
+          description: "Company doctor external key of the organizational unit, mutually exclusive with 'companyDoctorId'"
+          type: string
+        dossierOfficerId:
+          description: "Dossier officer ID of the organizational unit, mutually exclusive with 'dossierOfficerKey'"
+          type: string
+          format: uuid
+          example: 42a384fb-de7e-421c-ba81-2598fb510016
+        dossierOfficerKey:
+          description: "Dossier officer external key of the organizational unit, mutually exclusive with 'dossierOfficerId'"
+          type: string
+        internalSupervisorId:
+          description: "ID identifier for the employee set as a supervisor to the organizational unit. Only applicable to legal entity organizational units. Mutually exclusive with 'externalSupervisorId'"
+          type: string
+          format: uuid
+          example: 42a384fb-de7e-421c-ba81-2598fb510016
+        externalSupervisorId:
+          description: "ID identifier for the external supervisor set as a supervisor to the organizational unit. Only applicable to legal entity organizational units. Mutually exclusive with 'internalSupervisorId'"
+          type: string
+          format: uuid
+          example: 42a384fb-de7e-421c-ba81-2598fb510016
+        contactPerson:
+          $ref: '#/components/schemas/ContactPerson'
+        visitAddress:
+          $ref: '#/components/schemas/OrganizationalUnitAddress'
+        postalAddress:
+          $ref: '#/components/schemas/OrganizationalUnitAddress'
+        communications:
+          $ref: '#/components/schemas/OrganizationalUnitCommunication'
         dateStart:
           description: "Start date, defaults to today's date if not provided"
           type: string
@@ -25663,24 +26132,6 @@ components:
           type: string
         uwv:
           $ref: '#/components/schemas/OrganizationalUnitCompanyUwv'
-        internalSupervisorId:
-          description: 'ID identifier for the employee set as a supervisor to the Organizational Unit'
-          type: string
-          format: uuid
-          example: 42a384fb-de7e-421c-ba81-2598fb510016
-        externalSupervisorId:
-          description: 'ID identifier for the external supervisor set as a supervisor to the Organizational Unit'
-          type: string
-          format: uuid
-          example: 42a384fb-de7e-421c-ba81-2598fb510016
-        contactPerson:
-          $ref: '#/components/schemas/ContactPerson'
-        visitAddress:
-          $ref: '#/components/schemas/OrganizationalUnitAddress'
-        postalAddress:
-          $ref: '#/components/schemas/OrganizationalUnitAddress'
-        communications:
-          $ref: '#/components/schemas/OrganizationalUnitCommunication'
       type: object
     PostOrganizationalUnitResponse:
       allOf:
@@ -25994,6 +26445,10 @@ components:
           minLength: 0
           example: IT
           nullable: true
+        dossierOfficer:
+          $ref: '#/components/schemas/DossierOfficer'
+        companyDoctor:
+          $ref: '#/components/schemas/CompanyDoctor'
         dateStart:
           description: 'Start date of the organizational unit in YYYY-MM-DD format'
           type: string
@@ -26366,7 +26821,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/UserResource'
+            $ref: '#/components/schemas/User'
         links:
           $ref: '#/components/schemas/PaginationLinks'
         meta:
@@ -26482,7 +26937,7 @@ components:
             - data
           properties:
             data:
-              $ref: '#/components/schemas/UserResource'
+              $ref: '#/components/schemas/User'
           type: object
     UserPerson:
       required:
@@ -26672,7 +27127,7 @@ components:
             - data
           properties:
             data:
-              $ref: '#/components/schemas/UserResource'
+              $ref: '#/components/schemas/User'
           type: object
     PostUserRequestBody:
       properties:
@@ -27006,40 +27461,6 @@ components:
         level:
           $ref: '#/components/schemas/ArboAuthorizationLevelEnumOptions'
       type: object
-    User:
-      properties:
-        id:
-          description: 'The unique identifier of the user'
-          type: string
-          format: uuid
-          maxLength: 36
-          minLength: 36
-          example: 029ff05c-6852-4a65-b6b9-50cb2dd1afea
-        username:
-          description: 'Username of the user'
-          type: string
-          maxLength: 191
-          minLength: 1
-          example: user123
-        user_type_id:
-          description: 'User type id of the user. Obtainable by the list of usertype'
-          type: integer
-          example: 15
-        arboRole:
-          $ref: '#/components/schemas/ArboRole'
-        person:
-          $ref: '#/components/schemas/MasterPerson'
-        masterPerson:
-          $ref: '#/components/schemas/MasterPerson'
-        dossiersCount:
-          description: 'Number of dossiers associated with the user. (calculated)'
-          type: integer
-          example: 321
-        tasksCount:
-          description: 'Number of tasks associated with the user. (calculated)'
-          type: integer
-          example: 50
-      type: object
     UserTypeEnumOptions:
       type: string
       enum:
@@ -27064,19 +27485,21 @@ components:
         authorizations:
           type: array
           items:
-            oneOf:
+            anyOf:
               -
                 $ref: '#/components/schemas/ArboAuthorizationResource'
               -
                 $ref: '#/components/schemas/EmployerAuthorizationResource'
           nullable: true
       type: object
-    UserResource:
+    User:
       properties:
         id:
           description: 'The unique identifier of the user'
           type: string
           format: uuid
+          maxLength: 36
+          minLength: 36
         externalKey:
           description: "An identifier provided by an external system that uniquely specifies the user. This key serves as an alternative to the 'id' field for referencing the user."
           type: string
@@ -27090,6 +27513,9 @@ components:
         username:
           description: 'Username of the user'
           type: string
+          maxLength: 191
+          minLength: 1
+          example: user123
         type:
           $ref: '#/components/schemas/UserTypeEnumOptions'
         arboRole:
@@ -27155,7 +27581,7 @@ components:
           description: 'List of authorizations for the user'
           type: array
           items:
-            oneOf:
+            anyOf:
               -
                 $ref: '#/components/schemas/ArboAuthorizationResource'
               -
@@ -27308,9 +27734,6 @@ tags:
   -
     name: Dossier
     description: Dossier
-  -
-    name: Diagnosis
-    description: Diagnosis
   -
     name: DossierContent
     description: DossierContent
