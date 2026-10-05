@@ -1,0 +1,30 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # This dummy job is required because the `passes-all-required-checks` job needs at least one dependent job.
+  # This job may be removed when we have at least one real check.
+  successful-dummy:
+    name: Successful dummy
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Step which always succeeds
+        run: echo "I am a dummy step which always succeeds!"
+
+  passes-all-required-checks:
+    name: Passes all required checks
+    if: always()
+    needs:
+      - successful-dummy
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Check whether the needed jobs succeeded or failed
+        uses: visma-verzuim/github-actions/require-jobs-to-succeed@v1
+        with:
+          jobs: ${{ toJSON(needs) }}
